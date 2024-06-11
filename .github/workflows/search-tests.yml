@@ -11,8 +11,7 @@ jobs:
   test:
     runs-on: self-hosted
     container:
-      # https://github.com/internetarchive/dyno
-      image: ghcr.io/internetarchive/dyno:main
+      image: ubuntu:latest
 
     steps:
       - uses: actions/checkout@v4
