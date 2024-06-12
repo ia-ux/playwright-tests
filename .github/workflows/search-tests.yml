@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: self-hosted
     container:
-      image: ubuntu:latest
+      image: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
