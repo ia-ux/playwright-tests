@@ -32,7 +32,7 @@ jobs:
 
       - name: Connect to browserstack
         id: browserstack_tests
-        run: npm run test:browserstack-node-sdk
+        run: ./run-browserstack-tests.sh
         continue-on-error: true
 
       - name: Send Slack Notification (on success)
