@@ -39,14 +39,14 @@ jobs:
         if: steps.browserstack_tests.outcome == 'success'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ All tests passed!"}' \
+          --data '{"text":"✅ All tests passed! View details [here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Send Slack Notification (on failure)
         if: steps.browserstack_tests.outcome == 'failure'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"❌ Tests failed. Please check the logs."}' \
+          --data '{"text":"❌ Tests failed. View details [here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Fail the job if tests failed
