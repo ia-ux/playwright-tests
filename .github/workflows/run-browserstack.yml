@@ -33,6 +33,7 @@ jobs:
       - name: Connect to browserstack
         id: browserstack_tests
         run: npm run test:browserstack-node-sdk
+        continue-on-error: true
 
       - name: Send Slack Notification (on success)
         if: steps.browserstack_tests.outcome == 'success'
@@ -47,3 +48,9 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"❌ Tests failed. Please check the logs."}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Fail the job if tests failed
+        if: steps.browserstack_tests.outcome == 'failure'
+        run: |
+          echo "Failing the job because BrowserStack tests failed."
+          exit 1
