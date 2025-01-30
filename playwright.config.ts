@@ -24,13 +24,13 @@ const reportName = () => `${process.env.CATEGORY}/${formattedDateTime()}`;
  * Can be modified if needed
  */
 export default defineConfig({
-  workers: 10,
+  workers: 3,  // see scripts/executeTests.js instead
   // Give failing tests 3 retry attempts
   retries: 3,
   // Timeout for each test
-  timeout: 5 * 60 * 1000,         // 5 mins
+  timeout: 5 * 60 * 1000,         // set to 5mins
   // Maximum time the whole test suite can run
-  globalTimeout: 20 * 60 * 1000,  // 20 mins
+  globalTimeout: 20 * 60 * 1000,  // set to 20mins
   testDir: './tests',
   reporter: [
     [
@@ -42,13 +42,13 @@ export default defineConfig({
     ],
   ],
   expect: {
-    timeout: 2 * 60 * 1000,  // set to 2min
+    timeout: 2 * 60 * 1000,  // set to 2mins
   },
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // This is set in config/index.ts
     baseURL: config.baseURL,
-    actionTimeout: 2 * 60 * 1000,  // set to 2min
+    actionTimeout: 2 * 60 * 1000,  // set to 2mins
     screenshot: 'only-on-failure',
   },
 

@@ -22,7 +22,7 @@ const buildCommand = (options) => {
     command += ` --project='${capitalizedPlatform} - ${capitalizedBrowser}'`;
   }
 
-  return command;
+  return `${command} --workers=5`;
 }
 
 const parseArguments = (args) => {
