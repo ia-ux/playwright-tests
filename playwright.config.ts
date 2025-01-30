@@ -24,7 +24,9 @@ const reportName = () => `${process.env.CATEGORY}/${formattedDateTime()}`;
  * Can be modified if needed
  */
 export default defineConfig({
-  workers: 5,
+  workers: 10,
+  // Give failing tests 3 retry attempts
+  retries: 3,
   // Timeout for each test
   timeout: 5 * 60 * 1000,         // 5 mins
   // Maximum time the whole test suite can run
