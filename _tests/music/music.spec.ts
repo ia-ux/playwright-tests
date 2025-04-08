@@ -1,4 +1,4 @@
-import { test } from '../fixtures';
+import { test } from '../../tests/fixtures';
 
 import { identifier } from '../../config';
 

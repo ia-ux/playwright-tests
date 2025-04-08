@@ -1,4 +1,4 @@
-import { test } from '../fixtures';
+import { test } from '../../tests/fixtures';
 
 import {
   FacetGroup,
@@ -6,7 +6,7 @@ import {
   FacetGroupLocatorLabel,
   LayoutViewModeLocator,
   SearchFacetGroupHeaderNames,
-} from '../models';
+} from '../../tests/models';
 
 test('Facets appear', async ({ searchPage }) => {
   await test.step('Assert facet group headers count', async () => {

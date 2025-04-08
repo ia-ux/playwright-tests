@@ -11,16 +11,15 @@
     "format": "prettier --write \"tests/**/*.ts\"",
     "lint": "prettier --check \"tests/**/*.ts\"",
     "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
-    "test:debugbrowser": "DEBUG=pw:browser npx playwright test",
-    "test:browserstack-node-sdk": "browserstack-node-sdk playwright test"
+    "test:debugbrowser": "DEBUG=pw:browser npx playwright test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.49.0",
+    "@playwright/test": "^1.51.1",
     "@types/node": "^20.11.17",
-    "browserstack-node-sdk": "^1.34.36",
+    "browserstack-node-sdk": "^1.34.50",
     "dotenv": "^16.0.3",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
