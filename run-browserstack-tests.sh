@@ -12,4 +12,5 @@ time {
   # npx browserstack-node-sdk playwright test ./tests/music
   # npx browserstack-node-sdk playwright test ./tests/profile
   # npx browserstack-node-sdk playwright test ./tests/search
+  # npx browserstack-node-sdk playwright test ./tests/static
 }

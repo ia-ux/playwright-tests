@@ -23,7 +23,7 @@ test('Scanning page has correct title and text', async ({ page }) => {
 test('Web > Petabox page has correct title and text', async ({ page }) => {
   await page.goto(identifier.static.petabox);
   await expect(page).toHaveTitle(/Internet Archive: Petabox/);
-  await expect(page.locator('h1:has-text("Petabox")')).toBeVisible();
+  await expect(page.locator('#content-container').locator('h1:has-text("Petabox")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('A few highlights from the Petabox');
 });
 

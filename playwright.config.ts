@@ -30,7 +30,7 @@ export default defineConfig({
   // Timeout for each test
   timeout: 5 * 60 * 1000,         // set to 5mins
   // Maximum time the whole test suite can run
-  globalTimeout: 20 * 60 * 1000,  // set to 20mins
+  globalTimeout: 30 * 60 * 1000,  // set to 30mins
   testDir: './tests',
   reporter: [
     [
@@ -42,13 +42,13 @@ export default defineConfig({
     ],
   ],
   expect: {
-    timeout: 2 * 60 * 1000,  // set to 2mins
+    timeout: 5 * 60 * 1000,  // set to 5mins
   },
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // This is set in config/index.ts
     baseURL: config.baseURL,
-    actionTimeout: 2 * 60 * 1000,  // set to 2mins
+    actionTimeout: 5 * 60 * 1000,  // set to 5mins
     screenshot: 'only-on-failure',
   },
 

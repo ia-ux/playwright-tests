@@ -27,7 +27,7 @@ jobs:
 
       - name: Connect to browserstack
         id: browserstack_tests
-        run: ./run-browserstack-tests.sh
+        run: npx browserstack-node-sdk playwright test
         continue-on-error: true
 
       - name: Send Slack Notification (on success)
@@ -41,7 +41,7 @@ jobs:
         if: steps.browserstack_tests.outcome == 'failure'
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"❌ Scheduled test run - tests failed'. View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          --data '{"text":"❌ Scheduled test run - tests failed. View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Fail the job if tests failed
