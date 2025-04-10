@@ -27,7 +27,7 @@ jobs:
 
       - name: Connect to browserstack
         id: browserstack_tests
-        run: npx browserstack-node-sdk playwright test
+        run: npx browserstack-node-sdk playwright test 
         continue-on-error: true
 
       - name: Send Slack Notification (on success)
