@@ -1,0 +1,51 @@
+name: Scheduled Test Run in Browserstack
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 'BrowserStack Env Setup'
+        uses: 'browserstack/github-actions/setup-env@master'
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Connect to browserstack
+        id: browserstack_tests
+        run: ./run-browserstack-tests.sh
+        continue-on-error: true
+
+      - name: Send Slack Notification (on success)
+        if: steps.browserstack_tests.outcome == 'success'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ Scheduled test run - all tests passed! View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification (on failure)
+        if: steps.browserstack_tests.outcome == 'failure'
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ Scheduled test run - tests failed'. View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Fail the job if tests failed
+        if: steps.browserstack_tests.outcome == 'failure'
+        run: |
+          echo "Failing the job because BrowserStack tests failed."
+          exit 1
