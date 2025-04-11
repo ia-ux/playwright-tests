@@ -3,11 +3,6 @@ name: Run browserstack tests
 on:
   repository_dispatch:
     types: [trigger-from-webhook]
-  # push:
-  #   branches: [ main, master ]
-
-  # pull_request:
-  #   branches: [ main, master ]
 
 jobs:
   test:
@@ -34,10 +29,6 @@ jobs:
         with:
           username:  ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: Extract GitLab branch name
-        id: extract_gitlab_branch
-        run: echo "gitlab_branch=${{ github.event.client_payload.branch }}" >> $GITHUB_ENV
 
       - name: Connect to browserstack
         id: browserstack_tests
