@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 
-import { ProfilePage } from '../../tests/page-objects/profile-page';
-import { SearchFacetGroupHeaderNames } from '../../tests/models';
+import { ProfilePage } from '../page-objects/profile-page';
+import { SearchFacetGroupHeaderNames } from '../models';
 
 import { testBeforeEachConfig } from '../../config';
 

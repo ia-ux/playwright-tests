@@ -8,7 +8,7 @@ test.beforeEach(async ({ context }) => {
   await testBeforeEachConfig(context);
 });
 
-test.fixme(`Wayback navbar.php with ${permanentVariant1}`, async ({ page }) => {
+test(`Wayback navbar.php with ${permanentVariant1}`, async ({ page }) => {
   await page.goto(
     `/web/navbar.php?platform=wb&transpiled=1&reCache=1&variant=${permanentVariant1}`,
   );
@@ -25,7 +25,7 @@ test.fixme(`Wayback navbar.php with ${permanentVariant1}`, async ({ page }) => {
   await expect(continueToDonationButton).toBeVisible();
 });
 
-test.fixme(
+test(
   `Test click to donate page - Wayback navbar.php with ${permanentVariant1}`,
   async ({ page }) => {
     await page.goto(

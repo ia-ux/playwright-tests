@@ -1,12 +1,10 @@
-import { test } from '../../tests/fixtures';
+import { test } from '../fixtures';
 
 import {
   FacetGroup,
-  FacetGroupFilterHeaderEnum,
-  FacetGroupLocatorLabel,
   LayoutViewModeLocator,
   SearchFacetGroupHeaderNames,
-} from '../../tests/models';
+} from '../models';
 
 test('Facets appear', async ({ searchPage }) => {
   await test.step('Assert facet group headers count', async () => {
