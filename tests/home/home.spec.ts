@@ -1,6 +1,7 @@
 import { test } from '../fixtures';
 
 import { SearchOption } from '../models';
+import { HomePage } from '../page-objects/home-page';
 
 test('Home page displays all of its elements', async ({ homePage }) => {
   await test.step('Validate if page elements were loaded', async () => {
@@ -61,3 +62,10 @@ test('Use Wayback widget - Redirect web search', async ({ homePage }) => {
     await homePage.collectionBrowser.validateWaybackPage('canaries');
   });
 });
+
+test('TopNav Functionality', async ({ homePage }) => {
+  await test.step(`check static top nav functionality`, async () => {
+    await homePage.topNav.clickMediaButtons();
+  }); 
+})
+
