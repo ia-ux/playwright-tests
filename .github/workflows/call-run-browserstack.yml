@@ -1,0 +1,75 @@
+name: Install deps and run tests in Browserstack
+
+on: 
+  workflow_call:
+    secrets:
+      ARCHIVE_EMAIL:
+        required: true
+      ARCHIVE_PASSWORD:
+        required: true
+      BROWSERSTACK_USERNAME:
+        required: true
+      BROWSERSTACK_ACCESS_KEY:
+        required: true
+      PATRON_EMAIL:
+        required: true
+      PATRON_PASSWORD:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      ARCHIVE_EMAIL: ${{ secrets.ARCHIVE_EMAIL }}
+      ARCHIVE_PASSWORD: ${{ secrets.ARCHIVE_PASSWORD }}
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      PATRON_EMAIL: ${{ secrets.PATRON_EMAIL }}
+      PATRON_PASSWORD: ${{ secrets.PATRON_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: 'BrowserStack Env Setup'
+        uses: 'browserstack/github-actions/setup-env@master'
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Run Playwright tests in Browserstack
+        id: browserstack_tests
+        run: ./run-browserstack-tests.sh
+        continue-on-error: true
+
+      - name: 'Send Slack Notification'
+        run: |
+          curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" "https://api.browserstack.com/automate/builds.json?limit=1" > browserstack.json
+          export AUTOMATE_STATUS=$(jq -r '.[] | .automation_build.status' browserstack.json)
+          export AUTOMATE_URL=$(jq -r '.[] | .automation_build.public_url' browserstack.json)
+
+          case ${AUTOMATE_STATUS} in
+            "done")
+              JOB_STATUS="✅ Scheduled tests passed."
+              ;;
+            "timeout")
+              JOB_STATUS="⚠️ Tests timed out, not all tests passed."
+              ;;
+            "stopped")
+              JOB_STATUS="‼️ Tests failed, check the pipeline."
+              ;;
+            *)
+              JOB_STATUS="❓ Something went wrong, check the pipeline."
+              ;;
+          esac
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text": "'$JOB_STATUS' | View details: '$AUTOMATE_URL'"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}

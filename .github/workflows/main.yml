@@ -2,21 +2,19 @@ name: Push and PRs to `main`
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
 
   pull_request:
-    branches: [ main, master ]
-
+    branches: [ main ]
 
 jobs:
-  # notify:
-  #   # run slack-notifier workflow
-  #   uses: ./.github/workflows/call-slack-notifier.yml
-  #   with:
-  #     message: Starting push to main branch playwright tests run...
-  #   secrets:
-  #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   test:
     name: Run tests
-    uses: ./.github/workflows/call-run-tests.yml
+    uses: ./.github/workflows/call-run-browserstack.yml
+    secrets:
+      ARCHIVE_EMAIL: ${{ secrets.ARCHIVE_EMAIL }}
+      ARCHIVE_PASSWORD: ${{ secrets.ARCHIVE_PASSWORD }}
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      PATRON_EMAIL: ${{ secrets.PATRON_EMAIL }}
+      PATRON_PASSWORD: ${{ secrets.PATRON_PASSWORD }}

@@ -1,8 +1,8 @@
-name: Scheduled Test Run in Browserstack
+name: Trigger run tests in BrowserStack
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'
+  repository_dispatch:
+    types: [trigger-from-webhook]
 
 jobs:
   test:
