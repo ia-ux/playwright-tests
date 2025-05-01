@@ -19,6 +19,8 @@ on:
         required: true
       PATRON_PASSWORD:
         required: true
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
   test:

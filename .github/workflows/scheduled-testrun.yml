@@ -17,3 +17,4 @@ jobs:
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
       PATRON_EMAIL: ${{ secrets.PATRON_EMAIL }}
       PATRON_PASSWORD: ${{ secrets.PATRON_PASSWORD }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
