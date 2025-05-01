@@ -12,7 +12,7 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/call-run-browserstack.yml
     with:
-      MESSAGE: 'push/pr'
+      MESSAGE: 'pushpr'
     secrets:
       ARCHIVE_EMAIL: ${{ secrets.ARCHIVE_EMAIL }}
       ARCHIVE_PASSWORD: ${{ secrets.ARCHIVE_PASSWORD }}
