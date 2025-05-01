@@ -77,4 +77,4 @@ jobs:
           esac
 
           curl_data='{"text": "['${{ inputs.message }}'] '$JOB_STATUS' | View details: '$AUTOMATE_URL'"}'
-          curl -X POST -H 'Content-type: application/json' --data ${curl_data} ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data "${curl_data}" ${{ secrets.SLACK_WEBHOOK_URL }}
