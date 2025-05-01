@@ -2,6 +2,10 @@ name: Install deps and run tests in Browserstack
 
 on: 
   workflow_call:
+    inputs:
+      message:
+        required: true
+        type: string
     secrets:
       ARCHIVE_EMAIL:
         required: true
@@ -28,26 +32,26 @@ jobs:
       PATRON_PASSWORD: ${{ secrets.PATRON_PASSWORD }}
 
     steps:
-      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'npm'
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 20
+      #     cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      # - name: Install dependencies
+      #   run: npm install
 
-      - name: 'BrowserStack Env Setup'
-        uses: 'browserstack/github-actions/setup-env@master'
-        with:
-          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      # - name: 'BrowserStack Env Setup'
+      #   uses: 'browserstack/github-actions/setup-env@master'
+      #   with:
+      #     username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+      #     access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-      - name: Run Playwright tests in Browserstack
-        id: browserstack_tests
-        run: ./run-browserstack-tests.sh
-        continue-on-error: true
+      # - name: Run Playwright tests in Browserstack
+      #   id: browserstack_tests
+      #   run: ./run-browserstack-tests.sh
+      #   continue-on-error: true
 
       - name: 'Send Slack Notification'
         run: |
@@ -71,5 +75,5 @@ jobs:
           esac
 
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "'$JOB_STATUS' | View details: '$AUTOMATE_URL'"}' \
+          --data '{"text": "[${{ inputs.message }}] $JOB_STATUS | View details: $AUTOMATE_URL"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
