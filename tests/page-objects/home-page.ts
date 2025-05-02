@@ -2,6 +2,7 @@ import { type Page, Locator, expect } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
 import { CollectionSearchInput } from './collection-search-input';
+import { TopNav } from './top-nav';
 
 export class HomePage {
   readonly page: Page;
@@ -9,8 +10,8 @@ export class HomePage {
   readonly waybackSearch: Locator;
 
   readonly collectionBrowser: CollectionBrowser;
-
   readonly collectionSearchInput: CollectionSearchInput;
+  readonly topNav: TopNav;
 
   public constructor(page: Page) {
     this.page = page;
@@ -18,6 +19,7 @@ export class HomePage {
 
     this.collectionBrowser = new CollectionBrowser(page);
     this.collectionSearchInput = new CollectionSearchInput(page);
+    this.topNav = new TopNav(page);
   }
 
   async validatePageElements() {

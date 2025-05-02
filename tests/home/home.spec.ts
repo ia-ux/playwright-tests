@@ -61,3 +61,10 @@ test('Use Wayback widget - Redirect web search', async ({ homePage }) => {
     await homePage.collectionBrowser.validateWaybackPage('canaries');
   });
 });
+
+test('TopNav Functionality', async ({ homePage }) => {
+  await test.step(`check static top nav functionality`, async () => {
+    await homePage.topNav.clickMediaButtons();
+  }); 
+})
+
