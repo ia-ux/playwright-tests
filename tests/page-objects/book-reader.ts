@@ -1,4 +1,4 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, Locator } from '@playwright/test';
 
 export class BookReader {
   readonly page: Page;
@@ -42,25 +42,5 @@ export class BookReader {
     this.brThumb = this.brFooter.locator('.BRicon.thumb');
     this.brFullScreen = this.brFooter.locator('.BRicon.full');
     this.brReadAloud = this.brFooter.locator('.BRicon.read');
-  }
-
-  async assertNavigationElements(isPublic: boolean) {
-    // flipping
-    await expect(this.brFlipPrev).toBeVisible();
-    await expect(this.brFlipNext).toBeVisible();
-    // zoom elements
-    await expect(this.brZoomIn).toBeVisible();
-    await expect(this.brZoomOut).toBeVisible();
-    // view modes
-    await expect(this.brOnePage).toBeVisible();
-    await expect(this.brTwoPage).toBeVisible();
-    await expect(this.brThumb).toBeVisible();
-    await expect(this.brFullScreen).toBeVisible();
-
-    if (isPublic) {
-      await expect(this.brReadAloud).toBeVisible();
-    } else {
-      await expect(this.brReadAloud).not.toBeVisible();
-    }
   }
 }
