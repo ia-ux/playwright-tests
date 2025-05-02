@@ -34,8 +34,9 @@ export const identifier = {
     default: '',
   },
   books: {
-    url: '/details',
+    url: '',
     default: '/details/theworksofplato01platiala',
+    with_dot_sample: '/details/direction0002unse_no.9',
   },
   legal: {
     url: '/legal/',

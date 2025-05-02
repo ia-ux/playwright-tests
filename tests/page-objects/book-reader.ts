@@ -44,7 +44,7 @@ export class BookReader {
     this.brReadAloud = this.brFooter.locator('.BRicon.read');
   }
 
-  async assertNavigationElements() {
+  async assertNavigationElements(isPublic: boolean) {
     // flipping
     await expect(this.brFlipPrev).toBeVisible();
     await expect(this.brFlipNext).toBeVisible();
@@ -56,6 +56,11 @@ export class BookReader {
     await expect(this.brTwoPage).toBeVisible();
     await expect(this.brThumb).toBeVisible();
     await expect(this.brFullScreen).toBeVisible();
-    await expect(this.brReadAloud).toBeVisible();
+
+    if (isPublic) {
+      await expect(this.brReadAloud).toBeVisible();
+    } else {
+      await expect(this.brReadAloud).not.toBeVisible();
+    }
   }
 }

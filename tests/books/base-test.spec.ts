@@ -1,29 +1,54 @@
 import { test } from '../fixtures';
 
-test('Canonical URL has no initial parameters', async ({ bookPage }) => {
-  await bookPage.assertUrlInitialParameters();
-});
+import { identifier } from '../../config';
 
-test(`BookReader navigations - On load, pages fit fully inside of the BookReader™`, async ({
-  bookPage,
-}) => {
-  await bookPage.assertPageBoundingBox();
-});
+// Parameterized test: https://playwright.dev/docs/test-parameterize
+const sampleBooks = [
+  { 
+    bookIdentifier: identifier.books.default,
+    isPublic: true 
+  },
+  { 
+    bookIdentifier: identifier.books.with_dot_sample,
+    isPublic: false
+  } 
+]
 
-test(`BookReader navigations - Nav menu displays properly`, async ({
-  bookPage,
-}) => {
-  await bookPage.bookReader.assertNavigationElements();
-});
+test.describe("BookReader tests", () => {
+  for (const { bookIdentifier, isPublic } of sampleBooks) {
+    test(`Canonical URL has no initial parameters - ${bookIdentifier}`, async ({ bookPage }) => {
+      await bookPage.goToPage(bookIdentifier);
+      await bookPage.assertUrlInitialParameters();
+    });
+    
+    test.describe('Book navigations', () => {
+      test(`On load, pages fit fully inside of the BookReader™ - ${bookIdentifier}`, async ({
+        bookPage,
+      }) => {
+        await bookPage.goToPage(bookIdentifier);
+        await bookPage.assertPageBoundingBox();
+      });
+      
+      test(`Nav menu displays properly - ${bookIdentifier}`, async ({
+        bookPage,
+      }) => {
+        await bookPage.goToPage(bookIdentifier);
+        await bookPage.bookReader.assertNavigationElements(isPublic);
+      });
+  
+      test(`2up mode - Clicking "Previous page" changes the page - ${bookIdentifier}`, async ({
+        bookPage,
+      }) => {
+        await bookPage.goToPage(bookIdentifier);
+        await bookPage.assertBookPageChange(isPublic);
+      });
 
-test(`BookReader navigations - 2up mode - Clicking "Previous page" changes the page`, async ({
-  bookPage,
-}) => {
-  await bookPage.assertBookPageChange();
-});
-
-test(`BookReader navigations - Clicking "page flip buttons" updates location`, async ({
-  bookPage,
-}) => {
-  await bookPage.assertPageFlipUpdateUrlLocation();
+      test(`Clicking "page flip buttons" updates location - ${bookIdentifier}`, async ({
+        bookPage,
+      }) => {
+        await bookPage.goToPage(bookIdentifier);
+        await bookPage.assertPageFlipUpdateUrlLocation();
+      });
+    })
+  }
 });
