@@ -21,7 +21,7 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
       await bookPage.goToPage(bookIdentifier);
     });
 
-    test.skip(`Canonical URL has no initial parameters - ${bookIdentifier}`, async ({ bookPage }) => {
+    test(`Canonical URL has no initial parameters - ${bookIdentifier}`, async ({ bookPage }) => {
       const pageHash = await bookPage.getPageHash();
       const pageUrl = await bookPage.getPageUrl();
 
@@ -33,7 +33,7 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
     });
     
     test.describe('Book navigations', () => {
-      test.skip(`On load, pages fit fully inside of the BookReader™ - ${bookIdentifier}`, async ({ bookPage }) => {
+      test(`On load, pages fit fully inside of the BookReader™ - ${bookIdentifier}`, async ({ bookPage }) => {
         const brShellBox = await bookPage.getBRShellPageBoundingBox();
         const brContainerBox = await bookPage.getBRContainerPageBoundingBox();
         // images do not get cropped vertically
@@ -42,7 +42,7 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         expect(brContainerBox?.width).toBeLessThanOrEqual(Number(brShellBox?.width));
       });
       
-      test.skip(`Nav menu displays properly - ${bookIdentifier}`, async ({ bookPage }) => {
+      test(`Nav menu displays properly - ${bookIdentifier}`, async ({ bookPage }) => {
         // book flipping elements
         await expect(bookPage.bookReader.brFlipPrev).toBeVisible();
         await expect(bookPage.bookReader.brFlipNext).toBeVisible();
@@ -62,12 +62,38 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         }
       });
   
-      test.skip(`2up mode - Clicking "Previous page" changes the page - ${bookIdentifier}`, async ({ bookPage }) => {
-        // TODO
-        await bookPage.assertBookPageChange(isPublic);
+      test(`2up mode - Clicking "Previous page" changes the page - ${bookIdentifier}`, async ({ bookPage }) => {
+        // Flip to next page 2 times, so we can go previous if at front cover
+        await bookPage.flipToNextPage();
+        await bookPage.flipToNextPage();
+        const initialImages = await bookPage.getPageImages();
+        const origImg1Src = await initialImages.nth(0).getAttribute('src');
+        const origImg2Src = await initialImages.nth(-1).getAttribute('src');
+        console.log('orgS1: ', origImg1Src, ' orgS2: ', origImg2Src);
+
+        await bookPage.flipToPrevPage();
+        const prevImages = await bookPage.getPageImages();
+        const prevImg1Src = await prevImages.nth(0).getAttribute('src');
+        const prevImg2Src = await prevImages.nth(-1).getAttribute('src');
+        console.log('prvS1: ', prevImg1Src, ' prvS2: ', prevImg2Src);
+
+        // Check if we aren't showing the same image in both leaves
+        expect(origImg1Src).not.toEqual(origImg2Src);
+        // Check if the new pages are different from the original pages
+        expect(prevImg1Src).not.toEqual(origImg1Src);
+        expect(prevImg1Src).not.toEqual(origImg2Src);
+        // Check if the second new page is different from the first new page
+        if (isPublic) {
+          expect(prevImg2Src).not.toEqual(origImg1Src);
+        } else {
+          // TODO: some private books shows Limited preview page 
+        }
+        // Check if the new pages are different from each other
+        expect(prevImg2Src).not.toEqual(origImg2Src);
+        expect(prevImg1Src).not.toEqual(prevImg2Src);
       });
 
-      test.skip(`Clicking "page flip buttons" updates URL location - ${bookIdentifier}`, async ({ bookPage }) => {
+      test(`Clicking "page flip buttons" updates URL location - ${bookIdentifier}`, async ({ bookPage }) => {
         await bookPage.flipToNextPage();
         expect(await bookPage.isPageInUrl()).toEqual(true);
         expect(await bookPage.isModeInUrl('2up')).toEqual(true);
