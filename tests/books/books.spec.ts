@@ -69,25 +69,24 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         const initialImages = await bookPage.getPageImages();
         const origImg1Src = await initialImages.nth(0).getAttribute('src');
         const origImg2Src = await initialImages.nth(-1).getAttribute('src');
-        console.log('orgS1: ', origImg1Src, ' orgS2: ', origImg2Src);
 
         await bookPage.flipToPrevPage();
         const prevImages = await bookPage.getPageImages();
         const prevImg1Src = await prevImages.nth(0).getAttribute('src');
         const prevImg2Src = await prevImages.nth(-1).getAttribute('src');
-        console.log('prvS1: ', prevImg1Src, ' prvS2: ', prevImg2Src);
 
         // Check if we aren't showing the same image in both leaves
         expect(origImg1Src).not.toEqual(origImg2Src);
+
         // Check if the new pages are different from the original pages
         expect(prevImg1Src).not.toEqual(origImg1Src);
         expect(prevImg1Src).not.toEqual(origImg2Src);
-        // Check if the second new page is different from the first new page
+
+        // Check if second page differs from first, excluding private books with limited preview
         if (isPublic) {
           expect(prevImg2Src).not.toEqual(origImg1Src);
-        } else {
-          // TODO: some private books shows Limited preview page 
         }
+
         // Check if the new pages are different from each other
         expect(prevImg2Src).not.toEqual(origImg2Src);
         expect(prevImg1Src).not.toEqual(prevImg2Src);
