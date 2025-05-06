@@ -60,8 +60,6 @@ export const test = base.extend<PageFixtures>({
     // Set up the fixture.
     const bookPage = new BookPage(page);
 
-    await page.goto('/details/theworksofplato01platiala');
-
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });

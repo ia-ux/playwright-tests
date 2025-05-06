@@ -3,10 +3,8 @@ import { type Page, Locator, expect } from '@playwright/test';
 export class BookReader {
   readonly page: Page;
 
-  readonly iaBookTheater: Locator;
   readonly bookReaderShell: Locator;
   readonly brContainer: Locator;
-  readonly brFooter: Locator;
 
   readonly brLeft: Locator;
   readonly brRight: Locator;
@@ -22,40 +20,53 @@ export class BookReader {
   readonly brFullScreen: Locator;
   readonly brReadAloud: Locator;
 
+  readonly brOneUpView: Locator;
+  readonly brTwoUpView: Locator;
+
+  readonly pages: Locator[];
+
   public constructor(page: Page) {
     this.page = page;
 
     this.bookReaderShell = this.page.locator('#BookReader');
     this.brContainer = this.bookReaderShell.locator('.BRcontainer');
-    this.brFooter = this.bookReaderShell.locator('.BRfooter');
 
-    this.brFlipPrev = this.brFooter.locator('.BRicon.book_left.book_flip_prev');
-    this.brFlipNext = this.brFooter.locator(
-      '.BRicon.book_right.book_flip_next',
-    );
+    this.brFlipPrev = this.bookReaderShell.getByRole('button', { name: 'Flip left' });
+    this.brFlipNext = this.bookReaderShell.getByRole('button', { name: 'Flip right' });
+    this.brOnePage = this.bookReaderShell.getByRole('button', { name: 'One-page view' });
+    this.brTwoPage = this.bookReaderShell.getByRole('button', { name: 'Two-page view' });
+    this.brThumb = this.bookReaderShell.getByRole('button', { name: 'Thumbnail view' });
+    this.brReadAloud = this.bookReaderShell.getByRole('button', { name: 'Read this book aloud' });
+    this.brZoomIn = this.bookReaderShell.getByRole('button', { name: 'Zoom in' });
+    this.brZoomOut = this.bookReaderShell.getByRole('button', { name: 'Zoom out' });
+    this.brFullScreen = this.bookReaderShell.getByRole('button', { name: 'Toggle fullscreen' });
 
-    this.brZoomIn = this.brFooter.locator('.BRicon.zoom_in');
-    this.brZoomOut = this.brFooter.locator('.BRicon.zoom_out');
-
-    this.brOnePage = this.brFooter.locator('.BRicon.onepg');
-    this.brTwoPage = this.brFooter.locator('.BRicon.twopg');
-    this.brThumb = this.brFooter.locator('.BRicon.thumb');
-    this.brFullScreen = this.brFooter.locator('.BRicon.full');
-    this.brReadAloud = this.brFooter.locator('.BRicon.read');
+    this.brOneUpView = this.brContainer.locator('br-mode-1up');
+    this.brTwoUpView = this.brContainer.locator('br-mode-2up');
   }
 
-  async assertNavigationElements() {
-    // flipping
-    await expect(this.brFlipPrev).toBeVisible();
-    await expect(this.brFlipNext).toBeVisible();
-    // zoom elements
-    await expect(this.brZoomIn).toBeVisible();
-    await expect(this.brZoomOut).toBeVisible();
-    // view modes
-    await expect(this.brOnePage).toBeVisible();
-    await expect(this.brTwoPage).toBeVisible();
-    await expect(this.brThumb).toBeVisible();
-    await expect(this.brFullScreen).toBeVisible();
-    await expect(this.brReadAloud).toBeVisible();
+  async getBrContainerPageLoadedCount() {
+    return (await this.brContainer.locator('.BRpagecontainer').all()).length;
+  }
+
+  async getVisiblePageCount() {
+    return (await this.brContainer.locator('.BRpage-visible').all()).length;
+  }
+
+  async clickOneUpMode() {
+    await this.brOnePage.click();
+    await this.brOneUpView.waitFor({ state: 'visible' });
+    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
+  }
+
+  async clickTwoUpMode(){
+    await this.brTwoPage.click();
+    await this.brTwoUpView.waitFor({ state: 'visible' });
+    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
+  }
+
+  async clickThumbnailMode(){
+    await this.brThumb.click();
+    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
   }
 }

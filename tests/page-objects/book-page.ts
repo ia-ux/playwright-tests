@@ -3,12 +3,12 @@ import { type Page, Locator, expect } from '@playwright/test';
 import { BookPageViewMode } from '../models';
 import { BookReader } from './book-reader';
 
-const PAGE_FLIP_WAIT_TIME = 1000;
+const PAGE_FLIP_WAIT_TIME = 2000;
 
 export class BookPage {
   readonly page: Page;
 
-  readonly bookReaderShell: Locator;
+  readonly brShell: Locator;
   readonly brContainer: Locator;
   readonly brFooter: Locator;
 
@@ -18,9 +18,13 @@ export class BookPage {
     this.page = page;
 
     this.bookReader = new BookReader(this.page);
-    this.bookReaderShell = this.bookReader.bookReaderShell;
+
+    this.brShell = this.bookReader.bookReaderShell;
     this.brContainer = this.bookReader.brContainer;
-    this.brFooter = this.bookReader.brFooter;
+  }
+
+  async goToPage(url: string) {
+    await this.page.goto(url);
   }
 
   // Check URL page parameter in # and path
@@ -45,81 +49,40 @@ export class BookPage {
     }
   }
 
-  async assertUrlInitialParameters() {
-    const pageHash = await this.page.evaluate(() => window.location.hash);
-    const pageUrl = await this.page.evaluate(() => window.location.href);
-
-    // Initial URL has no params
-    expect(pageHash).toEqual('');
-    // Initial URL has no page/ mode/
-    expect(pageUrl).not.toEqual('#page/');
-    expect(pageUrl).not.toContain('/page/');
-    expect(pageUrl).not.toContain('/mode/');
+  async getPageHash() {
+    return await this.page.evaluate(() => window.location.hash);
   }
 
-  async assertPageBoundingBox() {
-    await this.page.waitForLoadState('networkidle', { timeout: 30000 });
-
-    const brShellBox = await this.bookReaderShell.boundingBox();
-    const brContainerBox = await this.brContainer.boundingBox();
-
-    // images do not get cropped vertically
-    expect(brContainerBox?.height).toBeLessThanOrEqual(
-      Number(brShellBox?.height),
-    );
-    // images do not get cropped horizontally
-    expect(brContainerBox?.width).toBeLessThanOrEqual(
-      Number(brShellBox?.width),
-    );
+  async getPageUrl() {
+    return await this.page.evaluate(() => window.location.href);
   }
 
-  async assertBookPageChange() {
-    await this.page.waitForLoadState('networkidle', { timeout: 30000 });
+  async getBRShellPageBoundingBox() {
+    await this.brShell.waitFor({ state: 'visible'});
+    return await this.brShell.boundingBox();
+  }
 
-    // Go to next page, so we can go previous if at front cover
+  async getBRContainerPageBoundingBox() {
+    await this.brContainer.waitFor({ state: 'visible' });
+    return await this.brContainer.boundingBox(); 
+  }
+
+  async flipToNextPage() {
+    await this.bookReader.brFlipNext.waitFor({ state: 'visible' });
     await this.bookReader.brFlipNext.click();
     await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
-    await this.bookReader.brFlipNext.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
+  }
 
+  async flipToPrevPage() {
+    await this.bookReader.brFlipPrev.waitFor({ state: 'visible' });
+    await this.bookReader.brFlipPrev.click();
+    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
+  }
+
+  async getPageImages() {
     const onLoadBrState = this.brContainer.nth(0);
-    const initialImages = onLoadBrState.locator('img');
-    const origImg1Src = await initialImages.nth(0).getAttribute('src');
-    const origImg2Src = await initialImages.nth(-1).getAttribute('src');
-
-    await this.bookReader.brFlipPrev.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
-
-    const nextBrState = this.brContainer.nth(0);
-    const prevImages = nextBrState.locator('img');
-    const prevImg1Src = await prevImages.nth(0).getAttribute('src');
-    const prevImg2Src = await prevImages.nth(-1).getAttribute('src');
-
-    // we aren't showing the same image in both leaves
-    expect(origImg1Src).not.toEqual(origImg2Src);
-
-    // we are showing new pages
-    expect(prevImg1Src).not.toEqual(origImg1Src);
-    expect(prevImg1Src).not.toEqual(origImg2Src);
-    expect(prevImg2Src).not.toEqual(origImg1Src);
-    expect(prevImg2Src).not.toEqual(origImg2Src);
-
-    // we aren't showing the same image in the new pages
-    expect(prevImg1Src).not.toEqual(prevImg2Src);
+    await onLoadBrState.waitFor({ state: 'attached' });
+    return onLoadBrState.locator('img');
   }
-
-  async assertPageFlipUpdateUrlLocation() {
-    await this.page.waitForLoadState('networkidle', { timeout: 30000 });
-
-    // Page navigation creates params
-    await this.bookReader.brFlipNext.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
-    expect(await this.isPageInUrl()).toEqual(true);
-    expect(await this.isModeInUrl('2up')).toEqual(true);
-
-    await this.bookReader.brFlipPrev.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
-    expect(await this.isPageInUrl()).toEqual(false);
-    expect(await this.isModeInUrl('2up')).toEqual(true);
-  }
+  
 }
