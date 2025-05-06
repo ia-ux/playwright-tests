@@ -69,7 +69,7 @@ jobs:
               JOB_STATUS="⚠️ Tests timed out, not all tests passed."
               ;;
             "failed")
-              JOB_STATUS="‼️ Tests failed, check the pipeline. <!here>"
+              JOB_STATUS="‼️ Tests failed, check the pipeline. <!channel>"
               ;;
             *)
               JOB_STATUS="❓ Something went wrong, check the pipeline."
