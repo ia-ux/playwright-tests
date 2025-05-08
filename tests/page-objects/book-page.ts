@@ -1,9 +1,9 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, Locator } from '@playwright/test';
 
 import { BookPageViewMode } from '../models';
 import { BookReader } from './book-reader';
 
-const PAGE_FLIP_WAIT_TIME = 2000;
+const PAGE_WAIT_TIME = 1500;
 
 export class BookPage {
   readonly page: Page;
@@ -70,13 +70,13 @@ export class BookPage {
   async flipToNextPage() {
     await this.bookReader.brFlipNext.waitFor({ state: 'visible' });
     await this.bookReader.brFlipNext.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
   }
 
   async flipToPrevPage() {
     await this.bookReader.brFlipPrev.waitFor({ state: 'visible' });
     await this.bookReader.brFlipPrev.click();
-    await this.page.waitForTimeout(PAGE_FLIP_WAIT_TIME);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
   }
 
   async getPageImages() {
@@ -84,5 +84,30 @@ export class BookPage {
     await onLoadBrState.waitFor({ state: 'attached' });
     return onLoadBrState.locator('img');
   }
-  
+
+  async getBRPageBoundingBoxDimension(dimension: string) {
+    const element = this.page.locator('.BRpagecontainer.BRpage-visible');
+    const brPageBoundingBox = await element.boundingBox();
+    return brPageBoundingBox?.[dimension];
+  }
+
+  async getPageWidth() {
+    return await this.page.evaluate(() => window.innerWidth);
+  }
+
+  async clickZoomIn() {
+    await this.bookReader.brZoomIn.click();
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
+  }
+
+  async clickZoomOut() {
+    await this.bookReader.brZoomOut.click();
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
+  }
+
+  async clickFullScreen() {
+    await this.bookReader.brFullScreen.click();
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
+  }
+
 }

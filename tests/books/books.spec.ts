@@ -121,6 +121,45 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         const count = await bookPage.bookReader.getBrContainerPageLoadedCount();
         expect(count).toBeGreaterThanOrEqual(3);
       });
+
+      test(`Clicking "zoom out" makes book smaller - ${bookIdentifier}`, async ({ bookPage }) => {
+        const initialBookHeight = await bookPage.getBRPageBoundingBoxDimension('height');
+        const initialBookWidth = await bookPage.getBRPageBoundingBoxDimension('width');
+
+        await bookPage.clickZoomOut();
+
+        const zoomOutBookHeight = await bookPage.getBRPageBoundingBoxDimension('height');
+        const zoomOutBookWidth = await bookPage.getBRPageBoundingBoxDimension('width');
+
+        expect(zoomOutBookHeight).toBeLessThan(Number(initialBookHeight));
+        expect(zoomOutBookWidth).toBeLessThan(Number(initialBookWidth));
+      });
+
+      test(`Clicking "zoom in" makes book larger - ${bookIdentifier}`, async ({ bookPage }) => {
+        const initialBookHeight = await bookPage.getBRPageBoundingBoxDimension('height');
+        const initialBookWidth = await bookPage.getBRPageBoundingBoxDimension('width');
+
+        await bookPage.clickZoomIn();
+
+        const zoomOutBookHeight = await bookPage.getBRPageBoundingBoxDimension('height');
+        const zoomOutBookWidth = await bookPage.getBRPageBoundingBoxDimension('width');
+
+        expect(zoomOutBookHeight).toBeGreaterThan(Number(initialBookHeight));
+        expect(zoomOutBookWidth).toBeGreaterThan(Number(initialBookWidth));
+      });
+
+      test(`Clicking "full screen button" and BookReader fills browser window - ${bookIdentifier}`, async ({ bookPage }) => {
+        const windowWidth = await bookPage.getPageWidth();
+        const brContainerBox = await bookPage.getBRContainerPageBoundingBox();
+        // initial in-page
+        expect(brContainerBox?.width).toBeLessThanOrEqual(windowWidth);
+        await bookPage.clickFullScreen();
+        // full screen
+        expect(brContainerBox?.width).toEqual(windowWidth);
+        await bookPage.clickFullScreen();
+        // back to in-page
+        expect(brContainerBox?.width).toBeLessThanOrEqual(windowWidth);
+      });
     })
   });
 });
