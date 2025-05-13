@@ -108,7 +108,7 @@ export class InfiniteScroller {
     const pattern = new RegExp(`${itemLink}`);
     await this.firstItemTile.click();
 
-    await this.page.waitForLoadState('load', { timeout: 60000 });
+    // await this.page.waitForLoadState('load', { timeout: 60000 });
     await expect(this.page).toHaveURL(pattern);
   }
 

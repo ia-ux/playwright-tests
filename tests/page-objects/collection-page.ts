@@ -43,11 +43,12 @@ export class CollectionPage {
   }
 
   async clickMoreBtnFromSummary() {
-    await expect(this.page.locator('#page-header')).toBeVisible();
+    await this.page.locator('#page-header').waitFor({ state: 'visible' });
     await this.pageSummary.getByTestId('collection-page-more-link-btn').click();
   }
 
   async validatePageHeaderElements() {
+    await this.page.locator('#page-header').waitFor({ state: 'visible' });
     await expect(this.page.locator('#page-header')).toBeVisible();
     await expect(
       this.page.locator('#top-matter > div.thumbnail-frame'),

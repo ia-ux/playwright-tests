@@ -56,16 +56,10 @@ export class SortBar {
   }
 
   async clickSortDirection(sortOrder: SortOrder) {
-    // TODO: may still need to find better way to check sort order
+    // TODO: still need to find better way to check sort order
     const currentSortText = await this.srSortText.innerText();
-    const oppositeSortText =
-      sortOrder === 'ascending' ? 'descending' : 'ascending';
-
     if (currentSortText.includes(sortOrder)) {
-      await this.btnSortDirection.click();
-      await expect(this.srSortText).toContainText(
-        `Change to ${oppositeSortText} sort`,
-      );
+      await this.btnSortDirection.click();   
     }
   }
 

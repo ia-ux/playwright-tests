@@ -1,12 +1,21 @@
-import { test } from '../../tests/fixtures';
+import { test, expect } from '../../tests/fixtures';
 
-import { CollectionFacetGroupHeaderNames, FacetGroup, LayoutViewModeLocator } from '../../tests/models';
+import {
+  CollectionFacetGroupHeaderNames,
+  FacetGroup,
+  LayoutViewModeLocator
+} from '../../tests/models';
 
 test(`Verify if facets appear on first load`, async ({ collectionPage }) => {
   await test.step('Assert facet group headers count', async () => {
-    await collectionPage.collectionFacets.assertFacetGroupCount(
-      'collection', CollectionFacetGroupHeaderNames,
-    );
+    for (const header of CollectionFacetGroupHeaderNames) {
+      const facet = collectionPage.collectionFacets.facets.getByRole(
+        'heading', { name: header }
+      );
+      const facetText = (await facet.innerText()).replace(/\n/g, ' ');
+      await expect(facet).toBeVisible();
+      expect(facetText).toContain(header);
+    }
   });
 });
 
@@ -17,6 +26,7 @@ test(`Select a facet for videos and clear facet filters`, async ({
     await collectionPage.collectionFacets.toggleFacetSelection(
       FacetGroup.MEDIATYPE, 'movies', 'positive',
     );
+    // TODO
     await collectionPage.infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Movie'], true, 5,
     );
@@ -24,7 +34,7 @@ test(`Select a facet for videos and clear facet filters`, async ({
 
   await test.step(`Click "Clear all filters"`, async () => {
     await collectionPage.collectionFacets.clickClearAllFilters();
-    await collectionPage.collectionFacets.assertClearAllFiltersNotVisible();
+    await expect(collectionPage.collectionFacets.btnClearAllFilters).not.toBeVisible();
   });
 });
 
@@ -32,9 +42,9 @@ test(`Select Year Published range via date picker`, async ({
   collectionPage,
 }) => {
   await test.step(`Enter 2014 in start date text field (leftmost text box) and new results will be loaded`, async () => {
-    await collectionPage.collectionFacets.assertDatePickerVisible();
+    await expect(collectionPage.collectionFacets.yearPublishedFacetGroup).toBeVisible();
     await collectionPage.collectionFacets.fillUpYearFilters('1954', '1955');
-    await collectionPage.collectionFacets.displaysResultCount();
+    await expect(collectionPage.collectionFacets.resultsTotal).toBeVisible();
   });
 
   await test.step(`Switch to list view mode to check the first 10 item results Published texts are ONLY 2014 or 2015`, async () => {

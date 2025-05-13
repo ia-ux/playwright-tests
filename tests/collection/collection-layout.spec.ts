@@ -1,23 +1,33 @@
-import { test } from '../fixtures';
+import { test, expect } from '../fixtures';
 
 import { LayoutViewModeLocator, SearchOption } from '../models';
 
 test('Tile, List, and Compact layout buttons change layout', async ({
   collectionPage,
 }) => {
+  const { infiniteScroller } = collectionPage;
   await test.step('Display List View', async () => {
-    await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
-    await collectionPage.infiniteScroller.assertLayoutViewModeChange('list');
+    await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
+    await expect(
+      infiniteScroller.displayStyleSelector.getByTestId('list-detail-button'),
+    ).toHaveClass('active');
+    await expect(collectionPage.infiniteScroller.infiniteScroller).toHaveClass(/list-detail/);
   });
 
   await test.step('Display List Compact View', async () => {
     await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.COMPACT);
-    await collectionPage.infiniteScroller.assertLayoutViewModeChange('compact');
+    await expect(
+      infiniteScroller.displayStyleSelector.getByTestId('list-compact-button'),
+    ).toHaveClass('active');
+    await expect(infiniteScroller.infiniteScroller).toHaveClass(/list-compact/);
   });
 
   await test.step('Display Tile View', async () => {
-    await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
-    await collectionPage.infiniteScroller.assertLayoutViewModeChange('tile');
+    await infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
+    await expect(
+      infiniteScroller.displayStyleSelector.getByTestId('grid-button'),
+    ).toHaveClass('active');
+    await expect(infiniteScroller.infiniteScroller).toHaveClass(/grid/);
   });
 });
 
@@ -35,62 +45,60 @@ test(`Clicking on an item tile takes you to the item`, async ({ collectionPage }
 });
 
 test(`Sort by All-time views in Tile view`, async ({ collectionPage }) => {
+  const { collectionBrowser, infiniteScroller, sortBar } = collectionPage
+  const sortOrder = 'descending';
+  const oppositeSortText = 'ascending';
   await test.step('Switch to tile view mode', async () => {
-    await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
+    await infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
   });
 
-  await test.step('Sort by All-time views - descending order', async () => {
-    await collectionPage.sortBar.applySortFilter('All-time views');
-    await collectionPage.sortBar.clickSortDirection('descending');
+  await test.step(`Sort by All-time views - ${sortOrder} order`, async () => {
+    await sortBar.applySortFilter('All-time views');
+    await sortBar.clickSortDirection(sortOrder);
+    await expect(sortBar.srSortText).toContainText(`Change to ${oppositeSortText} sort`);
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
-    await collectionPage.infiniteScroller.validateSortingResults(
-      'All-time views', 'descending', 10,
-    );
-    await collectionPage.collectionBrowser.validateURLParamsWithSortFilter(
-      'All-time views', 'descending',
-    );
+    await infiniteScroller.validateSortingResults('All-time views', sortOrder, 10);
+    await collectionBrowser.validateURLParamsWithSortFilter('All-time views', sortOrder);
   });
 });
 
 test(`Sort by Date published in List view`, async ({ collectionPage }) => {
+  const { collectionBrowser, infiniteScroller, sortBar } = collectionPage
+  const sortOrder = 'ascending';
+  const oppositeSortText = 'descending';
   await test.step('Switch to list view mode', async () => {
-    await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
+    await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
   });
 
-  await test.step('Sort by Date published - descending order', async () => {
-    await collectionPage.sortBar.applySortFilter('Date published');
-    await collectionPage.sortBar.clickSortDirection('descending');
+  await test.step(`Sort by Date published - ${sortOrder} order`, async () => {
+    await sortBar.applySortFilter('Date published');
+    await sortBar.clickSortDirection(sortOrder);
+    await expect(sortBar.srSortText).toContainText(`Change to ${oppositeSortText} sort`);
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
-    await collectionPage.infiniteScroller.validateSortingResults(
-      'Date published', 'descending', 10,
-    );
-    await collectionPage.collectionBrowser.validateURLParamsWithSortFilter(
-      'Date published', 'descending',
-    );
+    await infiniteScroller.validateSortingResults('Date published', sortOrder, 10);
+    await collectionBrowser.validateURLParamsWithSortFilter('Date published', sortOrder);
   });
 });
 
 test(`Sort by Date archived (ascending) in Compact view`, async ({ collectionPage }) => {
+  const { collectionBrowser, sortBar } = collectionPage
+  const sortOrder = 'ascending';
   await test.step('Switch to compact view mode', async () => {
     await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.COMPACT);
   });
 
-  await test.step('Sort by Date archived - ascending order', async () => {
-    await collectionPage.sortBar.applySortFilter('Date archived');
-    await collectionPage.sortBar.clickSortDirection('ascending');
+  await test.step(`Sort by Date archived - ${sortOrder} order`, async () => {
+    await sortBar.applySortFilter('Date archived');
+    await sortBar.clickSortDirection(sortOrder);
   });
 
   await test.step('Check list column headers for sort filter', async () => {
-    await collectionPage.collectionBrowser.validateCompactViewModeListLineDateHeaders(
-      'Date archived',
-    );
-    await collectionPage.collectionBrowser.validateURLParamsWithSortFilter(
-      'Date archived', 'ascending',
-    );
+    await collectionBrowser.validateCompactViewModeListLineDateHeaders('Date archived');
+    await collectionBrowser.validateURLParamsWithSortFilter('Date archived', sortOrder);
   });
 });
 
