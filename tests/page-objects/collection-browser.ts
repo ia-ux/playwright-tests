@@ -31,6 +31,11 @@ export class CollectionBrowser {
     await expect(this.emptyPlaceholderTitleText).toBeVisible();
   }
 
+  async waitForTVPage() {
+     // Note: The page is redirected to TV search page
+     await this.page.waitForURL(/tv/);
+  }
+
   async validateTVPage(query: string) {
     // Note: The page is redirected to TV search page
     await this.page.waitForURL(/tv/);

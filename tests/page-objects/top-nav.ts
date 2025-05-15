@@ -11,7 +11,7 @@ export class TopNav {
   private mediaSlider: Locator;
   private infoBox: Locator;
 
-  private mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+  readonly mediaTypeTexts: String[];
 
   public constructor(page: Page) {
     this.page = page;
@@ -23,6 +23,11 @@ export class TopNav {
 
     this.mediaSlider = this.page.locator('media-slider');
     this.infoBox = this.mediaSlider.locator('.information-menu').locator('.info-box');
+    this.mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+  }
+
+  async getAllMediaButtons () {
+    return await this.iaTopNav.locator('media-menu').locator('media-button').all(); 
   }
 
   async clickMediaButtons() {

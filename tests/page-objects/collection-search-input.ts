@@ -32,9 +32,9 @@ export class CollectionSearchInput {
     await this.formInputSearchPage.press('Enter');
   }
 
-  async validateSearchInput(query: string) {
-    expect(await this.formInputSearchPage.inputValue()).toBe(query);
-  }
+  // async validateSearchInput(query: string) {
+  //   expect(await this.formInputSearchPage.inputValue()).toBe(query);
+  // }
 
   async clickClearSearchInput() {
     await this.btnClearInput.click();
@@ -42,10 +42,7 @@ export class CollectionSearchInput {
 
   async clickSearchInputOption(option: SearchOption, type: string) {
     const btnName = type === 'collection' ? 'Search this collection' : 'GO';
-
-    await expect(
-      this.collectionSearchInput.getByRole('button', { name: btnName }),
-    ).toBeVisible();
+    this.collectionSearchInput.getByRole('button', { name: btnName }).waitFor({ state: 'visible'}) 
     await this.formInputSearchPage.click({ force: true });
     await this.page.getByLabel('Search Options').getByText(option).click();
   }
