@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-import { identifier } from '../../config';
+import { identifier, testBeforeEachConfig } from '../../config';
 
-test.beforeEach(async ({ request }) => {
-  const req = await request.get('/services/offshoot/home-page/mediacounts.php');
-  expect(req.status()).toEqual(200);
+test.beforeEach(async ({ context }) => {
+  await testBeforeEachConfig(context);
 });
 
 test('Bookserver page has correct title and text', async ({ page }) => {
