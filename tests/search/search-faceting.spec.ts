@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 
 import {
   FacetGroup,
@@ -52,7 +52,7 @@ test(`Clear facet filters`, async ({ searchPage }) => {
   });
 
   await test.step(`Assert "Clear all filters" is not visible`, async () => {
-    await expect(searchPage.collectionFacets.btnClearAllFilters).toBeVisible();
+    await searchPage.collectionFacets.assertClearAllFiltersNotVisible();
   });
 });
 
