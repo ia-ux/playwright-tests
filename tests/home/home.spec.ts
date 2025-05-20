@@ -1,7 +1,6 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 
 import { SearchOption } from '../models';
-
 
 test('Home page displays all of its elements', async ({ homePage }) => {
   await test.step('Validate if page elements were loaded', async () => {
@@ -10,53 +9,49 @@ test('Home page displays all of its elements', async ({ homePage }) => {
 });
 
 test('Do simple metadata search', async ({ homePage }) => {
-  const { collectionSearchInput: searchInput } = homePage;
-  const query = 'cats';
-  await test.step(`Query for "${query}" and validate that "${query}" appears as the search term `, async () => {
-    await searchInput.queryFor(query);
-    expect(await searchInput.formInputSearchPage.inputValue()).toBe(query);
+  await test.step(`Query for "cats" and validate that "cats" appears as the search term `, async () => {
+    await homePage.collectionSearchInput.queryFor('cats');
+    await homePage.collectionSearchInput.validateSearchInput('cats');
   });
 });
 
 test('Do simple full-text search', async ({ homePage }) => {
-  const { collectionSearchInput: searchInput } = homePage;
-  const query = 'dogs';
-  await test.step(`Select text contents in search options, query for "${query}" and validate that "${query}" appears as the search term`, async () => {
-    await searchInput.clickSearchInputOption(SearchOption.TEXT, 'search');
-    await searchInput.queryFor(query);
-    expect(await searchInput.formInputSearchPage.inputValue()).toBe(query);
+  await test.step(`Select text contents in search options, query for "dogs" and validate that "dogs" appears as the search term`, async () => {
+    await homePage.collectionSearchInput.clickSearchInputOption(
+      SearchOption.TEXT, 'search',
+    );
+    await homePage.collectionSearchInput.queryFor('dogs');
+    await homePage.collectionSearchInput.validateSearchInput('dogs');
   });
 });
 
 test('Do simple TV search', async ({ homePage }) => {
-  const { collectionSearchInput: searchInput } = homePage;
-  const query = 'iguanas';
-  await test.step(`Select TV in search options, query for "${query}" and validate that "${query}" appears as the search term`, async () => {
-    await searchInput.clickSearchInputOption(SearchOption.TV, 'search');
-    await searchInput.queryFor(query);
+  await test.step(`Select TV in search options, query for "iguanas" and validate that "iguanas" appears as the search term`, async () => {
+    await homePage.collectionSearchInput.clickSearchInputOption(
+      SearchOption.TV, 'search',
+    );
+    await homePage.collectionSearchInput.queryFor('iguanas');
     await homePage.collectionBrowser.validateTVPage('iguanas');
   });
 });
 
 test('Do simple radio search', async ({ homePage }) => {
-  const { collectionSearchInput: searchInput, collectionBrowser } = homePage;
   await test.step(`Select radio in search options, query for "rabbits" and validate that "rabbits" appears as the search term`, async () => {
-    await searchInput.clickSearchInputOption(
+    await homePage.collectionSearchInput.clickSearchInputOption(
       SearchOption.RADIO, 'search',
     );
-    await searchInput.queryFor('rabbits');
-    await collectionBrowser.validateRadioPage('rabbits');
+    await homePage.collectionSearchInput.queryFor('rabbits');
+    await homePage.collectionBrowser.validateRadioPage('rabbits');
   });
 });
 
 test('Redirect web search to Wayback machine page', async ({ homePage }) => {
-  const { collectionSearchInput: searchInput, collectionBrowser } = homePage;
   await test.step(`Select TV in search options, query for "parrots" and validate that "parrots" appears as the search term`, async () => {
-    await searchInput.clickSearchInputOption(
+    await homePage.collectionSearchInput.clickSearchInputOption(
       SearchOption.WEB, 'search',
     );
-    await searchInput.queryFor('parrots');
-    await collectionBrowser.validateWaybackPage('parrots');
+    await homePage.collectionSearchInput.queryFor('parrots');
+    await homePage.collectionBrowser.validateWaybackPage('parrots');
   });
 });
 
@@ -68,17 +63,7 @@ test('Use Wayback widget - Redirect web search', async ({ homePage }) => {
 });
 
 test('TopNav Functionality', async ({ homePage }) => {
-  await test.step(`check media button count`, async () => {
-    // await homePage.topNav.clickMediaButtons();
-    const mediaButtons = await homePage.topNav.getAllMediaButtons();
-    expect(mediaButtons.length).toEqual(8);
-
-    for (let [i, text] of homePage.topNav.mediaTypeTexts.entries()) {
-      const elemAttr = await mediaButtons[i].getAttribute('data-mediatype');
-      expect(elemAttr).toEqual(text);
-    }
-  });
-
-
+  await test.step(`check static top nav functionality`, async () => {
+    await homePage.topNav.clickMediaButtons();
+  }); 
 })
-
