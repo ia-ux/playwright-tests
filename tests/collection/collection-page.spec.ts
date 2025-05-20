@@ -22,12 +22,7 @@ test(`Collections basic display - use collection page layout`, async ({
 
 test(`Collections page - "More..." link to About tab appears below description`, async ({
   collectionPage,
-}) => {
-  test.info().annotations.push({
-    type: 'Test',
-    description: "Need to consider that other collections don't have Forums page like `ytjdradio`",
-  });
-
+}) => {  
   await test.step(`Go to "ytjdradio" collection page`, async () => {
     await collectionPage.visit('ytjdradio');
   });
@@ -41,6 +36,11 @@ test(`Collections page - "More..." link to About tab appears below description`,
 });
 
 test(`Tab navigation`, async ({ collectionPage }) => {
+  test.info().annotations.push({
+    type: 'Test',
+    description: "Need to consider that other collections don't have Forums page like `ytjdradio`",
+  });
+
   await test.step(`Click "About" tab button and check if About page is displayed in "oldtimeradio" collection page`, async () => {
     await collectionPage.clickCollectionTab('About');
     expect(await collectionPage.getPageActiveTabText()).toContain('ABOUT');
