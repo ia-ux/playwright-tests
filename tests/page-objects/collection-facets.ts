@@ -24,46 +24,13 @@ export class CollectionFacets {
     );
   }
 
-  // async displaysResultCount() {
-  //   await expect(this.page.getByTestId('results-total')).toBeVisible();
-  // }
-
   async clickClearAllFilters() {
     await this.btnClearAllFilters.waitFor({ state: 'visible' });
     await this.btnClearAllFilters.click();
   }
 
-  // async assertClearAllFiltersNotVisible() {
-  //   await expect(this.btnClearAllFilters).not.toBeVisible();
-  // }
-
- 
-
-  // async assertFacetGroupCount(type: string, headerNames: string[]) {
-  //   let count = 0;
-  //   for (const name of headerNames) {
-  //     await this.expectHeaderByName(name);
-  //     count++;
-  //   }
-
-  //   // Collection facet group = 8
-  //   // Search facet group = 7 
-  //   if (type === 'collection') {
-  //     expect(count).toEqual(8);
-  //   } else {
-  //     expect(count).toEqual(7);
-  //   }
-  // }
-
-  // private async expectHeaderByName(headerName: string) {
-  //   await expect(
-  //     this.page.getByRole('heading', { name: headerName }),
-  //   ).toBeVisible();
-  // }
-
   async datePickerVisible() {
     await this.yearPublishedFacetGroup.waitFor({ state: 'visible' });
-    // await expect(this.yearPublishedFacetGroup).toBeVisible();
   }
 
   async toggleFacetSelection(

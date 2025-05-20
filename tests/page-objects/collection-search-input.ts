@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { SearchOption } from '../models';
 
@@ -44,8 +44,4 @@ export class CollectionSearchInput {
     await this.page.getByLabel('Search Options').getByText(option).click();
   }
 
-  async validateClearSearchInput() {
-    await expect(this.btnClearInput).not.toBeVisible();
-    expect(await this.formInputSearchPage.inputValue()).toBe('');
-  }
 }

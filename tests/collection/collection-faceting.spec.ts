@@ -25,7 +25,7 @@ test(`Select a facet for videos and clear facet filters`, async ({
   const { collectionFacets, infiniteScroller } = collectionPage;
   await test.step(`Select "movies" from inside "Media Type" facet group and check 5 item results for "Movie" tile icon titles`, async () => {
     await collectionFacets.toggleFacetSelection(FacetGroup.MEDIATYPE, 'movies', 'positive');
-    await collectionPage.waitPageTimeout();
+    // await collectionPage.waitPageTimeout();
     // TODO
     const isFacettedCorrectly = infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Movie'], true, 5,

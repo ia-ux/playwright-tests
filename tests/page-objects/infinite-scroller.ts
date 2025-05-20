@@ -55,6 +55,7 @@ export class InfiniteScroller {
     await this.displayStyleSelectorOptions.locator(viewModeLocator).click();
   }
 
+  // Flaky
   async waitForFirstItemTile() {
     await this.firstItemTile.locator('collection-browser-loading-tile').waitFor({ state: 'hidden' });
     await this.firstItemTile.waitFor({ state: 'attached' });
@@ -70,6 +71,7 @@ export class InfiniteScroller {
     await tileHoverPane.waitFor({ state: 'attached' });
     await tileHoverPane.waitFor({ state: 'visible' });
   }
+  // End of flaky
 
   async tileHoverPaneAndItemTileText() {
     const textFirstItemTile = await this.firstItemTile
@@ -159,6 +161,7 @@ export class InfiniteScroller {
       viewFacetMetadata,
       displayItemCount,
     );
+    console.log('facetedResults: ', facetedResults);
     if (facetedResults) {
       const isAllFacettedCorrectly = facetLabels.some(label => {
         return toInclude
@@ -237,11 +240,13 @@ export class InfiniteScroller {
 
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
     console.log('item: ', await item.innerHTML());
+    await item.locator('tile-dispatcher').waitFor({ state: 'visible' });
     await item.locator('a').waitFor({ state: 'visible' });
     const collectionTileCount = await item
       .locator('a > collection-tile')
       .count();
     const itemTileCount = await item.locator('a > item-tile').count();
+    console.log('colle: ', collectionTileCount, ' item: ', itemTileCount);
     if (collectionTileCount === 1 && itemTileCount === 0) {
       arrItem.push('collection');
     } else if (collectionTileCount === 0 && itemTileCount === 1) {
@@ -256,7 +261,7 @@ export class InfiniteScroller {
       .locator('#dates-line > div.metadata')
       .last()
       .innerText();
-
+    console.log('dateSpanLabel: ', dateSpanLabel)
     if (dateSpanLabel) {
       // Need to split date filter and date format value: Published: 2150 or Published: Nov 15, 2023
       // Ideal format: { filter: 'Published', date: '2150' }
@@ -270,9 +275,11 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
-    await item.locator('#container').waitFor({ state: 'visible' });
-    await item.locator('#stats-row').waitFor({ state: 'visible' });
+    // //*[@id="icon"]
+    // await item.locator('#container').waitFor({ state: 'visible' });
+    // await item.locator('#stats-row').waitFor({ state: 'visible' });
     // Get mediatype-icon title attr from tile-stats row element
+    console.log('in: ', await item.locator('#stats-row').locator('#icon').innerHTML())
     return await item
       .locator('#stats-row > li:nth-child(1) > mediatype-icon > #icon')
       .getAttribute('title');
@@ -295,19 +302,18 @@ export class InfiniteScroller {
 
     let index = 0;
     while (index !== displayItemCount) {
-      const tileItem = allItems[index];
       switch (viewFacetMetadata) {
         case 'tile-collection-icon-title':
           console.log('collection')
-          await this.getCollectionItemTileTitle(tileItem, arrTitles);
+          await this.getCollectionItemTileTitle(allItems[index], arrTitles);
           break;
 
         case 'tile-icon-title':
-          await this.getItemTileIconTitle(tileItem, arrTitles);
+          await this.getItemTileIconTitle(allItems[index], arrTitles);
           break;
 
         case 'list-date':
-          await this.getDateMetadataText(tileItem, arrDates);
+          await this.getDateMetadataText(allItems[index], arrDates);
           break;
 
         default: // something else ---- test is broken
