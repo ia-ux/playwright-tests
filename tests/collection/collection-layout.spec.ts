@@ -39,7 +39,10 @@ test('Tile, List, and Compact layout buttons change layout', async ({
   });
 });
 
-test('Tile hover pane appears', async ({ collectionPage }) => {
+test('Tile hover pane appears', async ({ collectionPage, browserName }) => {
+  // Reference: 
+  // https://medium.com/@semihkasimoglu/understanding-playwrights-test-slow-and-slowmo-option-a-guide-for-efficient-test-management-8caf3a5183ba
+  test.slow(); // This will slow down the test
   const { infiniteScroller } = collectionPage;
   await test.step('Hover first item tile and check for title text inside tile-hover-pane and item-tile', async () => {
     await infiniteScroller.hoverToFirstItem();
