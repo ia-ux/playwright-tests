@@ -41,6 +41,7 @@ export class CollectionSearchInput {
   }
 
   async clickSearchInputOption(option: SearchOption, type: string) {
+    await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
     const btnName = type === 'collection' ? 'Search this collection' : 'GO';
     this.collectionSearchInput.getByRole('button', { name: btnName }).waitFor({ state: 'visible'}) 
     await this.formInputSearchPage.click({ force: true });

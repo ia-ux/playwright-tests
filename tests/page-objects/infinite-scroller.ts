@@ -1,10 +1,9 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { SortBar } from './sort-bar';
 
 import {
   DateMetadataLabel,
-  LayoutViewMode,
   SortOrder,
   SortFilter,
   ViewFacetMetadata,
@@ -21,6 +20,9 @@ export class InfiniteScroller {
   readonly displayStyleSelector: Locator;
   readonly displayStyleSelectorOptions: Locator;
   readonly firstItemTile: Locator;
+  readonly gridDisplayMode: Locator;
+  readonly listDisplayMode: Locator;
+  readonly compactDisplayMode: Locator;
 
   readonly sortBar: SortBar;
   readonly collectionSearchInput: CollectionSearchInput;
@@ -28,12 +30,12 @@ export class InfiniteScroller {
   public constructor(page: Page) {
     this.page = page;
 
+    this.collectionSearchInput = new CollectionSearchInput(page);
+    this.sortBar = new SortBar(page);
+
     this.infiniteScroller = page.locator('infinite-scroller');
     this.infiniteScrollerSectionContainer =
       this.infiniteScroller.locator('#container');
-
-    this.collectionSearchInput = new CollectionSearchInput(page);
-    this.sortBar = new SortBar(page);
     const sortBarSection = this.sortBar.sortFilterBar;
     this.displayStyleSelector = sortBarSection.locator(
       'div#display-style-selector',
@@ -43,47 +45,28 @@ export class InfiniteScroller {
     this.firstItemTile = this.infiniteScrollerSectionContainer
       .locator('article')
       .first();
+
+    this.gridDisplayMode = this.displayStyleSelector.getByTestId('grid-button');
+    this.listDisplayMode = this.displayStyleSelector.getByTestId('list-detail-button');
+    this.compactDisplayMode = this.displayStyleSelector.getByTestId('list-compact-button')
   }
 
   async clickViewMode(viewModeLocator: LayoutViewModeLocator) {
     await this.displayStyleSelectorOptions.locator(viewModeLocator).click();
   }
 
-  async assertLayoutViewModeChange(viewMode: LayoutViewMode) {
-    switch (viewMode) {
-      case 'tile':
-        await expect(
-          this.displayStyleSelector.getByTestId('grid-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/grid/));
-        return;
-      case 'list':
-        await expect(
-          this.displayStyleSelector.getByTestId('list-detail-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/list-detail/));
-        return;
-      case 'compact':
-        await expect(
-          this.displayStyleSelector.getByTestId('list-compact-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/list-compact/));
-        return;
-      default:
-        return;
-    }
+  async waitForFirstItemTile() {
+    await this.firstItemTile.waitFor({ state: 'attached' });
+    await this.firstItemTile.waitFor({ state: 'visible' });
   }
 
   async hoverToFirstItem() {
-    expect(await this.firstItemTile.count()).toBe(1);
-
+    this.waitForFirstItemTile();
     await this.firstItemTile.hover();
-    await expect(this.firstItemTile.locator('tile-hover-pane')).toBeVisible({
-      timeout: 60000,
-    });
+    await this.firstItemTile.locator('tile-hover-pane').waitFor({ state: 'visible'});
   }
 
-  async assertTileHoverPaneTitleIsSameWithItemTile() {
+  async tileHoverPaneAndItemTileText() {
     const textFirstItemTile = await this.firstItemTile
       .locator('#title > h4')
       .first()
@@ -91,25 +74,19 @@ export class InfiniteScroller {
     const textTileHoverPane = await this.firstItemTile
       .locator('tile-hover-pane #title > a')
       .innerText();
-    expect(textFirstItemTile).toEqual(textTileHoverPane);
+    return textFirstItemTile === textTileHoverPane; 
   }
 
-  async clickFirstResultAndCheckRedirectToDetailsPage() {
-    await this.firstItemTile.waitFor({ state: 'attached' });
-    await this.firstItemTile.waitFor({ state: 'visible' });
+  async clickFirstItemTile() {
+    await this.firstItemTile.click();
+  }
 
-    expect(await this.firstItemTile.count()).toBe(1);
-
-    // Get item tile link to compare with the redirect URL
+  async firstItemTileHrefPattern(): Promise<RegExp> {
     const itemLink = await this.firstItemTile
       .locator('a')
       .first()
       .getAttribute('href');
-    const pattern = new RegExp(`${itemLink}`);
-    await this.firstItemTile.click();
-
-    // await this.page.waitForLoadState('load', { timeout: 60000 });
-    await expect(this.page).toHaveURL(pattern);
+    return new RegExp(`${itemLink}`);
   }
 
   // TODO: per sort filter and sort order + view mode???
@@ -132,8 +109,11 @@ export class InfiniteScroller {
       );
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
-      expect(isAllViews).toBeTruthy();
-      expect(isSortedCorrectly).toBeTruthy();
+      if (isAllViews && isSortedCorrectly) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     // This test is only applicable in list view mode for "Date" filters
@@ -156,8 +136,11 @@ export class InfiniteScroller {
       );
       const isSortedCorrectly = datesSorted(order, dateMetadataLabels);
 
-      expect(isDateFilter).toBeTruthy();
-      expect(isSortedCorrectly).toBeTruthy();
+      if (isDateFilter && isSortedCorrectly) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
@@ -177,12 +160,9 @@ export class InfiniteScroller {
           ? facetedResults.includes(label)
           : !facetedResults.includes(label);
       });
-      expect(isAllFacettedCorrectly).toBeTruthy();
+      return isAllFacettedCorrectly;
     }
-  }
-
-  async displaysFirstResult() {
-    await expect(this.firstItemTile).toBeVisible({ timeout: 60000 });
+    return false;
   }
 
   // Getters

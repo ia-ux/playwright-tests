@@ -76,12 +76,11 @@ export class CollectionBrowser {
     ).toContain(checkFilterText);
   }
 
-  async validateURLParamsWithSortFilter(filter: SortFilter, order: SortOrder) {
+  async urlParamsWithSortFilter(filter: SortFilter, order: SortOrder) {
     const sortFilterURL =
       order === 'descending'
         ? `-${SortFilterURL[filter]}`
         : SortFilterURL[filter];
-    const urlPatternCheck = new RegExp(`sort=${sortFilterURL}`);
-    await expect(this.page).toHaveURL(urlPatternCheck);
+    return new RegExp(`sort=${sortFilterURL}`);
   }
 }
