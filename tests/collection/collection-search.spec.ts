@@ -5,8 +5,7 @@ test('Collection search metadata', async ({ collectionPage }) => {
   const { collectionFacets, collectionSearchInput, infiniteScroller } = collectionPage;
   await test.step(`Select "Search metadata"`, async () => {
     await collectionSearchInput.clickSearchInputOption(
-      SearchOption.METADATA,
-      'collection',
+      SearchOption.METADATA, 'collection',
     );
   });
 
@@ -16,7 +15,7 @@ test('Collection search metadata', async ({ collectionPage }) => {
 
   await test.step(`Results are displayed in display area - validate first item displayed`, async () => {
     await expect(collectionFacets.resultsTotal).toBeVisible();
-    await infiniteScroller.displaysFirstResult();
+    await expect(infiniteScroller.firstItemTile).toBeVisible();
   });
 });
 
@@ -26,8 +25,7 @@ test('Collection search text contents and clear filters', async ({
   const { collectionFacets, collectionSearchInput, infiniteScroller } = collectionPage;
   await test.step(`Select "Search text contents"`, async () => {
     await collectionSearchInput.clickSearchInputOption(
-      SearchOption.TEXT,
-      'collection',
+      SearchOption.TEXT, 'collection',
     );
   });
 
@@ -37,7 +35,7 @@ test('Collection search text contents and clear filters', async ({
 
   await test.step(`Results are displayed in display area - validate first item displayed`, async () => {
     await expect(collectionFacets.resultsTotal).toBeVisible();
-    await infiniteScroller.displaysFirstResult();
+    await expect(infiniteScroller.firstItemTile).toBeVisible();
   });
 
   await test.step(`Click "X" button in search input and validate search input text is cleared`, async () => {

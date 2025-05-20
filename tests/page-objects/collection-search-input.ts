@@ -32,10 +32,6 @@ export class CollectionSearchInput {
     await this.formInputSearchPage.press('Enter');
   }
 
-  // async validateSearchInput(query: string) {
-  //   expect(await this.formInputSearchPage.inputValue()).toBe(query);
-  // }
-
   async clickClearSearchInput() {
     await this.btnClearInput.click();
   }

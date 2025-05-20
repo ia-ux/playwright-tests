@@ -72,4 +72,8 @@ export class CollectionPage {
     return await this.pageTabs.locator('li.tab.active').innerText();
   }
 
+  async waitPageTimeout() {
+    await this.page.waitForTimeout(3000);
+  }
+
 }

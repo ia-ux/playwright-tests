@@ -56,14 +56,19 @@ export class InfiniteScroller {
   }
 
   async waitForFirstItemTile() {
+    await this.firstItemTile.locator('collection-browser-loading-tile').waitFor({ state: 'hidden' });
     await this.firstItemTile.waitFor({ state: 'attached' });
     await this.firstItemTile.waitFor({ state: 'visible' });
+    await this.page.waitForTimeout(1000);
   }
 
   async hoverToFirstItem() {
+    const tileHoverPane = this.firstItemTile.locator('tile-hover-pane');
+
     this.waitForFirstItemTile();
-    await this.firstItemTile.hover();
-    await this.firstItemTile.locator('tile-hover-pane').waitFor({ state: 'visible'});
+    await this.firstItemTile.hover({ timeout: 30000 });
+    await tileHoverPane.waitFor({ state: 'attached' });
+    await tileHoverPane.waitFor({ state: 'visible' });
   }
 
   async tileHoverPaneAndItemTileText() {
@@ -174,8 +179,6 @@ export class InfiniteScroller {
 
     let index = 0;
     while (index !== displayItemCount) {
-      await this.checkIfPageStillLoading();
-
       const itemTileCount = await allItems[index]
         .locator('a > item-tile')
         .count();
@@ -233,7 +236,8 @@ export class InfiniteScroller {
   }
 
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
-    await item.locator('#container').waitFor({ state: 'visible' });
+    console.log('item: ', await item.innerHTML());
+    await item.locator('a').waitFor({ state: 'visible' });
     const collectionTileCount = await item
       .locator('a > collection-tile')
       .count();
@@ -267,6 +271,7 @@ export class InfiniteScroller {
 
   async getTileIconTitleAttr(item: Locator) {
     await item.locator('#container').waitFor({ state: 'visible' });
+    await item.locator('#stats-row').waitFor({ state: 'visible' });
     // Get mediatype-icon title attr from tile-stats row element
     return await item
       .locator('#stats-row > li:nth-child(1) > mediatype-icon > #icon')
@@ -290,19 +295,19 @@ export class InfiniteScroller {
 
     let index = 0;
     while (index !== displayItemCount) {
-      await this.checkIfPageStillLoading();
-
+      const tileItem = allItems[index];
       switch (viewFacetMetadata) {
         case 'tile-collection-icon-title':
-          await this.getCollectionItemTileTitle(allItems[index], arrTitles);
+          console.log('collection')
+          await this.getCollectionItemTileTitle(tileItem, arrTitles);
           break;
 
         case 'tile-icon-title':
-          await this.getItemTileIconTitle(allItems[index], arrTitles);
+          await this.getItemTileIconTitle(tileItem, arrTitles);
           break;
 
         case 'list-date':
-          await this.getDateMetadataText(allItems[index], arrDates);
+          await this.getDateMetadataText(tileItem, arrDates);
           break;
 
         default: // something else ---- test is broken
@@ -318,18 +323,4 @@ export class InfiniteScroller {
     return arrIdentifiers;
   }
 
-  async checkIfPageStillLoading() {
-    const resultsText = await this.page
-      .getByTestId('results-total')
-      .locator('#big-results-count')
-      .innerText();
-    const btnIndicatorText = await this.page
-      .locator('#go-button')
-      .getAttribute('class');
-    if (resultsText.includes('Searching') && btnIndicatorText === 'loading') {
-      await this.checkIfPageStillLoading(); // Recursive call
-    } else {
-      return;
-    }
-  }
 }
