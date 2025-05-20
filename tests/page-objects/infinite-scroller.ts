@@ -55,7 +55,6 @@ export class InfiniteScroller {
     await this.displayStyleSelectorOptions.locator(viewModeLocator).click();
   }
 
-  // Flaky
   async waitForFirstItemTile() {
     const loadingTile = this.firstItemTile.locator('collection-browser-loading-tile');
     await loadingTile.waitFor({ state: 'hidden' });
@@ -72,7 +71,6 @@ export class InfiniteScroller {
     await tileHoverPane.waitFor({ state: 'attached' });
     await tileHoverPane.waitFor({ state: 'visible' });
   }
-  // End of flaky
 
   async tileHoverPaneAndItemTileText() {
     const textFirstItemTile = await this.firstItemTile
@@ -144,11 +142,7 @@ export class InfiniteScroller {
       );
       const isSortedCorrectly = datesSorted(order, dateMetadataLabels);
 
-      if (isDateFilter && isSortedCorrectly) {
-        return true;
-      } else {
-        return false;
-      }
+      return isDateFilter && isSortedCorrectly;
     }
   }
 
