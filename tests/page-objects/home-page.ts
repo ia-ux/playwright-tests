@@ -8,6 +8,8 @@ export class HomePage {
   readonly page: Page;
 
   readonly waybackSearch: Locator;
+  readonly searchInput: Locator;
+  readonly announcements: Locator;
 
   readonly collectionBrowser: CollectionBrowser;
   readonly collectionSearchInput: CollectionSearchInput;
@@ -16,6 +18,8 @@ export class HomePage {
   public constructor(page: Page) {
     this.page = page;
     this.waybackSearch = this.page.locator('ia-wayback-search');
+    this.searchInput = this.page.locator('collection-search-input');
+    this.announcements = this.page.locator('#announcements > hero-block-announcements');
 
     this.collectionBrowser = new CollectionBrowser(page);
     this.collectionSearchInput = new CollectionSearchInput(page);
