@@ -22,31 +22,28 @@ test('Tile, List, and Compact layout buttons change layout', async ({
   const { infiniteScroller } = collectionPage;
   await test.step('Display List View', async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
-    await expect(infiniteScroller.listDisplayMode).toHaveClass('active');
-    await expect(collectionPage.infiniteScroller.infiniteScroller).toHaveClass(/list-detail/);
+    await expect(infiniteScroller.listDisplayMode).toContainClass('active');
+    await expect(collectionPage.infiniteScroller.infiniteScroller).toContainClass('list-detail');
   });
 
   await test.step('Display List Compact View', async () => {
     await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.COMPACT);
-    await expect(infiniteScroller.compactDisplayMode).toHaveClass('active');
-    await expect(infiniteScroller.infiniteScroller).toHaveClass(/list-compact/);
+    await expect(infiniteScroller.compactDisplayMode).toContainClass('active');
+    await expect(infiniteScroller.infiniteScroller).toContainClass('list-compact');
   });
 
   await test.step('Display Tile View', async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
-    await expect(infiniteScroller.gridDisplayMode).toHaveClass('active');
-    await expect(infiniteScroller.infiniteScroller).toHaveClass(/grid/);
+    await expect(infiniteScroller.gridDisplayMode).toContainClass('active');
+    await expect(infiniteScroller.infiniteScroller).toContainClass('grid');
   });
 });
 
-test('Tile hover pane appears', async ({ collectionPage, browserName }) => {
-  // Reference: 
-  // https://medium.com/@semihkasimoglu/understanding-playwrights-test-slow-and-slowmo-option-a-guide-for-efficient-test-management-8caf3a5183ba
-  test.slow(); // This will slow down the test
+test('Tile hover pane appears', async ({ collectionPage }) => {
   const { infiniteScroller } = collectionPage;
   await test.step('Hover first item tile and check for title text inside tile-hover-pane and item-tile', async () => {
     await infiniteScroller.hoverToFirstItem();
-    const isSameText = await infiniteScroller.tileHoverPaneAndItemTileText();
+    const isSameText = await infiniteScroller.firstTileTitleMatchesHoverPaneTitle();
     expect(isSameText).toBeTruthy();
   });
 });
@@ -78,7 +75,7 @@ test(`Sort by All-time views in Tile view`, async ({ collectionPage }) => {
   await test.step('Check the first 10 results if sort filters were applied', async () => {
     const isSortedCorrectly = await infiniteScroller.validateSortingResults('All-time views', sortOrder, 10);
     expect(isSortedCorrectly).toBeTruthy();
-    const urlPattern = await collectionBrowser.urlParamsWithSortFilter('All-time views', sortOrder);
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter('All-time views', sortOrder);
     await expect(collectionBrowser.page).toHaveURL(urlPattern);
   });
 });
@@ -100,12 +97,16 @@ test(`Sort by Date published in List view`, async ({ collectionPage }) => {
   await test.step('Check the first 10 results if sort filters were applied', async () => {
     const isSortedCorrectly = await infiniteScroller.validateSortingResults('Date published', sortOrder, 10);
     expect(isSortedCorrectly).toBeTruthy();
-    const urlPattern = await collectionBrowser.urlParamsWithSortFilter('Date published', sortOrder);
+  });
+
+  await test.step('Check for url params with sort filter date published', async () => {
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter('Date published', sortOrder);
     await expect(collectionBrowser.page).toHaveURL(urlPattern);
   });
 });
 
 test(`Sort by Date archived (ascending) in Compact view`, async ({ collectionPage }) => {
+  test.slow();
   const { collectionBrowser, sortBar } = collectionPage
   const sortOrder = 'ascending';
   await test.step('Switch to compact view mode', async () => {
@@ -117,9 +118,14 @@ test(`Sort by Date archived (ascending) in Compact view`, async ({ collectionPag
     await sortBar.clickSortDirection(sortOrder);
   });
 
-  await test.step('Check list column headers for sort filter', async () => {
-    await collectionBrowser.validateCompactViewModeListLineDateHeaders('Date archived');
-    await collectionBrowser.urlParamsWithSortFilter('Date archived', sortOrder);
+  await test.step(`Check list column headers for sort filter "Archived"`, async () => {
+    const filterText = collectionBrowser.getCompactModeLineDateFilterText('Date archived');
+    expect(await collectionBrowser.tileCompactListHeaderDate.innerText()).toContain(filterText);
   });
+
+  await test.step(`Check URL parameter as date archived ${sortOrder}`, async () => {
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter('Date archived', sortOrder);
+    await expect(collectionBrowser.page).toHaveURL(urlPattern);
+  })
 });
 

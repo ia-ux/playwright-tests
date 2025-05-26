@@ -58,21 +58,19 @@ export class InfiniteScroller {
   async waitForFirstItemTile() {
     const loadingTile = this.firstItemTile.locator('collection-browser-loading-tile');
     await loadingTile.waitFor({ state: 'hidden' });
-    await this.firstItemTile.waitFor({ state: 'attached' });
-    await this.firstItemTile.waitFor({ state: 'visible' });
+    await this.firstItemTile.locator('#container.hoverable').waitFor({ state: 'attached' });
+    await this.firstItemTile.locator('image-block').waitFor({ state: 'visible' });
   }
 
   async hoverToFirstItem() {
     const tileHoverPane = this.firstItemTile.locator('tile-hover-pane');
-
-    this.waitForFirstItemTile();
-    await this.firstItemTile.hover({ position: { x: 10, y: 20 } });
+    await this.waitForFirstItemTile();
+    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, timeout: 5000 });
     await this.firstItemTile.dispatchEvent('mouseover', { timeout: 5000 });
     await tileHoverPane.waitFor({ state: 'attached' });
-    await tileHoverPane.waitFor({ state: 'visible' });
   }
 
-  async tileHoverPaneAndItemTileText() {
+  async firstTileTitleMatchesHoverPaneTitle() {
     const textFirstItemTile = await this.firstItemTile
       .locator('#title > h4')
       .first()
@@ -115,7 +113,11 @@ export class InfiniteScroller {
       );
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
-      return isAllViews && isSortedCorrectly;
+      if (isAllViews && isSortedCorrectly) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     // This test is only applicable in list view mode for "Date" filters

@@ -10,6 +10,7 @@ export class CollectionBrowser {
   readonly formInputRadioPage: Locator;
   readonly formInputTVPage: Locator;
   readonly formInputWaybackPage: Locator;
+  readonly tileCompactListHeaderDate: Locator;
 
   public constructor(page: Page) {
     this.page = page;
@@ -24,8 +25,13 @@ export class CollectionBrowser {
     this.formInputWaybackPage = page.locator(
       'input.rbt-input-main.form-control.rbt-input',
     );
+
+    this.tileCompactListHeaderDate = page.locator(
+      'tile-list-compact-header #list-line-header #date'
+    )
   }
 
+  // to refactor in the next task
   async validateEmptyPagePlaceholder() {
     await expect(this.emptyPlaceholder).toBeVisible();
     await expect(this.emptyPlaceholderTitleText).toBeVisible();
@@ -71,7 +77,11 @@ export class CollectionBrowser {
     ).toContain(checkFilterText);
   }
 
-  async urlParamsWithSortFilter(filter: SortFilter, order: SortOrder) {
+  getCompactModeLineDateFilterText(filter: SortFilter) {
+    return filter.split('Date ')[1].replace(/^./, (str: string) => str.toUpperCase());
+  }
+
+  getURLParamsWithSortFilter(filter: SortFilter, order: SortOrder) {
     const sortFilterURL =
       order === 'descending'
         ? `-${SortFilterURL[filter]}`

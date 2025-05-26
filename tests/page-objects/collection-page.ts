@@ -41,7 +41,7 @@ export class CollectionPage {
     this.aboutPageActivity = page.getByRole('heading', { name: 'Activity' });
     this.aboutPageCollectionInfo = page.getByRole('heading', { name: 'Collection Info' });
 
-    this.forumContainer= page.locator('ia-forum #forum-container');
+    this.forumContainer = page.locator('ia-forum #forum-container');
     this.newPostButton = this.forumContainer.getByRole('link', {name: 'New Post'});
     this.rssButton = this.forumContainer.getByRole('link', { name: 'RSS' });
 
@@ -68,8 +68,8 @@ export class CollectionPage {
     await this.pageSummary.getByTestId('collection-page-more-link-btn').click();
   }
 
-  async getPageActiveTabText() {
-    return await this.pageTabs.locator('li.tab.active').innerText();
+  getPageActiveTabText() {
+    return this.pageTabs.locator('li.tab.active').innerText();
   }
 
 }
