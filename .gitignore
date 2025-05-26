@@ -19,3 +19,6 @@ performance-report.json
 log/
 
 .DS_Store
+
+# logs
+ctrf
