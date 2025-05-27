@@ -67,4 +67,3 @@ test('TopNav Functionality', async ({ homePage }) => {
     await homePage.topNav.clickMediaButtons();
   }); 
 })
-
