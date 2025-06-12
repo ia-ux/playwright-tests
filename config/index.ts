@@ -71,7 +71,7 @@ export const identifier = {
   },
   home: {
     url: '/',
-    default:  '/',
+    default: '/',
   },
   collection: {
     url: '',
@@ -103,7 +103,7 @@ export const identifier = {
 };
 
 export const testBeforeEachConfig = async (context: BrowserContext) => {
-  if(process.env.IS_REVIEW_APP === 'true') {
+  if (process.env.IS_REVIEW_APP === 'true') {
     await context.addCookies([{
       name: 'beta-access',
       value: process.env.BETA_ACCESS_TOKEN || '',
