@@ -27,7 +27,6 @@ export class DetailsPage {
 
   async gotoPage(uri: string) {
     await this.page.goto(`/details/${uri}`, { waitUntil: 'networkidle' });
-    await this.page.waitForTimeout(5000);
   }
 
   async assertPageElements() {
@@ -35,7 +34,6 @@ export class DetailsPage {
     await this.verifyPageActionButtons();
 
     await expect(this.page.locator('.terms-of-service')).toBeVisible();
-    await this.page.waitForTimeout(3000);
     // TODO: add test to check Similar Items - this is currently not working
     // await expect(this.page.locator('#also-found')).toBeVisible();
   }

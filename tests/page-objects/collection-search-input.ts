@@ -41,13 +41,35 @@ export class CollectionSearchInput {
   }
 
   async clickSearchInputOption(option: SearchOption, type: string) {
-    const btnName = type === 'collection' ? 'Search this collection' : 'GO';
+    // If this strategy works, `type` can be removed.
+    const inputComponent = this.collectionSearchInput;
+    await expect(inputComponent).toBeVisible();
 
-    await expect(
-      this.collectionSearchInput.getByRole('button', { name: btnName }),
-    ).toBeVisible();
-    await this.formInputSearchPage.click({ force: true });
-    await this.page.getByLabel('Search Options').getByText(option).click();
+    const searchInput = inputComponent.locator('#text-input');
+    await searchInput.waitFor({ state: 'visible' });
+
+    // Webkit doesn't seem to work without `force: true`, but that causes problems
+    // for the other browsers. How can this work with one strategy?
+    if (this.page.context().browser()?.browserType().name() === 'webkit') {
+      await searchInput.click({ force: true });
+    } else {
+      await searchInput.click();
+    }
+
+    const searchOptions = inputComponent.locator('#search_options');
+    await expect(searchOptions).toBeVisible();
+    await expect(searchOptions).toHaveAttribute('aria-expanded', 'true');
+
+    const optionSpan = inputComponent.locator(
+      `label:has(input[type="radio"][name="sin"][value="${option}"]) span`
+    );
+    await optionSpan.waitFor({ state: 'visible' });
+    await optionSpan.click();
+
+    const radio = inputComponent.locator(
+      `input[type="radio"][name="sin"][value="${option}"]`
+    );
+    await expect(radio).toBeChecked();
   }
 
   async validateClearSearchInput() {
