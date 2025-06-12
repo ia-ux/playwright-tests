@@ -44,7 +44,7 @@ export const identifier = {
     faq: '/legal/faq'
   },
   lending: {
-    chromium: 'hitrun0000haro',
+    chromium: 'cornellstudiesin26unse',
     firefox: 'cornellstudiesin26unse',
     webkit: 'annualreport0000meth_x3r2',
   },
@@ -66,7 +66,7 @@ export const identifier = {
     webamp: 'OTRR_Philip_Marlowe_Singles',
     webamp_with_skin: 'winampskin_Tundra_Winamp_Skin_Actualized',
     music_theater_grateful_dead: 'gd73-06-10.sbd.hollister.174.sbeok.shnf',
-    music_theater_no_image_with_waveform: 'gd77-05-08.sbd.hicks.4982.sbeok.shn',
+    music_theater_no_image_with_waveform: 'Old_Radio_Adverts_01',
     music_theater_single_track_no_waveform: 'berceuse00benj',
   },
   home: {

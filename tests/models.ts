@@ -14,11 +14,11 @@ export enum LayoutViewModeLocator {
 }
 
 export enum SearchOption {
-  METADATA = `Search metadata`,
-  TEXT = `Search text contents`,
-  TV = `Search TV news captions`,
-  RADIO = `Search radio transcripts`,
-  WEB = `Search archived web sites`,
+  METADATA = ``,
+  TEXT = `TXT`,
+  TV = `TV`,
+  RADIO = `RADIO`,
+  WEB = `WEB`,
 }
 
 export type SortFilter =
