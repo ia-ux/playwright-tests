@@ -57,12 +57,13 @@ export class HomePage {
     expect((await onboardingCarousel).length).toBe(8);
 
     // Top Collections section is present and populated
+    const headerTopCollections = this.page.getByRole('heading', { name: 'Top Collections' });
+    await expect(headerTopCollections).toBeVisible();
+
     const infiniteScroller = this.page.locator('infinite-scroller');
-    await expect(infiniteScroller).toBeVisible();
-    expect(
-      (await infiniteScroller.locator('#container > .cell-container').all())
-        .length,
-    ).toBeGreaterThan(10);
+    const containerItems = infiniteScroller.locator('#container > .cell-container');
+    await containerItems.first().waitFor({ state: 'visible' });
+    expect((await containerItems.all()).length).toBeGreaterThan(10);
 
     // Terms of Service footer is present
     await expect(this.page.locator('footer > app-footer')).toBeVisible();
