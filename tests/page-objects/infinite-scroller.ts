@@ -123,13 +123,11 @@ export class InfiniteScroller {
       const tileStatsViews = await this.getTileStatsViewCountTitles(
         displayItemCount,
       );
-
       const isAllViews = tileStatsViews.every(stat =>
         stat.includes(filter.toLowerCase()),
       );
-      const arrViewCount: Number[] = tileStatsViews.map(stat =>
-        Number(stat.split(' ')[0]),
-      );
+      // Check if views are sorted correctly
+      const arrViewCount = tileStatsViews.map(stat => parseInt(stat.split(' ')[0], 10));
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
       expect(isAllViews).toBeTruthy();
