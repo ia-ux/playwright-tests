@@ -10,7 +10,7 @@ import {
   LayoutViewModeLocator,
 } from '../models';
 
-import { datesSorted, viewsSorted } from '../utils';
+import { datesSorted, viewsSorted, parseViewCount } from '../utils';
 import { CollectionSearchInput } from './collection-search-input';
 
 export class InfiniteScroller {
@@ -104,13 +104,11 @@ export class InfiniteScroller {
       const tileStatsViews = await this.getTileStatsViewCountTitles(
         displayItemCount,
       );
-
       const isAllViews = tileStatsViews.every(stat =>
         stat.includes(filter.toLowerCase()),
       );
-      const arrViewCount: Number[] = tileStatsViews.map(stat =>
-        Number(stat.split(' ')[0]),
-      );
+
+      const arrViewCount: number[] = tileStatsViews.map(stat => parseViewCount(stat));
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
       if (isAllViews && isSortedCorrectly) {
@@ -264,8 +262,11 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
+    await this.page.waitForTimeout(1000);
+    await item.locator('tile-stats').waitFor({ state: 'visible' });
+    // Get mediatype-icon title attr from tile-stats row element
     return await item
-      .locator('#stats-row > li:nth-child(1) > mediatype-icon > #icon')
+      .locator('#stats-row > li:nth-child(1) > tile-mediatype-icon > #icon')
       .getAttribute('title');
   }
 
