@@ -1,4 +1,4 @@
-import { test } from '../fixtures';
+import { test, expect } from '../fixtures';
 
 import { SearchOption } from '../models';
 
@@ -19,7 +19,7 @@ test('Do simple metadata search', async ({ searchPage }) => {
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
-    await searchPage.collectionFacets.displaysResultCount();
+    await expect(searchPage.collectionFacets.resultsTotal).toBeVisible();
   });
 });
 
@@ -32,7 +32,7 @@ test('Do simple text contents search', async ({ searchPage }) => {
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
-    await searchPage.collectionFacets.displaysResultCount();
+    await expect(searchPage.collectionFacets.resultsTotal).toBeVisible();
   });
 });
 

@@ -29,7 +29,8 @@ export class CollectionSearchInput {
 
   async queryFor(query: string) {
     await this.formInputSearchPage.fill(query);
-    await this.formInputSearchPage.press('Enter');
+    await this.btnCollectionSearchInputGo.click();
+    await this.page.waitForTimeout(1000); // Wait for search results to load
   }
 
   async clickClearSearchInput() {
@@ -38,8 +39,7 @@ export class CollectionSearchInput {
 
   async clickSearchInputOption(option: SearchOption, type: string) {
     await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
-    const btnName = type === 'collection' ? 'Search this collection' : 'GO';
-    await this.collectionSearchInput.getByRole('button', { name: btnName }).waitFor({ state: 'visible'}) 
+    await this.collectionSearchInput.locator('#go-button').waitFor({ state: 'visible'});
     await this.formInputSearchPage.click({ force: true });
     await this.page.getByLabel('Search Options').getByText(option).click();
   }

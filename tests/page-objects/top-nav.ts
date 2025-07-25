@@ -1,25 +1,24 @@
 import { type Page, type Locator, expect } from '@playwright/test';
 
 export class TopNav {
+  readonly mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+
   readonly page: Page;
 
   readonly iaTopNav: Locator;
+  readonly mediaMenu: Locator;
   readonly mediaMenuButtons: Locator;
-  
-  private navHome: Locator;
-  
-  private mediaSlider: Locator;
-  private infoBox: Locator;
-
-  private mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+  readonly navHome: Locator;
+  readonly mediaSlider: Locator;
+  readonly infoBox: Locator;
 
   public constructor(page: Page) {
     this.page = page;
 
     this.iaTopNav = this.page.locator('ia-topnav');
-    this.mediaMenuButtons = this.iaTopNav.locator('media-menu');
-
     this.navHome = this.iaTopNav.locator('primary-nav nav > div.branding');
+    this.mediaMenu = this.iaTopNav.locator('media-menu');
+    this.mediaMenuButtons = this.mediaMenu.locator('.menu-group').locator('media-button');
 
     this.mediaSlider = this.page.locator('media-slider');
     this.infoBox = this.mediaSlider.locator('.information-menu').locator('.info-box');

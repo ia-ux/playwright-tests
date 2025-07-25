@@ -22,20 +22,20 @@ test('Tile, List, and Compact layout buttons change layout', async ({
   const { infiniteScroller } = collectionPage;
   await test.step('Display List View', async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
-    await expect(infiniteScroller.listDisplayMode).toContainClass('active');
-    await expect(collectionPage.infiniteScroller.infiniteScroller).toContainClass('list-detail');
+    await expect(infiniteScroller.listDisplayMode).toHaveClass('active');
+    await expect(collectionPage.infiniteScroller.infiniteScroller).toHaveClass('list-detail');
   });
 
   await test.step('Display List Compact View', async () => {
     await collectionPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.COMPACT);
-    await expect(infiniteScroller.compactDisplayMode).toContainClass('active');
-    await expect(infiniteScroller.infiniteScroller).toContainClass('list-compact');
+    await expect(infiniteScroller.compactDisplayMode).toHaveClass('active');
+    await expect(infiniteScroller.infiniteScroller).toHaveClass('list-compact');
   });
 
   await test.step('Display Tile View', async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.TILE);
-    await expect(infiniteScroller.gridDisplayMode).toContainClass('active');
-    await expect(infiniteScroller.infiniteScroller).toContainClass('grid');
+    await expect(infiniteScroller.gridDisplayMode).toHaveClass('active');
+    await expect(infiniteScroller.infiniteScroller).toHaveClass('grid');
   });
 });
 
