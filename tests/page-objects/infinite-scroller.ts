@@ -284,10 +284,11 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
-    await item.locator('#container').waitFor({ state: 'visible' });
+    await this.page.waitForTimeout(1000);
+    await item.locator('tile-stats').waitFor({ state: 'visible' });
     // Get mediatype-icon title attr from tile-stats row element
     return await item
-      .locator('#stats-row > li:nth-child(1) > mediatype-icon > #icon')
+      .locator('#stats-row > li:nth-child(1) > tile-mediatype-icon > #icon')
       .getAttribute('title');
   }
 
