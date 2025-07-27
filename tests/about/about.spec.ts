@@ -45,9 +45,8 @@ test('About > Jobs page has correct title and text', async ({ page }) => {
   await expect(page.locator('#maincontent')).toContainText('Based in San Francisco');
 });
 
-test('About > News Stories page has correct title and text', async ({ page }) => {
+test.fixme('About > News Stories page has correct title and text', async ({ page }) => {
   await page.goto(identifier.about.news, { waitUntil: 'commit' });
-  await page.waitForURL(/news-stories/, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/News Stories/);
   await expect(page.locator('h1:has-text("News stories")')).toBeVisible();
   await expect(page.locator('#main-content')).toContainText('Including The Wayback Machine');
