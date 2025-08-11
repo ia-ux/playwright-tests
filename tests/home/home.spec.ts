@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures';
+import { test, homeDetailsTest, expect } from '../fixtures';
 
 import { SearchOption } from '../models';
 
@@ -71,40 +71,45 @@ test('Do simple TV search', async ({ homePage }) => {
   });
 });
 
-test('Do simple radio search', async ({ homePage, detailsPage }) => {
+test('Do simple radio search', async ({ homePage, page, detailsPage }) => {
   await test.step(`Select radio in search options, query for "rabbits" and validate that "rabbits" appears as the search term`, async () => {
     await homePage.collectionSearchInput.clickSearchInputOption(SearchOption.RADIO, 'search');
     await homePage.collectionSearchInput.queryFor('rabbits');
-    
-     // Note: The page is redirected to old search page
-    await detailsPage.page.waitForURL(/sin=RADIO/);
-    await expect(detailsPage.formInputRadioPage).toBeVisible();
-    expect(await detailsPage.formInputRadioPage.inputValue()).toContain('rabbits');
+
+    await test.step('Validate radio search page and the page is redirected to the old search page', async () => {
+      await page.waitForURL(/sin=RADIO/);
+      await expect(detailsPage.formInputRadioPage).toBeVisible();
+      expect(await detailsPage.formInputRadioPage.inputValue()).toContain('rabbits');
+    });
   });
 });
 
-test('Redirect web search to Wayback machine page', async ({ homePage, detailsPage }) => {
+// fixme: this test is failing, it needs to be fixed
+test('Redirect web search to Wayback machine page', async ({ homePage, page, detailsPage }) => {
   await test.step(`Select TV in search options, query for "parrots" and validate that "parrots" appears as the search term`, async () => {
     await homePage.collectionSearchInput.clickSearchInputOption(SearchOption.WEB, 'search');
     await homePage.collectionSearchInput.queryFor('parrots');
     
-    // Note: The page is redirected to Wayback Machine search page
-    await detailsPage.page.waitForURL(/web/);
-    expect(await detailsPage.page.title()).toContain('Wayback Machine');
-    await expect(detailsPage.formInputWaybackPage).toBeVisible();
-    expect(await detailsPage.formInputWaybackPage.inputValue()).toContain('parrots');
+    await test.step('Validate Wayback Machine search page', async () => {
+      await page.waitForURL(/web/);
+      expect(await detailsPage.page.title()).toContain('Wayback Machine');
+      await expect(detailsPage.formInputWaybackPage).toBeVisible();
+      expect(await detailsPage.formInputWaybackPage.inputValue()).toContain('parrots');
+    });
   });
 });
 
-test('Use Wayback widget - Redirect web search', async ({ homePage, detailsPage }) => {
+// fixme: this test is failing, it needs to be fixed
+test('Use Wayback widget - Redirect web search', async ({ homePage, page, detailsPage }) => {
   await test.step(`Search for "canaries" and validate that "canaries" appears as the search term`, async () => {
     await homePage.waybackSearchFor('canaries');
 
-    // Note: The page is redirected to Wayback Machine search page
-    await detailsPage.page.waitForURL(/web/);
-    expect(await detailsPage.page.title()).toContain('Wayback Machine');
-    await expect(detailsPage.formInputWaybackPage).toBeVisible();
-    expect(await detailsPage.formInputWaybackPage.inputValue()).toContain('canaries');
+     await test.step('Validate Wayback Machine search page', async () => {
+      await page.waitForURL(/web/);
+      expect(await detailsPage.page.title()).toContain('Wayback Machine');
+      await expect(detailsPage.formInputWaybackPage).toBeVisible();
+      expect(await detailsPage.formInputWaybackPage.inputValue()).toContain('canaries');
+    });
   });
 });
 
