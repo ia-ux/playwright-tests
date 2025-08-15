@@ -115,14 +115,9 @@ export class ProfilePage {
   }
 
   async validateResultForPostsTab() {
-    // BUG: this test is now testing what is likely broken code.
-    // It is meant to be a proof of concept to show how this should work.
-    // It needs to chain `.locator('h2');` below the existing `.locator`.
-    // But before that happens, the HTML rendering as text at
-    // https://archive.org/details/@brewster/posts should be fixed.
-    const userForumPosts = this.page
-      .locator('div[slot="posts"] user-forum-posts')
-
-    await expect(userForumPosts).toHaveText(/Posts by/i);
+    const resultElement = this.page.locator(
+      'div[slot="posts"] user-forum-posts h2',
+    );
+    expect(await resultElement.innerText()).toContain('Posts by');
   }
 }
