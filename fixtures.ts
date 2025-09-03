@@ -10,7 +10,8 @@ const caps = {
   'os': 'osx',
   'os_version': 'Big Sur',
   'browser_version': 'latest',
-  'name': 'firefox'
+  'name': 'firefox',
+  'browserstack.playwrightVersion': '1.53.0'
 };
 
 // Patching the capabilities dynamically according to the project name.
