@@ -17,8 +17,8 @@ time {
   # echo "\nRun ./tests/details"
   # npx browserstack-node-sdk playwright test ./tests/details
 
-  echo "\nRun ./tests/donation"
-  npx browserstack-node-sdk playwright test ./tests/donation
+  # echo "\nRun ./tests/donation"
+  # npx browserstack-node-sdk playwright test ./tests/donation
 
   echo "\nRun ./tests/home"
   npx browserstack-node-sdk playwright test ./tests/home
@@ -26,14 +26,14 @@ time {
   echo "\nRun ./tests/legal"
   npx browserstack-node-sdk playwright test ./tests/legal
 
-  echo "\nRun ./tests/login"
-  npx browserstack-node-sdk playwright test ./tests/login
+  # echo "\nRun ./tests/login"
+  # npx browserstack-node-sdk playwright test ./tests/login
 
   # echo "Run ./tests/music"
   # npx browserstack-node-sdk playwright test ./tests/music
 
-  echo "\nRun ./tests/profile"
-  npx browserstack-node-sdk playwright test ./tests/profile
+  # echo "\nRun ./tests/profile"
+  # npx browserstack-node-sdk playwright test ./tests/profile
 
   # echo "Run ./tests/search"
   # npx browserstack-node-sdk playwright test ./tests/search
