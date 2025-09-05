@@ -17,9 +17,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
+    "@playwright/test": "1.53.0",
     "@types/node": "^20.11.17",
-    "browserstack-node-sdk": "^1.40.1",
+    "browserstack-node-sdk": "^1.42.2",
     "dotenv": "^16.0.3",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
