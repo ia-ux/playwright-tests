@@ -17,8 +17,8 @@ time {
   # echo "\nRun ./tests/details"
   # npx browserstack-node-sdk playwright test ./tests/details
 
-  # echo "\nRun ./tests/donation"
-  # npx browserstack-node-sdk playwright test ./tests/donation
+  echo "\nRun ./tests/donation"
+  npx browserstack-node-sdk playwright test ./tests/donation
 
   echo "\nRun ./tests/home"
   npx browserstack-node-sdk playwright test ./tests/home
