@@ -14,11 +14,12 @@ test('Bookserver page has correct title and text', async ({ page }) => {
 });
 
 test('Scanning page has correct title and text', async ({ page }) => {
-    await page.goto(identifier.static.scanning);
-    await expect(page).toHaveTitle(/Internet Archive: Digitization Services/);
-    await expect(page.locator('h1:has-text("Scanning Services")')).toBeVisible();
-    await expect(page.locator('#maincontent')).toContainText('Open and free online discovery');
-  });
+  await page.goto(identifier.static.scanning);
+  await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
+  await expect(page.locator('h1:has-text("Digitize & Preserve")')).toBeVisible();
+  await expect(page.getByText('Our digitization services')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Learn About What We Digitize' })).toBeVisible();
+});
 
 test('Web > Petabox page has correct title and text', async ({ page }) => {
   await page.goto(identifier.static.petabox);
