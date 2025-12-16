@@ -1,6 +1,6 @@
-import { test } from '../fixtures';
+import { test } from '../../tests/fixtures';
 
-import { SearchOption } from '../models';
+import { SearchOption } from '../../tests/models';
 
 test(`"Begin searching" page displays prior to searching`, async ({
   searchPage,
