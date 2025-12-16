@@ -10,6 +10,13 @@ export class DetailsPage {
   readonly iaTheater: Locator;
   readonly iaCarousel: Locator;
 
+  readonly tvNewsArchive: Locator;
+  readonly tvSearchTitle: Locator;
+
+  readonly formInputRadioPage: Locator;
+  readonly formInputTVPage: Locator;
+  readonly formInputWaybackPage: Locator;
+
   readonly bookReader: BookReader;
   readonly lendingBar: LendingBar;
   readonly iaMusicTheater: IAMusicTheater;
@@ -19,6 +26,17 @@ export class DetailsPage {
 
     this.iaTheater = this.page.locator('#theatre-ia');
     this.iaCarousel = this.iaTheater.locator('#ia-carousel');
+
+    this.tvNewsArchive = this.page.getByRole('link', { name: 'TV News Archive', exact: true });
+    this.tvSearchTitle = this.page.getByRole('heading', { name: 'Search' });
+
+    this.formInputRadioPage = page.locator('input#text-input');
+    this.formInputTVPage = page.locator(
+      '#searchform > div > div:nth-child(1) > input.js-search-bar',
+    );
+    this.formInputWaybackPage = page.locator(
+      'input.rbt-input-main.form-control.rbt-input',
+    );
 
     this.bookReader = new BookReader(page);
     this.lendingBar = new LendingBar(page);

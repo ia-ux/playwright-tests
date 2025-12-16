@@ -1,17 +1,16 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { SortBar } from './sort-bar';
 
 import {
   DateMetadataLabel,
-  LayoutViewMode,
   SortOrder,
   SortFilter,
   ViewFacetMetadata,
   LayoutViewModeLocator,
 } from '../models';
 
-import { datesSorted, viewsSorted } from '../utils';
+import { datesSorted, viewsSorted, parseViewCount } from '../utils';
 import { CollectionSearchInput } from './collection-search-input';
 
 export class InfiniteScroller {
@@ -21,6 +20,9 @@ export class InfiniteScroller {
   readonly displayStyleSelector: Locator;
   readonly displayStyleSelectorOptions: Locator;
   readonly firstItemTile: Locator;
+  readonly gridDisplayMode: Locator;
+  readonly listDisplayMode: Locator;
+  readonly compactDisplayMode: Locator;
 
   readonly sortBar: SortBar;
   readonly collectionSearchInput: CollectionSearchInput;
@@ -28,12 +30,12 @@ export class InfiniteScroller {
   public constructor(page: Page) {
     this.page = page;
 
+    this.collectionSearchInput = new CollectionSearchInput(page);
+    this.sortBar = new SortBar(page);
+
     this.infiniteScroller = page.locator('infinite-scroller');
     this.infiniteScrollerSectionContainer =
       this.infiniteScroller.locator('#container');
-
-    this.collectionSearchInput = new CollectionSearchInput(page);
-    this.sortBar = new SortBar(page);
     const sortBarSection = this.sortBar.sortFilterBar;
     this.displayStyleSelector = sortBarSection.locator(
       'div#display-style-selector',
@@ -43,47 +45,32 @@ export class InfiniteScroller {
     this.firstItemTile = this.infiniteScrollerSectionContainer
       .locator('article')
       .first();
+
+    this.gridDisplayMode = this.displayStyleSelector.getByTestId('grid-button');
+    this.listDisplayMode = this.displayStyleSelector.getByTestId('list-detail-button');
+    this.compactDisplayMode = this.displayStyleSelector.getByTestId('list-compact-button')
   }
 
   async clickViewMode(viewModeLocator: LayoutViewModeLocator) {
     await this.displayStyleSelectorOptions.locator(viewModeLocator).click();
   }
 
-  async assertLayoutViewModeChange(viewMode: LayoutViewMode) {
-    switch (viewMode) {
-      case 'tile':
-        await expect(
-          this.displayStyleSelector.getByTestId('grid-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/grid/));
-        return;
-      case 'list':
-        await expect(
-          this.displayStyleSelector.getByTestId('list-detail-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/list-detail/));
-        return;
-      case 'compact':
-        await expect(
-          this.displayStyleSelector.getByTestId('list-compact-button'),
-        ).toHaveClass('active');
-        expect(await expect(this.infiniteScroller).toHaveClass(/list-compact/));
-        return;
-      default:
-        return;
-    }
+  async waitForFirstItemTile() {
+    const loadingTile = this.firstItemTile.locator('collection-browser-loading-tile');
+    await loadingTile.waitFor({ state: 'hidden' });
+    await this.firstItemTile.locator('#container.hoverable').waitFor({ state: 'attached' });
+    await this.firstItemTile.locator('image-block').waitFor({ state: 'visible' });
   }
 
   async hoverToFirstItem() {
-    expect(await this.firstItemTile.count()).toBe(1);
-
-    await this.firstItemTile.hover();
-    await expect(this.firstItemTile.locator('tile-hover-pane')).toBeVisible({
-      timeout: 60000,
-    });
+    const tileHoverPane = this.firstItemTile.locator('tile-hover-pane');
+    await this.waitForFirstItemTile();
+    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, timeout: 5000 });
+    await this.firstItemTile.dispatchEvent('mouseover', { timeout: 5000 });
+    await tileHoverPane.waitFor({ state: 'attached' });
   }
 
-  async assertTileHoverPaneTitleIsSameWithItemTile() {
+  async firstTileTitleMatchesHoverPaneTitle() {
     const textFirstItemTile = await this.firstItemTile
       .locator('#title > h4')
       .first()
@@ -91,25 +78,19 @@ export class InfiniteScroller {
     const textTileHoverPane = await this.firstItemTile
       .locator('tile-hover-pane #title > a')
       .innerText();
-    expect(textFirstItemTile).toEqual(textTileHoverPane);
+    return textFirstItemTile === textTileHoverPane; 
   }
 
-  async clickFirstResultAndCheckRedirectToDetailsPage() {
-    await this.firstItemTile.waitFor({ state: 'attached' });
-    await this.firstItemTile.waitFor({ state: 'visible' });
+  async clickFirstItemTile() {
+    await this.firstItemTile.click();
+  }
 
-    expect(await this.firstItemTile.count()).toBe(1);
-
-    // Get item tile link to compare with the redirect URL
+  async firstItemTileHrefPattern(): Promise<RegExp> {
     const itemLink = await this.firstItemTile
       .locator('a')
       .first()
       .getAttribute('href');
-    const pattern = new RegExp(`${itemLink}`);
-    await this.firstItemTile.click();
-
-    await this.page.waitForLoadState('load', { timeout: 60000 });
-    await expect(this.page).toHaveURL(pattern);
+    return new RegExp(`${itemLink}`);
   }
 
   // TODO: per sort filter and sort order + view mode???
@@ -126,12 +107,15 @@ export class InfiniteScroller {
       const isAllViews = tileStatsViews.every(stat =>
         stat.includes(filter.toLowerCase()),
       );
-      // Check if views are sorted correctly
-      const arrViewCount = tileStatsViews.map(stat => parseInt(stat.split(' ')[0], 10));
+
+      const arrViewCount: number[] = tileStatsViews.map(stat => parseViewCount(stat));
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
-      expect(isAllViews).toBeTruthy();
-      expect(isSortedCorrectly).toBeTruthy();
+      if (isAllViews && isSortedCorrectly) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     // This test is only applicable in list view mode for "Date" filters
@@ -154,8 +138,7 @@ export class InfiniteScroller {
       );
       const isSortedCorrectly = datesSorted(order, dateMetadataLabels);
 
-      expect(isDateFilter).toBeTruthy();
-      expect(isSortedCorrectly).toBeTruthy();
+      return isDateFilter && isSortedCorrectly;
     }
   }
 
@@ -175,12 +158,9 @@ export class InfiniteScroller {
           ? facetedResults.includes(label)
           : !facetedResults.includes(label);
       });
-      expect(isAllFacettedCorrectly).toBeTruthy();
+      return isAllFacettedCorrectly;
     }
-  }
-
-  async displaysFirstResult() {
-    await expect(this.firstItemTile).toBeVisible({ timeout: 60000 });
+    return false;
   }
 
   // Getters
@@ -192,8 +172,6 @@ export class InfiniteScroller {
 
     let index = 0;
     while (index !== displayItemCount) {
-      await this.checkIfPageStillLoading();
-
       const itemTileCount = await allItems[index]
         .locator('a > item-tile')
         .count();
@@ -251,7 +229,8 @@ export class InfiniteScroller {
   }
 
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
-    await item.locator('#container').waitFor({ state: 'visible' });
+    await item.locator('tile-dispatcher').waitFor({ state: 'visible' });
+    await item.locator('a').waitFor({ state: 'visible' });
     const collectionTileCount = await item
       .locator('a > collection-tile')
       .count();
@@ -270,7 +249,6 @@ export class InfiniteScroller {
       .locator('#dates-line > div.metadata')
       .last()
       .innerText();
-
     if (dateSpanLabel) {
       // Need to split date filter and date format value: Published: 2150 or Published: Nov 15, 2023
       // Ideal format: { filter: 'Published', date: '2150' }
@@ -309,8 +287,6 @@ export class InfiniteScroller {
 
     let index = 0;
     while (index !== displayItemCount) {
-      await this.checkIfPageStillLoading();
-
       switch (viewFacetMetadata) {
         case 'tile-collection-icon-title':
           await this.getCollectionItemTileTitle(allItems[index], arrTitles);
@@ -337,18 +313,4 @@ export class InfiniteScroller {
     return arrIdentifiers;
   }
 
-  async checkIfPageStillLoading() {
-    const resultsText = await this.page
-      .getByTestId('results-total')
-      .locator('#big-results-count')
-      .innerText();
-    const btnIndicatorText = await this.page
-      .locator('#go-button')
-      .getAttribute('class');
-    if (resultsText.includes('Searching') && btnIndicatorText === 'loading') {
-      await this.checkIfPageStillLoading(); // Recursive call
-    } else {
-      return;
-    }
-  }
 }

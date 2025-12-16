@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { SearchOption } from '../models';
 
@@ -29,11 +29,8 @@ export class CollectionSearchInput {
 
   async queryFor(query: string) {
     await this.formInputSearchPage.fill(query);
-    await this.formInputSearchPage.press('Enter');
-  }
-
-  async validateSearchInput(query: string) {
-    expect(await this.formInputSearchPage.inputValue()).toBe(query);
+    await this.btnCollectionSearchInputGo.click();
+    await this.page.waitForTimeout(3000); // Wait for search results to load
   }
 
   async clickClearSearchInput() {
@@ -41,17 +38,10 @@ export class CollectionSearchInput {
   }
 
   async clickSearchInputOption(option: SearchOption, type: string) {
-    const btnName = type === 'collection' ? 'Search this collection' : 'GO';
-
-    await expect(
-      this.collectionSearchInput.getByRole('button', { name: btnName }),
-    ).toBeVisible();
+    await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
+    await this.collectionSearchInput.locator('#go-button').waitFor({ state: 'visible'});
     await this.formInputSearchPage.click({ force: true });
     await this.page.getByLabel('Search Options').getByText(option).click();
   }
 
-  async validateClearSearchInput() {
-    await expect(this.btnClearInput).not.toBeVisible();
-    expect(await this.formInputSearchPage.inputValue()).toBe('');
-  }
 }

@@ -1,64 +1,36 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { FacetGroup, FacetType } from '../models';
 
 export class CollectionFacets {
   readonly page: Page;
-  readonly collectionFacets: Locator;
+  readonly facets: Locator;
   readonly modalManager: Locator;
   readonly moreFacetsContent: Locator;
   readonly btnClearAllFilters: Locator;
+  readonly resultsTotal: Locator;
+  readonly yearPublishedFacetGroup: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.collectionFacets = page.locator('collection-facets');
+    this.facets = page.locator('collection-facets');
     this.modalManager = page.locator('modal-manager');
     this.moreFacetsContent = page.locator('more-facets-content');
     this.btnClearAllFilters = page.locator(
       '#facets-header-container div.clear-filters-btn-row button',
     );
-  }
-
-  async displaysResultCount() {
-    await expect(this.page.getByTestId('results-total')).toBeVisible();
+    this.resultsTotal = page.getByTestId('results-total');
+    this.yearPublishedFacetGroup = page.getByTestId(
+      'facet-group-header-label-date-picker',
+    );
   }
 
   async clickClearAllFilters() {
-    await expect(this.btnClearAllFilters).toBeVisible();
+    await this.btnClearAllFilters.waitFor({ state: 'visible' });
     await this.btnClearAllFilters.click();
   }
 
-  async assertClearAllFiltersNotVisible() {
-    await expect(this.btnClearAllFilters).not.toBeVisible();
-  }
-
-  async assertFacetGroupCount(type: string, headerNames: string[]) {
-    let count = 0;
-    for (const name of headerNames) {
-      await this.expectHeaderByName(name);
-      count++;
-    }
-
-    // Collection facet group = 8
-    // Search facet group = 7 
-    if (type === 'collection') {
-      expect(count).toEqual(8);
-    } else {
-      expect(count).toEqual(7);
-    }
-  }
-
-  private async expectHeaderByName(headerName: string) {
-    await expect(
-      this.page.getByRole('heading', { name: headerName }),
-    ).toBeVisible();
-  }
-
-  async assertDatePickerVisible() {
-    const yearPublishedFacetGroup = this.page.getByTestId(
-      'facet-group-header-label-date-picker',
-    );
-    await yearPublishedFacetGroup.waitFor({ state: 'visible' });
-    await expect(yearPublishedFacetGroup).toBeVisible();
+  async datePickerVisible() {
+    await this.yearPublishedFacetGroup.waitFor({ state: 'visible' });
   }
 
   async toggleFacetSelection(
@@ -105,7 +77,7 @@ export class CollectionFacets {
     for (const facetLabel of selectedFacetLabels) {
       const facetRow = this.moreFacetsContent
         .locator('#more-facets')
-        .getByRole('checkbox', { name: facetLabel });
+        .getByTestId(`subject:${facetLabel}-show-only`);
       await facetRow.check();
     }
     await btnApplyFilters.click();
