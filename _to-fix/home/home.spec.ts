@@ -1,6 +1,6 @@
-import { test } from '../fixtures';
+import { test } from '../../tests/fixtures';
 
-import { SearchOption } from '../models';
+import { SearchOption } from '../../tests/models';
 
 test('Home page displays all of its elements', async ({ homePage }) => {
   await test.step('Validate if page elements were loaded', async () => {
