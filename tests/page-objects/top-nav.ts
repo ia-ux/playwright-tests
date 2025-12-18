@@ -54,5 +54,4 @@ export class TopNav {
       await expect(this.infoBox).not.toBeVisible();
     }
   }
-
 }

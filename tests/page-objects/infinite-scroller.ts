@@ -111,11 +111,7 @@ export class InfiniteScroller {
       const arrViewCount: number[] = tileStatsViews.map(stat => parseViewCount(stat));
       const isSortedCorrectly = viewsSorted(order, arrViewCount);
 
-      if (isAllViews && isSortedCorrectly) {
-        return true;
-      } else {
-        return false;
-      }
+      return isAllViews && isSortedCorrectly;
     }
 
     // This test is only applicable in list view mode for "Date" filters

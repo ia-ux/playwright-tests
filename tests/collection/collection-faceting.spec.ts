@@ -25,10 +25,10 @@ test(`Select a facet for videos and clear facet filters`, async ({
   const { collectionFacets, infiniteScroller } = collectionPage;
   await test.step(`Select "movies" from inside "Media Type" facet group and check 5 item results for "Movie" tile icon titles`, async () => {
     await collectionFacets.toggleFacetSelection(FacetGroup.MEDIATYPE, 'movies', 'positive');
-    const isFacettedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
+    const isFacetedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Movie'], true, 5,
     );
-    expect(isFacettedCorrectly).toBeTruthy();
+    expect(isFacetedCorrectly).toBeTruthy();
   });
 
   await test.step(`Click "Clear all filters"`, async () => {
@@ -49,10 +49,10 @@ test(`Select Year Published range via date picker`, async ({
 
   await test.step(`Switch to list view mode to check the first 10 item results Published texts are ONLY 2014 or 2015`, async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
-    const isFacettedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
+    const isFacetedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
       'list-date', ['1954', '1955'], true, 10,
     );
-    expect(isFacettedCorrectly).toBeTruthy();
+    expect(isFacetedCorrectly).toBeTruthy();
   });
 });
 
@@ -60,10 +60,10 @@ test(`Negative facet to exclude audio`, async ({ collectionPage }) => {
   const { collectionFacets, infiniteScroller } = collectionPage;
   await test.step(`Select "eye" icon near "audio" from inside "Media Type" facet group and check if there's no results with "Audio" tile icon title`, async () => {
     await collectionFacets.toggleFacetSelection(FacetGroup.MEDIATYPE, 'audio', 'negative');
-    const isFacettedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
+    const isFacetedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Audio'], false, 10,
     );
-    expect(isFacettedCorrectly).toBeTruthy();
+    expect(isFacetedCorrectly).toBeTruthy();
   });
 });
 
@@ -75,9 +75,9 @@ test(`Facets can be selected via Select filters modal`, async ({ collectionPage 
 
   await test.step(`Select "Comedy" and "Mystery" from inside "Subject" facet group`, async () => {
     await collectionFacets.selectFacetsInModal(['Comedy', 'Mystery']);
-    const isFacettedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
+    const isFacetedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Audio'], true, 10, // select only 10 items, more than that throws an error
     );
-    expect(isFacettedCorrectly).toBeTruthy();
+    expect(isFacetedCorrectly).toBeTruthy();
   });
 });

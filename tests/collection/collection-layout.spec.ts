@@ -7,7 +7,7 @@ test.beforeEach(async ({ collectionPage }) => {
   const { collectionSearchInput } = collectionPage;
   test.info().annotations.push({
     type: 'Test',
-    description: 'Do collection metadata search every each test',
+    description: 'Perform collection metadata search before each test',
   });
 
   await test.step(`Select "Search metadata" and do a metadata search for "radio"`, async () => {

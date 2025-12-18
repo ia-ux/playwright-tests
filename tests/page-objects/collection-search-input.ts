@@ -30,7 +30,7 @@ export class CollectionSearchInput {
   async queryFor(query: string) {
     await this.formInputSearchPage.fill(query);
     await this.btnCollectionSearchInputGo.click();
-    await this.page.waitForTimeout(3000); // Wait for search results to load
+    await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
   }
 
   async clickClearSearchInput() {
