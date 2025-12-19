@@ -1,58 +1,27 @@
 import { type Page, type Locator, expect } from '@playwright/test';
 
 export class TopNav {
+  readonly mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+
   readonly page: Page;
 
   readonly iaTopNav: Locator;
+  readonly mediaMenu: Locator;
   readonly mediaMenuButtons: Locator;
-  
-  private navHome: Locator;
-  
-  private mediaSlider: Locator;
-  private infoBox: Locator;
-
-  private mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+  readonly navHome: Locator;
+  readonly mediaSlider: Locator;
+  readonly infoBox: Locator;
 
   public constructor(page: Page) {
     this.page = page;
 
     this.iaTopNav = this.page.locator('ia-topnav');
-    this.mediaMenuButtons = this.iaTopNav.locator('media-menu');
-
     this.navHome = this.iaTopNav.locator('primary-nav nav > div.branding');
+    this.mediaMenu = this.iaTopNav.locator('media-menu');
+    this.mediaMenuButtons = this.mediaMenu.locator('.menu-group').locator('media-button');
 
     this.mediaSlider = this.page.locator('media-slider');
     this.infoBox = this.mediaSlider.locator('.information-menu').locator('.info-box');
-  }
-
-  async clickMediaButtons() {
-    const mediaButtons = await this.iaTopNav.locator('media-menu').locator('media-button').all();
-    expect(mediaButtons.length).toEqual(8);
-
-    for (let [i, text] of this.mediaTypeTexts.entries()) {
-      const elemAttr = await mediaButtons[i].getAttribute('data-mediatype');
-      expect(elemAttr).toEqual(text);
-    }
-
-    await this.clickMediaButton('web');
-    await expect(this.infoBox.locator('wayback-search')).toBeVisible();
-
-    await this.clickMediaButton('texts');
-    await expect(this.infoBox.locator('a:has-text("Open Library")')).toBeVisible();
-
-    await this.clickMediaButton('video');
-    await expect(this.infoBox.locator('a:has-text("TV News")')).toBeVisible();
-
-    await this.clickMediaButton('audio');
-    await expect(this.infoBox.locator('a:has-text("Live Music Archive")')).toBeVisible();
-
-    await this.clickMediaButton('software');
-    await expect(this.infoBox.locator('a:has-text("Internet Arcade")')).toBeVisible();
-
-    await this.clickMediaButton('images');
-    await expect(this.infoBox.locator('a:has-text("Metropolitan Museum")')).toBeVisible();
-
-    await this.clickMediaButton('web');
   }
 
   async getMediaSliderState() {
@@ -85,5 +54,4 @@ export class TopNav {
       await expect(this.infoBox).not.toBeVisible();
     }
   }
-
 }

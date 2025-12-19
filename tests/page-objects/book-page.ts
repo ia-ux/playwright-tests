@@ -10,7 +10,6 @@ export class BookPage {
 
   readonly brShell: Locator;
   readonly brContainer: Locator;
-  readonly brFooter: Locator;
 
   readonly bookReader: BookReader;
 
