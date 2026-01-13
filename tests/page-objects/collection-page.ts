@@ -58,9 +58,9 @@ export class CollectionPage {
   }
 
   async clickCollectionTab(tabName: string) {
-    const elem = this.pageTabs.locator('ul > li');
-    await expect(elem).toHaveCount(3);
-    await elem.filter({ hasText: tabName }).click();
+    const tabs = this.pageTabs.getByRole('tab');
+    await expect(tabs).toHaveCount(3);
+    await tabs.filter({ hasText: tabName }).click();
   }
 
   async clickMoreBtnFromSummary() {
@@ -68,8 +68,8 @@ export class CollectionPage {
     await this.pageSummary.getByTestId('collection-page-more-link-btn').click();
   }
 
-  getPageActiveTabText() {
-    return this.pageTabs.locator('li.tab.active').innerText();
+  async getPageActiveTabText() {
+    return await this.pageTabs.getByRole('tab', { selected: true }).innerText();
   }
 
 }

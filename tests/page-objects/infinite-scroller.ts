@@ -82,7 +82,9 @@ export class InfiniteScroller {
   }
 
   async clickFirstItemTile() {
-    await this.firstItemTile.click();
+    await this.firstItemTile.waitFor({ state: 'visible' });
+    await this.firstItemTile.scrollIntoViewIfNeeded();
+    await this.firstItemTile.click({ timeout: 5000 });
   }
 
   async firstItemTileHrefPattern(): Promise<RegExp> {

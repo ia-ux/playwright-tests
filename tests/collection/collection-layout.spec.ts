@@ -54,7 +54,12 @@ test(`Clicking on an item tile takes you to the item`, async ({ collectionPage }
     expect(await infiniteScroller.firstItemTile.count()).toBe(1);
     const urlPattern = await infiniteScroller.firstItemTileHrefPattern();
     await infiniteScroller.clickFirstItemTile();
-    await expect(collectionPage.page).toHaveURL(urlPattern);
+    const currentUrl = collectionPage.page.url();
+    console.log('URL Pattern:', urlPattern, ' Current URL:', currentUrl);
+    if (!urlPattern.test(currentUrl)) {
+      throw new Error(`URL did not match expected pattern. Expected: ${urlPattern}, Actual: ${currentUrl}`);
+    }
+    // Test will fail and proceed to next if error is thrown
   });
 });
 
