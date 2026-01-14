@@ -57,7 +57,7 @@ export class InfiniteScroller {
 
   async waitForFirstItemTile() {
     const loadingTile = this.firstItemTile.locator('collection-browser-loading-tile');
-    await loadingTile.waitFor({ state: 'hidden' });
+    await loadingTile.waitFor({ state: 'hidden', timeout: 3000 });
     await this.firstItemTile.locator('#container.hoverable').waitFor({ state: 'attached' });
     await this.firstItemTile.locator('image-block').waitFor({ state: 'visible' });
   }
@@ -260,8 +260,7 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
-    await this.page.waitForTimeout(1000);
-    await item.locator('tile-stats').waitFor({ state: 'visible' });
+    await item.locator('tile-stats').waitFor({ state: 'visible', timeout: 3000 });
     // Get mediatype-icon title attr from tile-stats row element
     return await item
       .locator('#stats-row > li:nth-child(1) > tile-mediatype-icon > #icon')
@@ -270,7 +269,7 @@ export class InfiniteScroller {
 
   async getAllInfiniteScrollerArticleItems() {
     const container = this.infiniteScroller.locator('section#container');
-    await container.waitFor({ state: 'visible' });
+    await container.waitFor({ state: 'visible', timeout: 3000 });
     return await container.locator('article').all();
   }
 

@@ -58,8 +58,9 @@ test(`Clicking on an item tile takes you to the item`, async ({ collectionPage }
     console.log('URL Pattern:', urlPattern, ' Current URL:', currentUrl);
     if (!urlPattern.test(currentUrl)) {
       throw new Error(`URL did not match expected pattern. Expected: ${urlPattern}, Actual: ${currentUrl}`);
+    } else {
+      expect(urlPattern.test(currentUrl)).toBeTruthy();
     }
-    // Test will fail and proceed to next if error is thrown
   });
 });
 
