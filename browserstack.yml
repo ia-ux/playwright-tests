@@ -11,9 +11,9 @@ accessKey: process.env.BROWSERSTACK_ACCESS_KEY
 # ======================
 # The following capabilities are used to set up reporting on BrowserStack:
 # Set 'projectName' to the name of your project. Example, Marketing Website
-projectName: ia-ux playwright e2e tests 
+projectName: "ia-ux playwright e2e tests"
 # Set `buildName` as the name of the job / testsuite being run
-buildName: ia-browserstack-e2e-tests
+buildName: "ia-browserstack-e2e-tests"
 # `buildIdentifier` is a unique id to differentiate every execution that gets appended to
 # buildName. Choose your buildIdentifier format from the available expressions:
 # ${BUILD_NUMBER} (Default): Generates an incremental counter with every execution
@@ -49,7 +49,7 @@ platforms:
 # Example 1 - If you have configured 3 platforms and set `parallelsPerPlatform` as 2, a total of 6 (2 * 3) parallel threads will be used on BrowserStack
 #
 # Example 2 - If you have configured 1 platform and set `parallelsPerPlatform` as 5, a total of 5 (1 * 5) parallel threads will be used on BrowserStack
-parallelsPerPlatform: 2
+parallelsPerPlatform: 1
 
 # ==========================================
 # BrowserStack Local
@@ -81,3 +81,4 @@ consoleLogs: errors # <string> Remote browser's console debug levels to be print
 testObservability: true
 
 browserstack.playwrightVersion: 1.53.0
+idleTimeout: 350 # session idle timeout in seconds

@@ -24,11 +24,12 @@ const reportName = () => `${process.env.CATEGORY}/${formattedDateTime()}`;
  * Can be modified if needed
  */
 export default defineConfig({
-  workers: 3,  // see scripts/executeTests.js instead
+  fullyParallel: true,
+  workers: 1,  // see scripts/executeTests.js instead
   // Give failing tests 3 retry attempts
   retries: 3,
   // Timeout for each test
-  timeout: 5 * 60 * 1000,         // set to 5mins
+  timeout: 1.5 * 60 * 1000,         // set to 1.5 mins
   // Maximum time the whole test suite can run
   globalTimeout: 30 * 60 * 1000,  // set to 30mins
   testDir: './tests',
