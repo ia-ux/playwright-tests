@@ -65,7 +65,7 @@ export class InfiniteScroller {
   async hoverToFirstItem() {
     const tileHoverPane = this.firstItemTile.locator('tile-hover-pane');
     await this.waitForFirstItemTile();
-    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, timeout: 5000 });
+    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, force: true, timeout: 5000 });
     await this.firstItemTile.dispatchEvent('mouseover', { timeout: 5000 });
     await tileHoverPane.waitFor({ state: 'attached' });
   }
@@ -82,9 +82,10 @@ export class InfiniteScroller {
   }
 
   async clickFirstItemTile() {
-    await this.firstItemTile.waitFor({ state: 'visible' });
-    await this.firstItemTile.scrollIntoViewIfNeeded();
+    await this.firstItemTile.locator('#container').waitFor({ state: 'visible', timeout: 5000 });
+    await this.firstItemTile.hover({ force: false }); // ensure that hover state is not blocking click
     await this.firstItemTile.click({ timeout: 5000 });
+    await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
   }
 
   async firstItemTileHrefPattern(): Promise<RegExp> {
