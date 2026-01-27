@@ -5,7 +5,7 @@ import { SortOrder } from '../models';
 export class SortBar {
   readonly page: Page;
   readonly sortFilterBar: Locator;
-  readonly sortSelector: Locator;
+  readonly desktopSortSelector: Locator;
   readonly btnSortDirection: Locator;
   readonly alphaBar: Locator;
   readonly srSortText: Locator;
@@ -14,7 +14,7 @@ export class SortBar {
     this.page = page;
     this.alphaBar = page.locator('alpha-bar');
     this.sortFilterBar = page.locator('sort-filter-bar section#sort-bar');
-    this.sortSelector = this.sortFilterBar.locator('ul#desktop-sort-selector');
+    this.desktopSortSelector = this.sortFilterBar.locator('ul#desktop-sort-selector');
     this.btnSortDirection = this.sortFilterBar.locator('.sort-direction-icon');
     this.srSortText = this.sortFilterBar.locator(
       'button.sort-direction-selector span.sr-only',
@@ -26,10 +26,9 @@ export class SortBar {
   }
 
   async caratButtonClick(sortName: string) {
-    await this.page
-      .getByRole('button', { name: sortName })
-      .getByRole('button')
-      .click();
+    const dropdownId = sortName.includes('views') ? '#views-dropdown' : '#date-dropdown';
+    const sortSpan = this.desktopSortSelector.locator(`li ${dropdownId} span.dropdown-label`);
+    await sortSpan.dblclick({ delay: 250 });
   }
 
   async textClick(name: string) {
@@ -38,16 +37,20 @@ export class SortBar {
 
   async applySortFilter(filter: string) {
     const flatSortTextList = ['Relevance', 'Title', 'Creator'];
+    await this.buttonClick('Creator'); // to ensure sort bar is expanded
 
     if (!flatSortTextList.includes(filter)) {
-      const _toggleOption = filter.includes('views')
-        ? await this.sortSelector.locator('li #views-dropdown').innerText()
-        : await this.sortSelector.locator('li #date-dropdown').innerText();
+      const toggleOptionText = filter.includes('views')
+        ? await this.desktopSortSelector.locator('li #views-dropdown').innerText()
+        : await this.desktopSortSelector.locator('li #date-dropdown').innerText();
 
-      if (filter === _toggleOption) {
+      // Sort filter may be inside the dropdowns (views or date)
+      // Else it may be a text already visible on the sort bar
+      if (filter === toggleOptionText) {
         await this.textClick(filter);
       } else {
-        await this.caratButtonClick(`Toggle options ${_toggleOption}`);
+        // await this.caratButtonClick(toggleOptionText);
+        await this.caratButtonClick(toggleOptionText);
         await this.buttonClick(filter);
       }
     } else {

@@ -84,7 +84,7 @@ export class InfiniteScroller {
   async clickFirstItemTile() {
     await this.firstItemTile.locator('#container').waitFor({ state: 'visible', timeout: 5000 });
     await this.firstItemTile.hover({ force: false }); // ensure that hover state is not blocking click
-    await this.firstItemTile.click({ timeout: 5000 });
+    await this.firstItemTile.click({ timeout: 3000 });
     await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
   }
 
