@@ -7,14 +7,14 @@ test.beforeEach(async ({ context }) => {
 });
 
 test('Bookserver page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.static.bookserver);
+  await page.goto(identifier.static.bookserver, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle(/Internet Archive: A Future for Books -- BookServer/);
   await expect(page.locator('h1:has-text("A Future for Books -- BookServer")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('The widespread success of digital reading');
 });
 
 test('Scanning page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.static.scanning);
+  await page.goto(identifier.static.scanning, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
   await expect(page.locator('h1:has-text("Digitize & Preserve")')).toBeVisible();
   await expect(page.getByText('Our digitization services')).toBeVisible();
@@ -22,14 +22,14 @@ test('Scanning page has correct title and text', async ({ page }) => {
 });
 
 test('Web > Petabox page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.static.petabox);
+  await page.goto(identifier.static.petabox, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle(/Internet Archive: Petabox/);
   await expect(page.locator('#content-container').locator('h1:has-text("Petabox")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('A few highlights from the Petabox');
 });
 
 test('Web > SFlan page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.static.sflan);
+  await page.goto(identifier.static.sflan, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle(/Internet Archive: SFLan/);
   await expect(page.locator('h1:has-text("Community Wireless")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('Internet access in bulk, delivered');

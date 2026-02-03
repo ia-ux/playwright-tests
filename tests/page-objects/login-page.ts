@@ -18,7 +18,7 @@ export class LoginPage {
   async loginAs(user: UserType) {
     const asUser = user === 'privs' ? config.privUser : config.patronUser;
 
-    await this.page.goto(login.url);
+    await this.page.goto(login.url, { waitUntil: 'domcontentloaded' });
     await this.page.fill(
       'input.form-element.input-email[type=email]',
       asUser.email,
@@ -34,7 +34,7 @@ export class LoginPage {
   }
 
   async assertAccountSettingsDisplayed() {
-    await this.page.goto(accountSettings.url);
+    await this.page.goto(accountSettings.url, { waitUntil: 'domcontentloaded' });
     await this.page.waitForURL(/settings=1/);
 
     await expect(this.authTemplate).toBeVisible();

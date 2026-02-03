@@ -23,7 +23,7 @@ export class BookPage {
   }
 
   async goToPage(url: string) {
-    await this.page.goto(url);
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
   }
 
   // Check URL page parameter in # and path

@@ -278,7 +278,7 @@ export class LendingBarAutoRenew {
    * @param {string} uri - The URI of the page.
    */
   async gotoPage(uri: string) {
-    await this.page.goto(uri);
+    await this.page.goto(uri, { waitUntil: 'domcontentloaded' });
 
     this.timeInBrowser = await this.page.evaluate(() =>
       new Date().toISOString(),

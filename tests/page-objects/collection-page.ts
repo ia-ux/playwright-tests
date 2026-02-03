@@ -54,7 +54,7 @@ export class CollectionPage {
   }
 
   async visit(collection: string) {
-    await this.page.goto(`/details/${collection}?ab_config=EagerFacets:On`);
+    await this.page.goto(`/details/${collection}?ab_config=EagerFacets:On`, { waitUntil: 'domcontentloaded' });
   }
 
   async clickCollectionTab(tabName: string) {

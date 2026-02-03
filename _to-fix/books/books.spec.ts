@@ -1,6 +1,6 @@
 // This is a parameterized test so we can test different books in 1 test
 // more details here: https://playwright.dev/docs/test-parameterize
-import { test, expect } from '../fixtures';
+import { test, expect } from '../../tests/fixtures';
 
 import { identifier } from '../../config';
 

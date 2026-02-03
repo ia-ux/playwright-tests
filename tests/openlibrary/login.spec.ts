@@ -2,9 +2,8 @@ import { test, expect } from '@playwright/test';
 
 const openlibrary_login_url = 'https://openlibrary.org/account/login';
 
-test('OpenLibrary: Google sign-in loads and is clickable', async ({ page, browserName }) => {
-
-  await page.goto(openlibrary_login_url);
+test('OpenLibrary: Google sign-in loads and is clickable', async ({ page, browserName, browser }) => {
+  await page.goto(openlibrary_login_url, { waitUntil: 'networkidle' });
   await page.waitForLoadState('networkidle');
 
   const iframe = page.locator('#ia-third-party-logins');
@@ -36,12 +35,21 @@ test('OpenLibrary: Google sign-in loads and is clickable', async ({ page, browse
   console.log('Google button visible:', await googleButton.isVisible());
   await expect(googleButton).toBeVisible();
 
-  if (browserName === 'chromium') {
-    // Click button and wait for popup
+  console.log('browserName:', browserName, ' version: ', browser.version());
+
+  const browserVersion = browser.version();
+  const excludedVersions = ['18.5', '139.0'];
+  // Skip click test on known problematic versions - WebKit 18.5 and Firefox 139.0 - also if running in BrowserStack
+  if (excludedVersions.some(version => browserVersion.includes(version))) {
+   console.log(`Skipping Google sign-in click test on ${browserName}`); 
+  } else {
+   // Click button and wait for popup
     const [popup] = await Promise.all([
       page.waitForEvent('popup'),
       googleButton.evaluate(button => button.click())
     ]);
-    expect(popup.url()).toContain('accounts.google.com');
+    expect(popup.url()).toContain('accounts.google.com'); 
   }
+
+  await page.close();
 });

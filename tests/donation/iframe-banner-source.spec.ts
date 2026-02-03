@@ -11,6 +11,7 @@ test.beforeEach(async ({ context }) => {
 test(`Wayback navbar.php with ${permanentVariant1}`, async ({ page }) => {
   await page.goto(
     `/web/navbar.php?platform=wb&transpiled=1&reCache=1&variant=${permanentVariant1}`,
+    { waitUntil: 'domcontentloaded' }
   );
   await expect(page).toHaveTitle(/Internet Archive Wayback Machine/);
 
@@ -30,6 +31,7 @@ test(
   async ({ page }) => {
     await page.goto(
       `/web/navbar.php?platform=wb&transpiled=1&reCache=1&variant=${permanentVariant1}`,
+      { waitUntil: 'domcontentloaded' }
     );
 
     const continueToDonationButton = page.locator(

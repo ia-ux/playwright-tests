@@ -7,7 +7,7 @@ test.beforeEach(async ({ context }) => {
 });
 
 test('TV has borrow button', async ({ page }) => {
-  await page.goto(`${identifier.av.default}`)
+  await page.goto(`${identifier.av.default}`, { waitUntil: 'domcontentloaded' });
 
   const e = page.locator('.action-buttons-section');
   await expect(e).toHaveText(/Borrow Program/);

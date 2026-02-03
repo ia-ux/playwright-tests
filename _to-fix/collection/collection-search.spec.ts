@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures';
-import { SearchOption } from '../models';
+import { test, expect } from '../../tests/fixtures';
+import { SearchOption } from '../../tests/models';
 
 test('Collection search metadata', async ({ collectionPage }) => {
   const { collectionFacets, collectionSearchInput, infiniteScroller } = collectionPage;

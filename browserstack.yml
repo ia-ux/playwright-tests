@@ -81,3 +81,5 @@ consoleLogs: errors # <string> Remote browser's console debug levels to be print
 testObservability: true
 
 browserstack.playwrightVersion: 1.53.0
+
+idleTimeout: 3500

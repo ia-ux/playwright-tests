@@ -74,7 +74,7 @@ export const test = base.extend<PageFixtures>({
     // Set up the fixture.
     const homePage = new HomePage(page);
 
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
