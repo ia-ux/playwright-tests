@@ -25,7 +25,7 @@ $ npm i
 $ docker run -it --rm \
   -w /work \
   -v $PWD:/work \
-  mcr.microsoft.com/playwright:v1.51.1-jammy /bin/bash
+  mcr.microsoft.com/playwright:v1.53.0-jammy /bin/bash
 ```
 
 Run in Docker with the ability to use `--headed` (when using Docker, this likely this only works on Linux):
@@ -38,7 +38,7 @@ $ docker run -it --rm \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -w /work \
   -v $PWD:/work \
-  mcr.microsoft.com/playwright:v1.51.1-jammy /bin/bash
+  mcr.microsoft.com/playwright:v1.53.0-jammy /bin/bash
 ```
 
 ### Local Setup (NPM option)
@@ -57,7 +57,7 @@ $ docker run -it --rm \
 
 ## Quick start for running tests
 
-If using Docker, run these commands in the shell started with `docker run`; if not, simply run them in your local shell.
+If using Docker/Podman, run these commands in the shell started with `docker run` or `podman run` (switch `docker run` below to `podman run`); if not, simply run them in your local shell.
 
 - Run all tests:
 
