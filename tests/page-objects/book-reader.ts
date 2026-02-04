@@ -23,8 +23,6 @@ export class BookReader {
   readonly brOneUpView: Locator;
   readonly brTwoUpView: Locator;
 
-  readonly pages: Locator[];
-
   public constructor(page: Page) {
     this.page = page;
 
@@ -39,7 +37,7 @@ export class BookReader {
     this.brReadAloud = this.bookReaderShell.getByRole('button', { name: 'Read this book aloud' });
     this.brZoomIn = this.bookReaderShell.getByRole('button', { name: 'Zoom in' });
     this.brZoomOut = this.bookReaderShell.getByRole('button', { name: 'Zoom out' });
-    this.brFullScreen = this.bookReaderShell.getByRole('button', { name: 'Toggle fullscreen' });
+    this.brFullScreen = this.bookReaderShell.getByRole('button', { name: 'Go fullscreen' });
 
     this.brOneUpView = this.brContainer.locator('br-mode-1up');
     this.brTwoUpView = this.brContainer.locator('br-mode-2up');
@@ -67,6 +65,8 @@ export class BookReader {
 
   async clickThumbnailMode(){
     await this.brThumb.click();
+    await this.brOneUpView.waitFor({ state: 'hidden' });
+    await this.brTwoUpView.waitFor({ state: 'hidden' });
     await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
   }
 }

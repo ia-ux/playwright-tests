@@ -58,7 +58,7 @@ export default defineConfig({
       name: 'Desktop - Chromium',
       use: {
         ...devices['Desktop Chrome'],
-        ignoreHTTPSErrors: true,  // this is needed to avoid getting warnings like: the website is not safe
+        ignoreHTTPSErrors: true,  // This is needed to avoid getting warnings like: The website is not safe
       },
     },
     {
@@ -74,6 +74,14 @@ export default defineConfig({
         ...devices['Desktop Safari'],
         ignoreHTTPSErrors: true,
       },
+    },
+    {
+      name: 'Desktop - Microsoft Edge',
+      use: { 
+        ...devices['Desktop Edge'],
+        ignoreHTTPSErrors: true,
+        channel: 'msedge' // or 'msedge-dev'
+      }, 
     },
   ],
 });

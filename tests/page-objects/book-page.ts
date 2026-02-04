@@ -10,6 +10,7 @@ export class BookPage {
 
   readonly brShell: Locator;
   readonly brContainer: Locator;
+  readonly brPageVisible: Locator;
 
   readonly bookReader: BookReader;
 
@@ -20,10 +21,12 @@ export class BookPage {
 
     this.brShell = this.bookReader.bookReaderShell;
     this.brContainer = this.bookReader.brContainer;
+    this.brPageVisible = this.brShell.locator('.BRpagecontainer.BRpage-visible');
   }
 
   async goToPage(url: string) {
-    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+    await this.page.goto(url, { waitUntil: 'commit' });
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   // Check URL page parameter in # and path
@@ -57,12 +60,18 @@ export class BookPage {
   }
 
   async getBRShellPageBoundingBox() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.locator('#theatre-ia').waitFor({ state: 'visible'});
     await this.brShell.waitFor({ state: 'visible'});
+    await this.brPageVisible.waitFor({ state: 'visible' });
     return await this.brShell.boundingBox();
   }
 
   async getBRContainerPageBoundingBox() {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.locator('#theatre-ia').waitFor({ state: 'visible' });
     await this.brContainer.waitFor({ state: 'visible' });
+    await this.brPageVisible.waitFor({ state: 'visible' });
     return await this.brContainer.boundingBox(); 
   }
 
@@ -85,8 +94,8 @@ export class BookPage {
   }
 
   async getBRPageBoundingBoxDimension(dimension: string) {
-    const element = this.page.locator('.BRpagecontainer.BRpage-visible');
-    const brPageBoundingBox = await element.boundingBox();
+    await this.brPageVisible.waitFor({ state: 'visible' });
+    const brPageBoundingBox = await this.brPageVisible.boundingBox();
     return brPageBoundingBox?.[dimension];
   }
 
@@ -108,5 +117,4 @@ export class BookPage {
     await this.bookReader.brFullScreen.click();
     await this.page.waitForTimeout(PAGE_WAIT_TIME);
   }
-
 }

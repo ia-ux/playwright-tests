@@ -6,8 +6,12 @@ test.beforeEach(async ({ context }) => {
   await testBeforeEachConfig(context);
 });
 
+test.afterEach(async ({ page }) => {
+  await page.close();
+});
+
 test('Canonical About page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.url, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.url, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/About IA/);
   await expect(page.locator('h1:has-text("About the Internet Archive")')).toBeVisible();
   await expect(page.locator('#maincontent').locator('a:has-text("Job Opportunities")')).toBeVisible();
@@ -17,14 +21,14 @@ test('Canonical About page has correct title and text', async ({ page }) => {
 });
 
 test('About > Bios page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.bios, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.bios, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Bios/);
   await expect(page.locator('h1:has-text("Bios")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('A passionate advocate for public Internet access');
 });
 
 test('About > Contact page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.contact, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.contact, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Contact/);
   await expect(page.locator('h1:has-text("Contacts at the Internet Archive")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('300 Funston Avenue');
@@ -32,35 +36,35 @@ test('About > Contact page has correct title and text', async ({ page }) => {
 });
 
 test('About > Credits page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.credits, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.credits, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Credits/);
   await expect(page.locator('h1:has-text("Credits: Thank You from the Internet Archive")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('The Kahle/Austin Foundation');
 });
 
 test('About > Jobs page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.jobs, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.jobs, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Jobs/);
   await expect(page.locator('h1:has-text("Job Opportunities")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('Based in San Francisco');
 });
 
-test.fixme('About > News Stories page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.news, { waitUntil: 'domcontentloaded' });
+test('About > News Stories page has correct title and text', async ({ page }) => {
+  await page.goto(identifier.about.news, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/News Stories/);
   await expect(page.locator('h1:has-text("News stories")')).toBeVisible();
   await expect(page.locator('#main-content')).toContainText('Including The Wayback Machine');
 });
 
 test('About > Terms of Service page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.terms, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.terms, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Terms of Use/);
   await expect(page.locator('h1:has-text("Terms of Use")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('This terms of use agreement');
 });
 
 test('About > Volunteer Positions page has correct title and text', async ({ page }) => {
-  await page.goto(identifier.about.volunteer, { waitUntil: 'domcontentloaded' });
+  await page.goto(identifier.about.volunteer, { waitUntil: 'commit' });
   await expect(page).toHaveTitle(/Volunteer Positions/);
   await expect(page.locator('h1:has-text("Volunteer Positions")')).toBeVisible();
   await expect(page.locator('#maincontent')).toContainText('We could always use a hand');

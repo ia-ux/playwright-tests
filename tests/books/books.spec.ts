@@ -1,6 +1,6 @@
 // This is a parameterized test so we can test different books in 1 test
 // more details here: https://playwright.dev/docs/test-parameterize
-import { test, expect } from '../../tests/fixtures';
+import { test, expect } from '../fixtures';
 
 import { identifier } from '../../config';
 
@@ -36,6 +36,8 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
       test(`On load, pages fit fully inside of the BookReader™ - ${bookIdentifier}`, async ({ bookPage }) => {
         const brShellBox = await bookPage.getBRShellPageBoundingBox();
         const brContainerBox = await bookPage.getBRContainerPageBoundingBox();
+        console.log('BR Shell box:', brShellBox?.height);
+        console.log('BR Container box:', brContainerBox?.height);
         // images do not get cropped vertically
         expect(brContainerBox?.height).toBeLessThanOrEqual(Number(brShellBox?.height));
         // images do not get cropped horizontally
@@ -43,6 +45,7 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
       });
       
       test(`Nav menu displays properly - ${bookIdentifier}`, async ({ bookPage }) => {
+        await bookPage.brPageVisible.waitFor({ state: 'visible' });
         // book flipping elements
         await expect(bookPage.bookReader.brFlipPrev).toBeVisible();
         await expect(bookPage.bookReader.brFlipNext).toBeVisible();
