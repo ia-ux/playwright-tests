@@ -40,7 +40,8 @@ test(
     await expect(continueToDonationButton).toBeVisible();
     await continueToDonationButton.click();
 
-    await expect(page.url()).toContain('https://archive.org/donate');
+    const origin = process.env.IS_REVIEW_APP === 'true' ? `${process.env.BASE_URL}` : 'https://archive.org'
+    await expect(page.url()).toContain(`${origin}/donate`);
     await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('donation-form-controller')).toBeVisible();
   },
