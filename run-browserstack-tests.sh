@@ -8,11 +8,11 @@ time {
   echo "\nRun ./tests/about"
   npx browserstack-node-sdk playwright test ./tests/about
 
-  # echo "\nRun ./tests/books"
-  # npx browserstack-node-sdk playwright test ./tests/books
+  echo "\nRun ./tests/books"
+  npx browserstack-node-sdk playwright test ./tests/books
 
-  # echo "\nRun ./tests/collection"
-  # npx browserstack-node-sdk playwright test ./tests/collection
+  echo "\nRun ./tests/collection"
+  npx browserstack-node-sdk playwright test ./tests/collection
 
   # echo "\nRun ./tests/details"
   # npx browserstack-node-sdk playwright test ./tests/details

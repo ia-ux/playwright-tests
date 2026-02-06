@@ -36,10 +36,10 @@ platforms:
     os: OS X
     osVersion: Ventura
     browserVersion: 18.5
-  - browserName: playwright-firefox
-    os: Windows
-    osVersion: 11
-    browserVersion: 139.0
+  # - browserName: playwright-firefox
+  #   os: Windows
+  #   osVersion: 11
+  #   browserVersion: 139.0
   - browserName: edge
     os: Windows
     osVersion: 11
