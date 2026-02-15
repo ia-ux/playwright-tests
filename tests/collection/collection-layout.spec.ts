@@ -39,7 +39,8 @@ test('Tile, List, and Compact layout buttons change layout', async ({
   });
 });
 
-test.skip('Tile hover pane appears', async ({ collectionPage }) => {
+test('Tile hover pane appears', async ({ collectionPage }) => {
+  test.slow();
   const { infiniteScroller } = collectionPage;
   await test.step('Hover first item tile and check for title text inside tile-hover-pane and item-tile', async () => {
     await infiniteScroller.hoverToFirstItem();
@@ -106,7 +107,6 @@ test(`Sort by Date published in List view`, async ({ collectionPage }) => {
 });
 
 test(`Sort by Date archived (ascending) in Compact view`, async ({ collectionPage }) => {
-  test.slow();
   const { collectionBrowser, sortBar } = collectionPage
   const sortOrder = 'ascending';
   await test.step('Switch to compact view mode', async () => {

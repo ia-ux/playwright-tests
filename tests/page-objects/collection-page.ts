@@ -58,7 +58,7 @@ export class CollectionPage {
   }
 
   async clickCollectionTab(tabName: string) {
-    const elem = this.pageTabs.locator('ul > li');
+    const elem = this.pageTabs.locator('button.tab');
     await expect(elem).toHaveCount(3);
     await elem.filter({ hasText: tabName }).click();
   }
@@ -69,7 +69,7 @@ export class CollectionPage {
   }
 
   getPageActiveTabText() {
-    return this.pageTabs.locator('li.tab.active').innerText();
+    return this.pageTabs.locator('button.tab.active').innerText();
   }
 
 }

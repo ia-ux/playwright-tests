@@ -72,7 +72,7 @@ export class InfiniteScroller {
 
   async firstTileTitleMatchesHoverPaneTitle() {
     const textFirstItemTile = await this.firstItemTile
-      .locator('#title > h4')
+      .locator('#title > h3')
       .first()
       .innerText();
     const textTileHoverPane = await this.firstItemTile

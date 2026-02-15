@@ -32,18 +32,18 @@ platforms:
     os: Windows
     osVersion: 11
     browserVersion: 112.0 # or 'latest' to always use the latest version
-  - browserName: playwright-webkit
-    os: OS X
-    osVersion: Ventura
-    browserVersion: 18.5
+  # - browserName: playwright-webkit
+  #   os: OS X
+  #   osVersion: Ventura
+  #   browserVersion: 18.5
   # - browserName: playwright-firefox
   #   os: Windows
   #   osVersion: 11
   #   browserVersion: 139.0
-  - browserName: edge
-    os: Windows
-    osVersion: 11
-    browserVersion: 143.0
+  # - browserName: edge
+  #   os: Windows
+  #   osVersion: 11
+  #   browserVersion: 143.0
 
 # =======================
 # Parallels per Platform

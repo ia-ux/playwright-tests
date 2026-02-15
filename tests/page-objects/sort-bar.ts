@@ -5,7 +5,7 @@ import { SortOrder } from '../models';
 export class SortBar {
   readonly page: Page;
   readonly sortFilterBar: Locator;
-  readonly sortSelector: Locator;
+  readonly desktopSortSelector: Locator;
   readonly btnSortDirection: Locator;
   readonly alphaBar: Locator;
   readonly srSortText: Locator;
@@ -14,7 +14,7 @@ export class SortBar {
     this.page = page;
     this.alphaBar = page.locator('alpha-bar');
     this.sortFilterBar = page.locator('sort-filter-bar section#sort-bar');
-    this.sortSelector = this.sortFilterBar.locator('ul#desktop-sort-selector');
+    this.desktopSortSelector = this.sortFilterBar.locator('ul#desktop-sort-selector');
     this.btnSortDirection = this.sortFilterBar.locator('.sort-direction-icon');
     this.srSortText = this.sortFilterBar.locator(
       'button.sort-direction-selector span.sr-only',
@@ -22,32 +22,37 @@ export class SortBar {
   }
 
   async buttonClick(sortName: string) {
-    await this.page.getByRole('button', { name: sortName }).click();
+    await this.desktopSortSelector.getByRole('button', { name: sortName }).click();
   }
 
-  async caratButtonClick(sortName: string) {
-    await this.page
-      .getByRole('button', { name: sortName })
-      .getByRole('button')
-      .click();
+  async caratDropdownClick(dropDownLocator: Locator) {
+    await dropDownLocator.isVisible({ timeout: 5000 });
+    await dropDownLocator.click({ force: true, clickCount: 2 });
   }
 
   async textClick(name: string) {
-    await this.page.getByText(name).first().click();
+    await this.desktopSortSelector.getByText(name).first().click();
   }
 
   async applySortFilter(filter: string) {
     const flatSortTextList = ['Relevance', 'Title', 'Creator'];
 
+    await this.desktopSortSelector.locator('li').first().waitFor({ state: 'visible', timeout: 30000 });
     if (!flatSortTextList.includes(filter)) {
       const _toggleOption = filter.includes('views')
-        ? await this.sortSelector.locator('li #views-dropdown').innerText()
-        : await this.sortSelector.locator('li #date-dropdown').innerText();
-
+        ? await this.desktopSortSelector.locator('li #views-dropdown').innerText()
+        : await this.desktopSortSelector.locator('li #date-dropdown').innerText();
+      
+      const dropdownLocator = filter.includes('views') 
+        ? this.desktopSortSelector.locator('li #views-dropdown') 
+        : this.desktopSortSelector.locator('li #date-dropdown');
+  
+      // if the filter we want to apply is already visible as a toggle option, click it, 
+      // otherwise open the dropdown and click the option there
       if (filter === _toggleOption) {
         await this.textClick(filter);
       } else {
-        await this.caratButtonClick(`Toggle options ${_toggleOption}`);
+        await this.caratDropdownClick(dropdownLocator);
         await this.buttonClick(filter);
       }
     } else {

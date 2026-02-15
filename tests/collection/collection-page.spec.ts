@@ -31,7 +31,7 @@ test(`Collections page - "More..." link to About tab appears below description`,
     await collectionPage.clickMoreBtnFromSummary();
     await expect(collectionPage.aboutPageActivity).toBeVisible();
     await expect(collectionPage.aboutPageCollectionInfo).toBeVisible();
-    expect(await collectionPage.getPageActiveTabText()).toContain('ABOUT');
+    expect(await collectionPage.getPageActiveTabText()).toContain('About');
   });
 });
 
@@ -43,14 +43,14 @@ test(`Tab navigation`, async ({ collectionPage }) => {
 
   await test.step(`Click "About" tab button and check if About page is displayed in "oldtimeradio" collection page`, async () => {
     await collectionPage.clickCollectionTab('About');
-    expect(await collectionPage.getPageActiveTabText()).toContain('ABOUT');
+    expect(await collectionPage.getPageActiveTabText()).toContain('About');
     await expect(collectionPage.aboutPageActivity).toBeVisible();
     await expect(collectionPage.aboutPageCollectionInfo).toBeVisible();
   });
 
   await test.step(`Click "Forum" tab button and check if Forum page is displayed in "oldtimeradio" collection page`, async () => {
     await collectionPage.clickCollectionTab('Forum');
-    expect(await collectionPage.getPageActiveTabText()).toContain('FORUM');
+    expect(await collectionPage.getPageActiveTabText()).toContain('Forum');
     await expect(collectionPage.forumContainer).toBeVisible();
     await expect(collectionPage.newPostButton).toBeVisible();
     await expect(collectionPage.rssButton).toBeVisible();
@@ -58,7 +58,7 @@ test(`Tab navigation`, async ({ collectionPage }) => {
 
   await test.step(`Click "Collection" tab button and check if Collections page is displayed in "oldtimeradio" collection page`, async () => {
     await collectionPage.clickCollectionTab('Collection');
-    expect(await collectionPage.getPageActiveTabText()).toContain('COLLECTION');
+    expect(await collectionPage.getPageActiveTabText()).toContain('Collection');
     await expect(collectionPage.cbContainer).toBeVisible();
   });
 });
