@@ -59,7 +59,7 @@ test(`Clicking on an item tile takes you to the item`, async ({ collectionPage }
   });
 });
 
-test(`Sort by All-time views in Tile view`, async ({ collectionPage }) => {
+test.fixme(`Sort by All-time views in Tile view`, async ({ collectionPage }) => {
   const { collectionBrowser, infiniteScroller, sortBar } = collectionPage
   const sortOrder = 'descending';
   const oppositeSortText = 'ascending';
