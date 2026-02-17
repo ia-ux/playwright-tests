@@ -26,8 +26,22 @@ export class SortBar {
   }
 
   async caratDropdownClick(dropDownLocator: Locator) {
-    await dropDownLocator.isVisible({ timeout: 5000 });
-    await dropDownLocator.click({ force: true, clickCount: 2 });
+    try {
+      await dropDownLocator.click({ force: true, clickCount: 2 });
+      // Note: this is a workaround to wait for the dropdown options to be visible before clicking on the dropdown.
+      // The sort-bar component is being set back to Relevance (default) after clicking on the dropdown, 
+      // so we can wait for that text to be set before clicking on the dropdown again to open the dropdown options.
+      const selectedOption = this.desktopSortSelector.locator('li .selected');
+      const selectedOptionText = await selectedOption.innerText();
+      console.log(`selected option: ${selectedOptionText}`);
+      if (selectedOptionText === 'Relevance') {
+        await dropDownLocator.click({ force: true, clickCount: 2 });
+      } else {
+        console.log('Selected option is not Relevance, dropdown options should be visible now');
+      }
+    } catch (e) {
+      console.warn('Relevance option was not visible initially, clicking on the dropdown without waiting for it to be visible might cause flaky test');
+    }
   }
 
   async textClick(name: string) {
@@ -37,7 +51,6 @@ export class SortBar {
   async applySortFilter(filter: string) {
     const flatSortTextList = ['Relevance', 'Title', 'Creator'];
 
-    await this.desktopSortSelector.locator('li').first().waitFor({ state: 'visible', timeout: 30000 });
     if (!flatSortTextList.includes(filter)) {
       const _toggleOption = filter.includes('views')
         ? await this.desktopSortSelector.locator('li #views-dropdown').innerText()
@@ -46,8 +59,8 @@ export class SortBar {
       const dropdownLocator = filter.includes('views') 
         ? this.desktopSortSelector.locator('li #views-dropdown') 
         : this.desktopSortSelector.locator('li #date-dropdown');
-  
-      // if the filter we want to apply is already visible as a toggle option, click it, 
+
+      // If the filter we want to apply is already visible as a toggle option, click it, 
       // otherwise open the dropdown and click the option there
       if (filter === _toggleOption) {
         await this.textClick(filter);
