@@ -38,8 +38,8 @@ time {
   # echo "\nRun ./tests/profile"
   # npx browserstack-node-sdk playwright test ./tests/profile
 
-  # echo "Run ./tests/search"
-  # npx browserstack-node-sdk playwright test ./tests/search
+  echo "Run ./tests/search"
+  npx browserstack-node-sdk playwright test ./tests/search
 
   echo "\nRun ./tests/static"
   npx browserstack-node-sdk playwright test ./tests/static

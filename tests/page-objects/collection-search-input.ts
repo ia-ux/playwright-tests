@@ -1,6 +1,6 @@
 import { type Page, type Locator } from '@playwright/test';
 
-import { SearchOption } from '../models';
+import { CollectionPageSearchOption, SearchPageSearchOption } from '../models';
 
 export class CollectionSearchInput {
   readonly page: Page;
@@ -37,11 +37,17 @@ export class CollectionSearchInput {
     await this.btnClearInput.click();
   }
 
-  async clickSearchInputOption(option: SearchOption, type: string) {
+  async clickSearchInputOption(cpOption?: CollectionPageSearchOption, spOption?: SearchPageSearchOption) {
     await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
     await this.collectionSearchInput.locator('#go-button').waitFor({ state: 'visible'});
     await this.formInputSearchPage.click({ force: true });
-    await this.page.getByLabel('Search Options').getByText(option).click();
+    // The search input on collection page has a different structure for the search options filter in search page
+    if (cpOption) { 
+      await this.page.getByLabel('Search Options').getByText(cpOption).click();
+    } else if (spOption) {
+      const tabManager = this.page.getByTestId('tab-manager-tabs-row');
+      await tabManager.getByTestId(spOption).click();
+    }
   }
 
 }

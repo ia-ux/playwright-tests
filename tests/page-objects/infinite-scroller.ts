@@ -82,14 +82,11 @@ export class InfiniteScroller {
   }
 
   async clickFirstItemTile() {
-    await this.firstItemTile.click();
+    await this.firstItemTile.click({ force: true });
   }
 
   async firstItemTileHrefPattern(): Promise<RegExp> {
-    const itemLink = await this.firstItemTile
-      .locator('a')
-      .first()
-      .getAttribute('href');
+    const itemLink = await this.firstItemTile.getByRole('link').getAttribute('href');
     return new RegExp(`${itemLink}`);
   }
 
@@ -115,15 +112,9 @@ export class InfiniteScroller {
     }
 
     // This test is only applicable in list view mode for "Date" filters
-    if (
-      filter === 'Date published' ||
-      filter === 'Date archived' ||
-      filter === 'Date added' ||
-      filter === 'Date reviewed'
-    ) {
-      const dateMetadataLabels = await this.getDateMetadataLabels(
-        displayItemCount,
-      );
+    const dateFilters = ['Date published', 'Date archived', 'Date added', 'Date reviewed'];
+    if (filter.includes('Date') && dateFilters.includes(filter)) {
+      const dateMetadataLabels = await this.getDateMetadataLabels(displayItemCount);
       // Parse date sort filter to check list of date labels from page item results
       // => Published, Archived, Added, Reviewed
       const checkFilterText = filter

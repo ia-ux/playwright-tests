@@ -13,12 +13,44 @@ export enum LayoutViewModeLocator {
   COMPACT = '#list-compact-button',
 }
 
-export enum SearchOption {
+export enum CollectionPageSearchOption {
   METADATA = `Search metadata`,
   TEXT = `Search text contents`,
   TV = `Search TV news captions`,
   RADIO = `Search radio transcripts`,
   WEB = `Search archived web sites`,
+}
+
+export enum SearchPageSearchOption {
+  ALL = 'all',
+  TEXTS = 'texts',
+  FULLTEXT = 'fulltext',
+  RADIO = 'radio',
+  TV = 'tv',
+  MOVIES = 'movies',
+  AUDIO = 'audio',
+  SOFTWARE = 'software',
+  IMAGE = 'image',
+  ETREES = 'etree',
+  COLLECTION = 'collection',
+  DATA = 'data',
+  WEB = 'web',
+}
+
+export enum ResultsCategory {
+  ALL = 'Overview',
+  TEXTS = 'Books/Documents',
+  FULLTEXT = 'Text Contents',
+  RADIO = 'Radio',
+  TV = 'TV',
+  MOVIES = 'Video',
+  AUDIO = 'Audio',
+  SOFTWARE = 'Software',
+  IMAGE = 'Images',
+  ETREES = 'Live Music',
+  COLLECTION = 'Collections',
+  DATA = 'Data',
+  WEB = 'Web Sites',
 }
 
 export type SortFilter =

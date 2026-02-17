@@ -74,7 +74,7 @@ test(`Facets can be selected via Select filters modal`, async ({ collectionPage 
   });
 
   await test.step(`Select "Comedy" and "Mystery" from inside "Subject" facet group`, async () => {
-    await collectionFacets.selectFacetsInModal(['Comedy', 'Mystery']);
+    await collectionFacets.selectFacetsInModal(['Comedy', 'Mystery'], FacetGroup.SUBJECT);
     const isFacetedCorrectly = await infiniteScroller.validateIncludedFacetedResults(
       'tile-collection-icon-title', ['Audio'], true, 10, // select only 10 items, more than that throws an error
     );

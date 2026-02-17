@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { FacetGroup, FacetType } from '../models';
+import { FacetGroup, FacetType, SearchInputType } from '../models';
 
 export class CollectionFacets {
   readonly page: Page;
@@ -69,7 +69,7 @@ export class CollectionFacets {
     }
   }
 
-  async selectFacetsInModal(selectedFacetLabels: string[]) {
+  async selectFacetsInModal(selectedFacetLabels: string[], group: FacetGroup) {
     const btnApplyFilters = this.moreFacetsContent.locator(
       '#more-facets > div.footer > button.btn.btn-submit',
     );
@@ -77,7 +77,7 @@ export class CollectionFacets {
     for (const facetLabel of selectedFacetLabels) {
       const facetRow = this.moreFacetsContent
         .locator('#more-facets')
-        .getByTestId(`subject:${facetLabel}-show-only`);
+        .getByTestId(`${group}:${facetLabel}-show-only`);
       await facetRow.check();
     }
     await btnApplyFilters.click();
