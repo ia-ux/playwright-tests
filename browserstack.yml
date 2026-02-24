@@ -62,10 +62,10 @@ parallelsPerPlatform: 1
 # ==========================================
 # Set browserStackLocal to true if your website under test is not accessible publicly over the internet
 # Learn more about how BrowserStack Local works here -> https://www.browserstack.com/docs/automate/selenium/local-testing-introduction
-browserstackLocal: false # <boolean> (Default false)
+# browserstackLocal: true # <boolean> (Default false)
 # browserStackLocalOptions:
 # Options to be passed to BrowserStack local in-case of advanced configurations
-  # localIdentifier: # <string> (Default: null) Needed if you need to run multiple instances of local.
+  # localIdentifier: test123 # <string> (Default: null) Needed if you need to run multiple instances of local.
   # forceLocal: true  # <boolean> (Default: false) Set to true if you need to resolve all your traffic via BrowserStack Local tunnel.
   # Entire list of arguments available here -> https://www.browserstack.com/docs/automate/selenium/manage-incoming-connections
 
@@ -76,7 +76,7 @@ source: node-js-playwright-sample-sdk:v1
 # Debugging features
 # ===================
 debug: true # <boolean> # Set to true if you need screenshots for every selenium command ran
-networkLogs: true # <boolean> Set to true to enable HAR logs capturing
+# networkLogs: true # <boolean> Set to true to enable HAR logs capturing
 consoleLogs: errors # <string> Remote browser's console debug levels to be printed (Default: errors)
 # Available options are `disable`, `errors`, `warnings`, `info`, `verbose` (Default: errors)
 # CUSTOM_TAG_<INT>: # <string> (Default: parent folder name of the test file) Custom tag for your test suite
@@ -85,6 +85,6 @@ consoleLogs: errors # <string> Remote browser's console debug levels to be print
 # Visit observability.browserstack.com to see your test reports and insights. To disable test observability, specify `testObservability: false` in the key below.
 testObservability: true
 
-browserstack.playwrightVersion: 1.53.0
+browserstack.playwrightVersion: 1.58.2
 
 idleTimeout: 3500
