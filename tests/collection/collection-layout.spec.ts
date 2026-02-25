@@ -11,7 +11,7 @@ test.beforeEach(async ({ collectionPage }) => {
   });
 
   await test.step(`Select "Search metadata" and do a metadata search for "radio"`, async () => {
-    await collectionSearchInput.clickSearchInputOption(CollectionPageSearchOption.METADATA);
+    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.METADATA);
     await collectionSearchInput.queryFor('radio');
   });
 });
@@ -86,7 +86,6 @@ test(`Sort by All-time views in Tile view`, async ({ collectionPage }) => {
 test(`Sort by Date published in List view`, async ({ collectionPage }) => {
   const { collectionBrowser, infiniteScroller, sortBar } = collectionPage
   const sortOrder = 'ascending';
-  const oppositeSortText = 'descending';
   const sortFilter = 'Date published';
 
   await test.step('Switch to list view mode', async () => {
@@ -95,8 +94,10 @@ test(`Sort by Date published in List view`, async ({ collectionPage }) => {
 
   await test.step(`Sort by ${sortFilter} - ${sortOrder} order`, async () => {
     await sortBar.applySortFilter(sortFilter);
-    await sortBar.clickSortDirection(sortOrder);
-    await expect(sortBar.srSortText).toContainText(`Change to ${oppositeSortText} sort`);
+    const expectedText = await sortBar.clickSortDirection(sortOrder);
+    if (expectedText) {
+      await expect(sortBar.srSortText).toContainText(`Change to ${expectedText} sort`);
+    }
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {

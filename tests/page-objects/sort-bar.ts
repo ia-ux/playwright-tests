@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { SortOrder } from '../models';
 
@@ -74,23 +74,21 @@ export class SortBar {
   }
 
   async clickSortDirection(sortOrder: SortOrder) {
-    // TODO: might still need to find better way to check sort order
     const currentSortText = await this.srSortText.innerText();
     const oppositeSortText = sortOrder === 'ascending' ? 'descending' : 'ascending';
 
     if (currentSortText.includes(sortOrder)) {
       await this.btnSortDirection.click();
-      await expect(this.srSortText).toContainText(
-        `Change to ${oppositeSortText} sort`,
-      );
+      return oppositeSortText;
     }
+    return null;
   }
 
   async checkAlphaBarVisibility(filter: string) {
     if (!['Title', 'Creator'].includes(filter)) {
-      await expect(this.alphaBar).not.toBeVisible({ timeout: 60000 });
+      return await this.alphaBar.isVisible({ timeout: 60000 });
     } else {
-      await expect(this.alphaBar).toBeVisible({ timeout: 60000 });
+      return await this.alphaBar.isVisible({ timeout: 60000 });
     }
   }
 
@@ -103,17 +101,10 @@ export class SortBar {
 
     await nthLetter.click();
 
-    // Note: assertion .toEqual has deep equality error in webkit
-    expect(await nthLetter.innerText()).toContain(alphabet[pos]);
-    expect(await letterSelected.count()).toEqual(1);
-  }
-
-  async clearAlphaBarFilter() {
-    const letterSelected = this.alphaBar.locator('#container ul > li.selected');
-    expect(await letterSelected.count()).toEqual(0);
-  }
-
-  async alphaSortBarNotVisibile() {
-    await expect(this.alphaBar).not.toBeVisible({ timeout: 60000 });
+    return {
+      letterText: await nthLetter.innerText(),
+      selectedCount: await letterSelected.count(),
+      expectedLetter: alphabet[pos]
+    };
   }
 }

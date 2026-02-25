@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { FacetGroup, FacetType, SearchInputType } from '../models';
+import { FacetGroup, FacetType } from '../models';
 
 export class CollectionFacets {
   readonly page: Page;

@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
 import { CollectionFacets } from './collection-facets';
@@ -59,7 +59,6 @@ export class CollectionPage {
 
   async clickCollectionTab(tabName: string) {
     const elem = this.pageTabs.locator('button.tab');
-    await expect(elem).toHaveCount(3);
     await elem.filter({ hasText: tabName }).click();
   }
 

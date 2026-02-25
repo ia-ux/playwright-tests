@@ -111,7 +111,9 @@ test.fixme(`Filter for title beginning with "X"`, async ({ searchPage }) => {
   });
 
   await test.step(`Select "X" from alphabet picker`, async () => {
-    await searchPage.sortBar.clickAlphaBarLetterByPosition(23);
+    const result = await searchPage.sortBar.clickAlphaBarLetterByPosition(23);
+    expect(result.letterText).toContain(result.expectedLetter);
+    expect(result.selectedCount).toEqual(1);
   });
 
   await test.step(`Results' titles ONLY begin with "X"`, async () => {

@@ -1,4 +1,4 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, Locator } from '@playwright/test';
 
 export class BookReader {
   readonly page: Page;
@@ -6,8 +6,6 @@ export class BookReader {
   readonly bookReaderShell: Locator;
   readonly brContainer: Locator;
 
-  readonly brLeft: Locator;
-  readonly brRight: Locator;
   readonly brFlipNext: Locator;
   readonly brFlipPrev: Locator;
 

@@ -22,7 +22,7 @@ test('Do simple text contents search', async ({ searchPage }) => {
   const { collectionBrowser, collectionSearchInput, page } = searchPage;
   await test.step(`Select search option for text search and search for dogs`, async () => {
     await collectionSearchInput.queryFor('dogs');
-    await collectionSearchInput.clickSearchInputOption(undefined, SearchPageSearchOption.TEXTS);
+    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.TEXTS);
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
@@ -39,7 +39,7 @@ test('Do simple TV search', async ({ searchPage }) => {
   const queryString = 'iguanas';
   await test.step(`Select search option for text search and search for iguanas`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.clickSearchInputOption(undefined, SearchPageSearchOption.TV);
+    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.TV);
   });
 
   await test.step(`Check TV results are displayed`, async () => {
@@ -56,7 +56,7 @@ test('Do simple radio search', async ({ searchPage }) => {
   const queryString = 'rabbits';
   await test.step(`Select search option for text search and search for rabbits`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.clickSearchInputOption(undefined, SearchPageSearchOption.RADIO);
+    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.RADIO);
   });
 
   await test.step(`Check Radio results are displayed`, async () => {
@@ -73,7 +73,7 @@ test('Do simple web search', async ({ searchPage }) => {
   const queryString = 'parrots';
   await test.step(`Select search option for text search and search for parrots`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.clickSearchInputOption(undefined, SearchPageSearchOption.WEB);
+    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.WEB);
   });
 
   await test.step(`Check Wayback search page is displayed`, async () => {

@@ -37,7 +37,7 @@ export class CollectionSearchInput {
     await this.btnClearInput.click();
   }
 
-  async clickSearchInputOption(cpOption?: CollectionPageSearchOption, spOption?: SearchPageSearchOption) {
+  async selectSearchOption(cpOption?: CollectionPageSearchOption, spOption?: SearchPageSearchOption) {
     await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
     await this.collectionSearchInput.locator('#go-button').waitFor({ state: 'visible'});
     await this.formInputSearchPage.click({ force: true });

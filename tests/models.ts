@@ -16,8 +16,8 @@ export enum LayoutViewModeLocator {
 export enum CollectionPageSearchOption {
   METADATA = `Search metadata`,
   TEXT = `Search text contents`,
-  TV = `Search TV news captions`,
-  RADIO = `Search radio transcripts`,
+  TV_CAPTIONS = `Search TV news captions`,
+  RADIO_TRANSCRIPTS = `Search radio transcripts`,
   WEB = `Search archived web sites`,
 }
 
@@ -40,9 +40,11 @@ export enum SearchPageSearchOption {
 export enum ResultsCategory {
   ALL = 'Overview',
   TEXTS = 'Books/Documents',
-  FULLTEXT = 'Text Contents',
+  FULLTEXT = 'Full Text Contents',
   RADIO = 'Radio',
+  RADIO_TRANSCRIPTS = 'Transcripts',
   TV = 'TV',
+  TV_CAPTIONS = 'Text Captions',
   MOVIES = 'Video',
   AUDIO = 'Audio',
   SOFTWARE = 'Software',

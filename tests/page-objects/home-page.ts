@@ -1,4 +1,4 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, Locator } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
 import { CollectionSearchInput } from './collection-search-input';
@@ -32,7 +32,7 @@ export class HomePage {
     this.mediaTypeIcons = this.page.locator('#icon-block-container > home-page-hero-block-icon-bar'); 
     this.mediaTypeHeroIconBars = this.mediaTypeIcons.locator('#mediacount-icon-container > a');
     this.onboarding = this.page.locator('home-page-onboarding');
-    this.onboardingCarousel = this.page.locator('#onboarding-carousel').locator('#onboarding-content > a');
+    this.onboardingCarousel = this.onboarding.locator('basic-carousel > a');
     this.infiniteScroller = this.page.locator('infinite-scroller');
     this.topCollections = this.infiniteScroller.locator('#container > .cell-container');
     this.termsOfService = this.page.locator('footer > app-footer');
@@ -44,9 +44,11 @@ export class HomePage {
   }
 
   async waybackSearchFor(query: string) {
-    const wbSearchInput = this.page
-      .locator('#wayback-search-container')
-      .locator('#url');
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.waybackSearch.waitFor({ state: 'visible' });
+    await this.termsOfService.waitFor({ state: 'visible' });
+
+    const wbSearchInput = this.waybackSearch.locator('#url');
     await wbSearchInput.fill(query);
     await wbSearchInput.press('Enter');
   }

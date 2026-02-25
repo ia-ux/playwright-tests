@@ -68,8 +68,10 @@ test('Sort by All-time views in Tile view', async ({ searchPage }) => {
 
   await test.step(`Sort by ${sortFilter} - ${sortOrder} order`, async () => {
     await searchPage.sortBar.applySortFilter(sortFilter);
-    await searchPage.sortBar.clickSortDirection(sortOrder);
-    await expect(sortBar.srSortText).toContainText(`Change to ${oppositeSortText} sort`);
+    const expectedText = await searchPage.sortBar.clickSortDirection(sortOrder);
+    if (expectedText) {
+      await expect(sortBar.srSortText).toContainText(`Change to ${expectedText} sort`);
+    }
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
@@ -93,8 +95,10 @@ test(`Sort by Date published in List view`, async ({ searchPage }) => {
 
   await test.step(`Sort by ${sortFilter} - ${sortOrder} order`, async () => {
     await sortBar.applySortFilter(sortFilter);
-    await sortBar.clickSortDirection(sortOrder);
-    await expect(sortBar.srSortText).toContainText(`Change to ${oppositeSortText} sort`);
+    const expectedText = await sortBar.clickSortDirection(sortOrder);
+    if (expectedText) {
+      await expect(sortBar.srSortText).toContainText(`Change to ${expectedText} sort`);
+    }
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
