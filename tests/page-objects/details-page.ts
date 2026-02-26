@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { BookReader } from './book-reader';
 import { LendingBar } from './lending-bar';
@@ -45,17 +45,15 @@ export class DetailsPage {
 
   async gotoPage(uri: string) {
     await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForURL(`/details/${uri}`);
   }
 
   async assertPageElements() {
-    await this.verifyPageMetadataElements();
-    await this.verifyPageActionButtons();
-
-    await expect(this.page.locator('.terms-of-service')).toBeVisible();
-    await this.page.waitForTimeout(3000);
-    // TODO: add test to check Similar Items - this is currently not working
-    // await expect(this.page.locator('#also-found')).toBeVisible();
+    return {
+      metadataElements: await this.verifyPageMetadataElements(),
+      actionButtons: await this.verifyPageActionButtons(),
+      termsOfService: await this.page.locator('.terms-of-service').isVisible()
+    };
   }
 
   async verifyPageMetadataElements() {
@@ -63,151 +61,143 @@ export class DetailsPage {
       .locator('div.container.info-top')
       .locator('div.thats-left.item-details-metadata');
 
-    await expect(divInfoTopDetails.locator('.left-icon')).toBeVisible();
-    await expect(divInfoTopDetails.locator('.item-title')).toBeVisible();
-    await expect(
-      divInfoTopDetails.locator('.metadata-definition'),
-    ).toBeVisible();
+    const leftIconVisible = await divInfoTopDetails.locator('.left-icon').isVisible();
+    const itemTitleVisible = await divInfoTopDetails.locator('.item-title').isVisible();
+    const metadataDefinitionVisible = await divInfoTopDetails.locator('.metadata-definition').isVisible();
 
     const divItemDetails = this.page
       .locator(
         '#maincontent > div.container.container-ia.width-max.relative-row-wrap',
       )
       .last();
-    await expect(
-      divItemDetails.locator('.boxy.item-stats-summary'),
-    ).toBeVisible();
-    await expect(
-      divItemDetails.locator('.boxy.item-download-options'),
-    ).toBeVisible();
-    await expect(
-      divItemDetails.locator('.boxy.white-bg.collection-list'),
-    ).toBeVisible();
-    await expect(
-      divItemDetails.locator('.boxy.white-bg.item-upload-info'),
-    ).toBeVisible();
+    
+    const statsVisible = await divItemDetails.locator('.boxy.item-stats-summary').isVisible();
+    const downloadVisible = await divItemDetails.locator('.boxy.item-download-options').isVisible();
+    const collectionListVisible = await divItemDetails.locator('.boxy.white-bg.collection-list').isVisible();
+    const uploadInfoVisible = await divItemDetails.locator('.boxy.white-bg.item-upload-info').isVisible();
+    const reviewsVisible = await divItemDetails.locator('#reviews').isVisible();
 
-    // reviews section
-    await expect(divItemDetails.locator('#reviews')).toBeVisible();
+    return {
+      leftIconVisible,
+      itemTitleVisible,
+      metadataDefinitionVisible,
+      statsVisible,
+      downloadVisible,
+      collectionListVisible,
+      uploadInfoVisible,
+      reviewsVisible
+    };
   }
 
   async verifyPageActionButtons() {
-    // TODO: this is only visible if loggedIn as priv user
-    // await expect(this.page.locator('#item-user-lists')).toBeVisible();
-    await expect(
-      this.page.locator('div.topinblock.favorite-btn'),
-    ).toBeVisible();
-    await expect(
-      this.page.locator('div.topinblock.share-button'),
-    ).toBeVisible();
-    await expect(this.page.locator('div.topinblock.flag-button')).toBeVisible();
+    const favoriteVisible = await this.page.locator('div.topinblock.favorite-btn').isVisible();
+    const shareVisible = await this.page.locator('div.topinblock.share-button').isVisible();
+    const flagVisible = await this.page.locator('div.topinblock.flag-button').isVisible();
+    
+    return { favoriteVisible, shareVisible, flagVisible };
   }
 
   async container3dDisplay() {
-    await expect(this.page.locator('#container3D')).toBeVisible();
+    return await this.page.locator('#container3D').isVisible();
   }
 
   async bookreaderDisplay() {
-    await expect(this.bookReader.bookReaderShell).toBeVisible();
+    return await this.bookReader.bookReaderShell.isVisible();
   }
 
   async musicTheaterDisplayWithPlaceholder() {
-    await expect(this.iaMusicTheater.musicTheater).toBeVisible();
-    await expect(this.iaMusicTheater.seeMoreCta).toBeVisible();
+    return {
+      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
+      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
+    };
   }
 
   async musicTheaterDisplayWithCoverArt() {
-    await expect(this.iaMusicTheater.musicTheater).toBeVisible();
-    await expect(this.iaMusicTheater.seeMoreCta).toBeVisible();
+    return {
+      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
+      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
+    };
   }
 
   async musicTheaterDisplaySingleImage() {
-    await expect(this.iaMusicTheater.musicTheater).toBeVisible();
-    await expect(this.iaMusicTheater.seeMoreCta).not.toBeVisible();
+    return {
+      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
+      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
+    };
   }
 
   async dataTheaterDisplay() {
-    await expect(this.iaTheater.locator('.no-preview')).toBeVisible();
-    await expect(
-      this.iaTheater.getByText('There Is No Preview Available'),
-    ).toBeVisible();
+    return {
+      noPreviewVisible: await this.iaTheater.locator('.no-preview').isVisible(),
+      messageVisible: await this.iaTheater.getByText('There Is No Preview Available').isVisible()
+    };
   }
 
   async imageCarouselMultipleImageDisplay(multiple: boolean) {
-    await expect(this.iaTheater.locator('#ia-carousel')).toBeVisible();
+    const carouselVisible = await this.iaTheater.locator('#ia-carousel').isVisible();
 
     const innerCarousel = this.iaTheater.locator('#ia-carousel > div');
     const innerCarouselItem = this.iaTheater.locator(
       '#ia-carousel > div > div.item',
     );
-    if (multiple) {
-      expect(await innerCarousel.getAttribute('class')).toContain(
-        'carousel-inner multiple-images',
-      );
-      expect((await innerCarouselItem.all()).length).toBeGreaterThan(1);
-    } else {
-      expect(await innerCarousel.getAttribute('class')).toContain(
-        'carousel-inner',
-      );
-      expect((await innerCarouselItem.all()).length).toEqual(1);
-    }
+    
+    const carouselClass = await innerCarousel.getAttribute('class');
+    const carouselItemsCount = (await innerCarouselItem.all()).length;
+
+    return {
+      carouselVisible,
+      carouselClass,
+      carouselItemsCount
+    };
   }
 
   async radioPlayerTheaterDisplay() {
-    await expect(this.iaTheater.locator('radio-player')).toBeVisible();
+    return await this.iaTheater.locator('radio-player').isVisible();
   }
 
   async tvTheaterDisplay() {
-    await expect(this.page.locator('#tvbanner')).toBeVisible();
-    await expect(this.page.locator('#cols')).toBeVisible();
+    return {
+      tvBannerVisible: await this.page.locator('#tvbanner').isVisible(),
+      colsVisible: await this.page.locator('#cols').isVisible()
+    };
   }
 
   async verifyRadioBorrowProgramAvailable() {
-    await expect(
-      this.page.locator('div.topinblock.borrow-program-btn'),
-    ).toBeVisible();
-    await expect(this.page.locator('#radio-borrow-button')).toBeVisible();
-
-    await expect(
-      this.page.locator('span:has-text("Borrow Program")'),
-    ).toBeVisible();
+    return {
+      borrowButtonVisible: await this.page.locator('div.topinblock.borrow-program-btn').isVisible(),
+      radioBorrowButtonVisible: await this.page.locator('#radio-borrow-button').isVisible(),
+      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible()
+    };
   }
 
   async verifyRadioBorrowProgramUnavailable() {
-    await expect(
-      this.page.locator('div.topinblock.borrow-program-btn'),
-    ).not.toBeVisible();
-    await expect(this.page.locator('#radio-borrow-button')).not.toBeVisible();
-
-    await expect(
-      this.page.locator('span:has-text("Borrow Program")'),
-    ).not.toBeVisible();
+    return {
+      borrowButtonVisible: await this.page.locator('div.topinblock.borrow-program-btn').isVisible(),
+      radioBorrowButtonVisible: await this.page.locator('#radio-borrow-button').isVisible(),
+      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible()
+    };
   }
 
   async verifyTVBorrowProgramAvailable() {
-    // Borrow Program is always visible for everyone
-    await expect(
-      this.page.locator('div.topinblock.borrow-dvd-btn'),
-    ).toBeVisible();
-    await expect(this.page.locator('#tvborrow')).toBeVisible();
-
-    await expect(
-      this.page.locator('span:has-text("Borrow Program")'),
-    ).toBeVisible();
+    return {
+      borrowButtonVisible: await this.page.locator('div.topinblock.borrow-dvd-btn').isVisible(),
+      tvBorrowVisible: await this.page.locator('#tvborrow').isVisible(),
+      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible()
+    };
   }
 
   async videoPlayerTheaterDisplay() {
-    await expect(this.iaTheater.locator('#jw6')).toBeVisible();
+    return await this.iaTheater.locator('#jw6').isVisible();
   }
 
   async softwareEmulationTheaterDisplay() {
-    const emulator = this.page.locator('#emulate');
-    await expect(emulator).toBeVisible();
-    await expect(this.iaTheater.locator('#emulate')).toBeVisible();
+    return {
+      emulatorVisible: await this.page.locator('#emulate').isVisible(),
+      theatreEmulatorVisible: await this.iaTheater.locator('#emulate').isVisible()
+    };
   }
 
   async interactWithImageCarousel() {
-    // This test assume the image carousel item index always starts at 0
     const leftArrowControl = this.iaCarousel.locator('a.left.carousel-control');
     const rightArrowControl = this.iaCarousel.locator(
       'a.right.carousel-control',
@@ -219,16 +209,17 @@ export class DetailsPage {
     // load next image
     await rightArrowControl.click();
     await this.page.waitForTimeout(3000);
-    expect(await carouselItems.nth(1).getAttribute('class')).toContain(
-      'active',
-    );
+    const nextItemClass = await carouselItems.nth(1).getAttribute('class');
 
     // load prev image
     await leftArrowControl.click();
     await this.page.waitForTimeout(3000);
-    expect(await carouselItems.first().getAttribute('class')).toContain(
-      'active',
-    );
+    const prevItemClass = await carouselItems.first().getAttribute('class');
+
+    return {
+      nextItemClass,
+      prevItemClass
+    };
   }
 
   async activateWebAmpSkin() {
@@ -238,40 +229,43 @@ export class DetailsPage {
   async searchRadioTranscriptAndVerifySearchEntryPositions(str: string) {
     const expandableSearchBar = this.page.locator('expandable-search-bar');
     await expandableSearchBar.waitFor({ state: 'visible' });
-    await expect(expandableSearchBar.locator('#search-input')).toBeVisible();
+    const searchInputVisible = await expandableSearchBar.locator('#search-input').isVisible();
+    
     await expandableSearchBar.locator('#search-input').fill(str);
     await expandableSearchBar.locator('#search-input').press('Enter');
     await this.page.waitForTimeout(3000);
 
-    // interact with search results range
     const searchResultsSwitcher = this.page.locator('search-results-switcher');
     const prevButton = searchResultsSwitcher.locator('#previous-button');
     const nextButton = searchResultsSwitcher.locator('#next-button');
-    await expect(searchResultsSwitcher).toBeVisible();
+    const searchResultsVisible = await searchResultsSwitcher.isVisible();
 
-    expect(
-      await searchResultsSwitcher
-        .locator('div > span.results-range #current-result')
-        .innerText(),
-    ).toBe('1');
-    expect(
-      await searchResultsSwitcher
-        .locator('div > span.results-range #number-of-results')
-        .innerText(),
-    ).toBe('127');
+    const currentResult = await searchResultsSwitcher
+      .locator('div > span.results-range #current-result')
+      .innerText();
+    const numberOfResults = await searchResultsSwitcher
+      .locator('div > span.results-range #number-of-results')
+      .innerText();
 
-    // check default search entry index
-    expect(await this.searchResultEntryIndex()).toBe(2);
+    const defaultEntryIndex = await this.searchResultEntryIndex();
 
-    // click next and check next search entry index
     await nextButton.click();
     await this.page.waitForTimeout(3000);
-    expect(await this.searchResultEntryIndex()).toBe(5);
+    const nextEntryIndex = await this.searchResultEntryIndex();
 
-    // click previous and check next search entry index
     await prevButton.click();
     await this.page.waitForTimeout(3000);
-    expect(await this.searchResultEntryIndex()).toBe(2);
+    const prevEntryIndex = await this.searchResultEntryIndex();
+
+    return {
+      searchInputVisible,
+      searchResultsVisible,
+      currentResult,
+      numberOfResults,
+      defaultEntryIndex,
+      nextEntryIndex,
+      prevEntryIndex
+    };
   }
 
   async searchResultEntryIndex(): Promise<Number> {
