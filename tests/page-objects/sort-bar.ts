@@ -5,72 +5,30 @@ import { SortOrder } from '../models';
 export class SortBar {
   readonly page: Page;
   readonly sortFilterBar: Locator;
-  readonly desktopSortSelector: Locator;
   readonly btnSortDirection: Locator;
   readonly alphaBar: Locator;
   readonly srSortText: Locator;
+
+  readonly sortDropdown: Locator;
 
   public constructor(page: Page) {
     this.page = page;
     this.alphaBar = page.locator('alpha-bar');
     this.sortFilterBar = page.locator('sort-filter-bar section#sort-bar');
-    this.desktopSortSelector = this.sortFilterBar.locator('ul#desktop-sort-selector');
     this.btnSortDirection = this.sortFilterBar.locator('.sort-direction-icon');
     this.srSortText = this.sortFilterBar.locator(
       'button.sort-direction-selector span.sr-only',
     );
+
+    this.sortDropdown = this.sortFilterBar.locator('#sort-dropdown-container  #sort-dropdown');
   }
 
-  async buttonClick(sortName: string) {
-    await this.desktopSortSelector.getByRole('button', { name: sortName }).click();
-  }
-
-  async caratDropdownClick(dropDownLocator: Locator) {
-    try {
-      await dropDownLocator.click({ force: true, clickCount: 2 });
-      // Note: this is a workaround to wait for the dropdown options to be visible before clicking on the dropdown.
-      // The sort-bar component is being set back to Relevance (default) after clicking on the dropdown, 
-      // so we can wait for that text to be set before clicking on the dropdown again to open the dropdown options.
-      const selectedOption = this.desktopSortSelector.locator('li .selected');
-      const selectedOptionText = await selectedOption.innerText();
-      console.log(`selected option: ${selectedOptionText}`);
-      if (selectedOptionText === 'Relevance') {
-        await dropDownLocator.click({ force: true, clickCount: 2 });
-      } else {
-        console.log('Selected option is not Relevance, dropdown options should be visible now');
-      }
-    } catch (e) {
-      console.warn('Relevance option was not visible initially, clicking on the dropdown without waiting for it to be visible might cause flaky test');
-    }
-  }
-
-  async textClick(name: string) {
-    await this.desktopSortSelector.getByText(name).first().click();
-  }
-
-  async applySortFilter(filter: string) {
-    const flatSortTextList = ['Relevance', 'Title', 'Creator'];
-
-    if (!flatSortTextList.includes(filter)) {
-      const _toggleOption = filter.includes('views')
-        ? await this.desktopSortSelector.locator('li #views-dropdown').innerText()
-        : await this.desktopSortSelector.locator('li #date-dropdown').innerText();
-      
-      const dropdownLocator = filter.includes('views') 
-        ? this.desktopSortSelector.locator('li #views-dropdown') 
-        : this.desktopSortSelector.locator('li #date-dropdown');
-
-      // If the filter we want to apply is already visible as a toggle option, click it, 
-      // otherwise open the dropdown and click the option there
-      if (filter === _toggleOption) {
-        await this.textClick(filter);
-      } else {
-        await this.caratDropdownClick(dropdownLocator);
-        await this.buttonClick(filter);
-      }
-    } else {
-      await this.buttonClick(filter);
-    }
+  async applySortFilter(filterBy: string) {
+    console.log('Applying sort filter: ', filterBy);
+    await this.sortDropdown.waitFor({ state: 'visible' });
+    
+    await this.sortDropdown.click();
+    await this.sortDropdown.getByRole('button', { name: filterBy }).click();
   }
 
   async clickSortDirection(sortOrder: SortOrder) {
