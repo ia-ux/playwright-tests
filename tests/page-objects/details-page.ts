@@ -46,6 +46,7 @@ export class DetailsPage {
   async gotoPage(uri: string) {
     await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
     await this.page.waitForURL(`/details/${uri}`);
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async assertPageElements() {
@@ -102,6 +103,7 @@ export class DetailsPage {
   }
 
   async bookreaderDisplay() {
+    await this.bookReader.bookReaderShell.waitFor({ state: 'visible' });
     return await this.bookReader.bookReaderShell.isVisible();
   }
 

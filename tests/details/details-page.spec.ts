@@ -52,7 +52,7 @@ test(`Load theater: audio single image`, async ({ detailsPage }) => {
   });
 });
 
-test.fixme(`Load theater: bookreader`, async ({ detailsPage }) => {
+test(`Load theater: bookreader`, async ({ detailsPage }) => {
   await test.step('Load a book page', async () => {
     await detailsPage.gotoPage(identifier.details.bookreader);
     const isVisible = await detailsPage.bookreaderDisplay();
@@ -197,13 +197,28 @@ test(`Load theater: video`, async ({ detailsPage }) => {
   expect(isVisible).toBeTruthy();
 });
 
-test.fixme(`Load theater: webamp`, async ({ detailsPage }) => {
+test(`Load theater: webamp`, async ({ detailsPage }) => {
+  test.info().annotations.push({
+    type: 'Test',
+    description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
+  });
+
   await detailsPage.gotoPage(identifier.details.webamp);
   await detailsPage.iaMusicTheater.selectChannelSelector('Webamp');
-  await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(true);
+  const result = await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(true);
+  expect(result.theatreIaVisible).toBeTruthy();
+  expect(result.jsWebampVisible).toBeTruthy();
+  expect(result.mainWindowVisible).toBeTruthy();
+  expect(result.playlistWindowVisible).toBeTruthy();
+  expect(result.equalizerWindowVisible).toBeTruthy();
 });
 
-test.fixme(`Load theater: webamp with skin`, async ({ detailsPage }) => {
+test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
+  test.info().annotations.push({
+    type: 'Test',
+    description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
+  });
+
   await test.step('Load webAmp skin - llama feature', async () => {
     // goto a webamp skin page
     await detailsPage.gotoPage(identifier.details.webamp_with_skin);
@@ -214,7 +229,12 @@ test.fixme(`Load theater: webamp with skin`, async ({ detailsPage }) => {
   await test.step('Check webamp displayed directly after webamp skin activated', async () => {
     // then go to a track page to check if it loads the webamp view is loaded
     await detailsPage.gotoPage(identifier.details.webamp);
-    await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(false);
+    const result = await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(false);
+    expect(result.theatreIaVisible).toBeTruthy();
+    expect(result.jsWebampVisible).toBeTruthy();
+    expect(result.mainWindowVisible).toBeTruthy();
+    expect(result.playlistWindowVisible).toBeTruthy();
+    expect(result.equalizerWindowVisible).toBeTruthy();
   });
 });
 
