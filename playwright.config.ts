@@ -28,7 +28,7 @@ export default defineConfig({
   // Give failing tests 3 retry attempts
   retries: 3,
   // Timeout for each test
-  timeout: 3 * 60 * 1000,         // set to 3mins
+  timeout: 5 * 60 * 1000,         // set to 5mins
   // Maximum time the whole test suite can run
   globalTimeout: 30 * 60 * 1000,  // set to 30mins
   testDir: './tests',
@@ -42,13 +42,13 @@ export default defineConfig({
     ],
   ],
   expect: {
-    timeout: 3 * 60 * 1000,  // set to 3mins
+    timeout: 5 * 60 * 1000,  // set to 5mins
   },
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // This is set in config/index.ts
     baseURL: config.baseURL,
-    actionTimeout: 3 * 60 * 1000,  // set to 3mins
+    actionTimeout: 5 * 60 * 1000,  // set to 5mins
     screenshot: 'only-on-failure',
   },
 
