@@ -24,7 +24,6 @@ export class SortBar {
   }
 
   async applySortFilter(filterBy: string) {
-    console.log('Applying sort filter: ', filterBy);
     await this.sortDropdown.waitFor({ state: 'visible' });
     
     await this.sortDropdown.click();

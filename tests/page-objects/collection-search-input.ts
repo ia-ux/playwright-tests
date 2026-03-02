@@ -10,6 +10,9 @@ export class CollectionSearchInput {
   readonly btnCollectionSearchInputCollapser: Locator;
   readonly btnClearInput: Locator;
   readonly formInputSearchPage: Locator;
+  readonly loadingButton: Locator;
+  readonly searchOptionsLabel: Locator;
+  readonly tabManager: Locator;
 
   public constructor(page: Page) {
     this.page = page;
@@ -25,28 +28,42 @@ export class CollectionSearchInput {
       'collection-search-input #button-collapser',
     );
     this.btnClearInput = page.locator('collection-search-input #clear-button');
+    this.loadingButton = page.locator('button#go-button.loading');
+    this.searchOptionsLabel = page.getByLabel('Search Options');
+    this.tabManager = page.getByTestId('tab-manager-tabs-row');
   }
 
   async queryFor(query: string) {
     await this.formInputSearchPage.fill(query);
     await this.btnCollectionSearchInputGo.click();
-    await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
+    await this.loadingButton.waitFor({ state: 'hidden' });
   }
 
   async clickClearSearchInput() {
     await this.btnClearInput.click();
   }
 
+  private async waitForSearchInputReady() {
+    await this.loadingButton.waitFor({ state: 'hidden' });
+    await this.btnCollectionSearchInputGo.waitFor({ state: 'visible' });
+  }
+
+  private async selectCollectionPageOption(option: CollectionPageSearchOption) {
+    await this.searchOptionsLabel.getByText(option).click();
+  }
+
+  private async selectSearchPageOption(option: SearchPageSearchOption) {
+    await this.tabManager.getByTestId(option).click();
+  }
+
   async selectSearchOption(cpOption?: CollectionPageSearchOption, spOption?: SearchPageSearchOption) {
-    await this.page.locator('button#go-button.loading').waitFor({ state: 'hidden' });
-    await this.collectionSearchInput.locator('#go-button').waitFor({ state: 'visible'});
+    await this.waitForSearchInputReady();
     await this.formInputSearchPage.click({ force: true });
-    // The search input on collection page has a different structure for the search options filter in search page
-    if (cpOption) { 
-      await this.page.getByLabel('Search Options').getByText(cpOption).click();
+
+    if (cpOption) {
+      await this.selectCollectionPageOption(cpOption);
     } else if (spOption) {
-      const tabManager = this.page.getByTestId('tab-manager-tabs-row');
-      await tabManager.getByTestId(spOption).click();
+      await this.selectSearchPageOption(spOption);
     }
   }
 
