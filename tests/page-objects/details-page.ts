@@ -212,12 +212,12 @@ export class DetailsPage {
 
     // load next image
     await rightArrowControl.click();
-    await this.page.waitFortimeout(PAGE_WAIT_TIME);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
     const nextItemClass = await carouselItems.nth(1).getAttribute('class');
 
     // load prev image
     await leftArrowControl.click();
-    await this.page.waitFortimeout(PAGE_WAIT_TIME);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
     const prevItemClass = await carouselItems.first().getAttribute('class');
 
     return {
@@ -237,7 +237,7 @@ export class DetailsPage {
     
     await expandableSearchBar.locator('#search-input').fill(str);
     await expandableSearchBar.locator('#search-input').press('Enter');
-    await this.page.waitFortimeout(PAGE_WAIT_TIME);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
 
     const searchResultsSwitcher = this.page.locator('search-results-switcher');
     const prevButton = searchResultsSwitcher.locator('#previous-button');
