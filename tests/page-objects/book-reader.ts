@@ -16,6 +16,7 @@ export class BookReader {
   readonly brTwoPage: Locator;
   readonly brThumb: Locator;
   readonly brFullScreen: Locator;
+  readonly brExitFullScreen: Locator;
   readonly brReadAloud: Locator;
 
   readonly brOneUpView: Locator;
@@ -36,6 +37,7 @@ export class BookReader {
     this.brZoomIn = this.bookReaderShell.getByRole('button', { name: 'Zoom in' });
     this.brZoomOut = this.bookReaderShell.getByRole('button', { name: 'Zoom out' });
     this.brFullScreen = this.bookReaderShell.getByRole('button', { name: 'Go fullscreen' });
+    this.brExitFullScreen = this.bookReaderShell.getByRole('button', { name: 'Exit fullscreen' });
 
     this.brOneUpView = this.brContainer.locator('br-mode-1up');
     this.brTwoUpView = this.brContainer.locator('br-mode-2up');

@@ -1,10 +1,10 @@
 import { type Page, Locator } from '@playwright/test';
 
-import { BookPageViewMode } from '../models';
 import { BookReader } from './book-reader';
 
-const PAGE_WAIT_TIME = 1500;
+import { BookPageViewMode, BoxDimension } from '../models';
 
+const PAGE_WAIT_TIME = 5000;
 export class BookPage {
   readonly page: Page;
 
@@ -93,10 +93,10 @@ export class BookPage {
     return onLoadBrState.locator('img');
   }
 
-  async getBRPageBoundingBoxDimension(dimension: string) {
+  async getBRPageBoundingBoxDimension(dimension: BoxDimension) {
     await this.brPageVisible.waitFor({ state: 'visible' });
     const brPageBoundingBox = await this.brPageVisible.boundingBox();
-    return brPageBoundingBox?.[dimension];
+    return brPageBoundingBox ? brPageBoundingBox[dimension] : undefined;
   }
 
   async getPageWidth() {
@@ -105,16 +105,17 @@ export class BookPage {
 
   async clickZoomIn() {
     await this.bookReader.brZoomIn.click();
-    await this.page.waitForTimeout(PAGE_WAIT_TIME);
   }
 
   async clickZoomOut() {
     await this.bookReader.brZoomOut.click();
-    await this.page.waitForTimeout(PAGE_WAIT_TIME);
   }
 
   async clickFullScreen() {
     await this.bookReader.brFullScreen.click();
-    await this.page.waitForTimeout(PAGE_WAIT_TIME);
+  }
+
+  async clickExitFullScreen() {
+    await this.bookReader.brExitFullScreen.click();
   }
 }

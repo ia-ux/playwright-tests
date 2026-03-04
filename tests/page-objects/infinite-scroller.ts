@@ -1,5 +1,6 @@
 import { type Page, type Locator } from '@playwright/test';
 
+import { CollectionSearchInput } from './collection-search-input';
 import { SortBar } from './sort-bar';
 
 import {
@@ -11,7 +12,8 @@ import {
 } from '../models';
 
 import { datesSorted, viewsSorted, parseViewCount } from '../utils';
-import { CollectionSearchInput } from './collection-search-input';
+
+const PAGE_WAIT_TIME = 5000;
 
 export class InfiniteScroller {
   private static readonly SELECTORS = {
@@ -79,8 +81,8 @@ export class InfiniteScroller {
   async hoverToFirstItem() {
     const tileHoverPane = this.firstItemTile.locator('tile-hover-pane');
     await this.waitForFirstItemTile();
-    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, timeout: 5000 });
-    await this.firstItemTile.dispatchEvent('mouseover', { timeout: 5000 });
+    await this.firstItemTile.hover({ position: { x: 10, y: 20 }, timeout: PAGE_WAIT_TIME });
+    await this.firstItemTile.dispatchEvent('mouseover', { timeout: PAGE_WAIT_TIME });
     await tileHoverPane.waitFor({ state: 'attached' });
   }
 
@@ -236,7 +238,6 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
-    await this.page.waitForTimeout(1000);
     await item.locator(InfiniteScroller.SELECTORS.TILE_STATS).waitFor({ state: 'visible' });
     return await item.locator(InfiniteScroller.SELECTORS.TILE_ICON).getAttribute('title');
   }

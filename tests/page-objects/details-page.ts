@@ -4,6 +4,8 @@ import { BookReader } from './book-reader';
 import { LendingBar } from './lending-bar';
 import { IAMusicTheater } from './music-theater';
 
+const PAGE_WAIT_TIME = 5000;
+
 export class DetailsPage {
   readonly page: Page;
 
@@ -135,7 +137,7 @@ export class DetailsPage {
     };
   }
 
-  async imageCarouselMultipleImageDisplay(multiple: boolean) {
+  async imageCarouselMultipleImageDisplay() {
     const carouselVisible = await this.iaTheater.locator('#ia-carousel').isVisible();
 
     const innerCarousel = this.iaTheater.locator('#ia-carousel > div');
@@ -210,12 +212,12 @@ export class DetailsPage {
 
     // load next image
     await rightArrowControl.click();
-    await this.page.waitForTimeout(3000);
+    await this.page.waitFortimeout(PAGE_WAIT_TIME);
     const nextItemClass = await carouselItems.nth(1).getAttribute('class');
 
     // load prev image
     await leftArrowControl.click();
-    await this.page.waitForTimeout(3000);
+    await this.page.waitFortimeout(PAGE_WAIT_TIME);
     const prevItemClass = await carouselItems.first().getAttribute('class');
 
     return {
@@ -235,7 +237,7 @@ export class DetailsPage {
     
     await expandableSearchBar.locator('#search-input').fill(str);
     await expandableSearchBar.locator('#search-input').press('Enter');
-    await this.page.waitForTimeout(3000);
+    await this.page.waitFortimeout(PAGE_WAIT_TIME);
 
     const searchResultsSwitcher = this.page.locator('search-results-switcher');
     const prevButton = searchResultsSwitcher.locator('#previous-button');
@@ -252,11 +254,11 @@ export class DetailsPage {
     const defaultEntryIndex = await this.searchResultEntryIndex();
 
     await nextButton.click();
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
     const nextEntryIndex = await this.searchResultEntryIndex();
 
     await prevButton.click();
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(PAGE_WAIT_TIME);
     const prevEntryIndex = await this.searchResultEntryIndex();
 
     return {

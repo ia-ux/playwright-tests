@@ -2,6 +2,8 @@ import { type Page, type Locator } from '@playwright/test';
 
 import { SortOrder } from '../models';
 
+const PAGE_WAIT_TIME = 5000;
+
 export class SortBar {
   readonly page: Page;
   readonly sortFilterBar: Locator;
@@ -43,14 +45,14 @@ export class SortBar {
 
   async checkAlphaBarVisibility(filter: string) {
     if (!['Title', 'Creator'].includes(filter)) {
-      return await this.alphaBar.isVisible({ timeout: 60000 });
+      return await this.alphaBar.isVisible({ timeout: PAGE_WAIT_TIME });
     } else {
-      return await this.alphaBar.isVisible({ timeout: 60000 });
+      return await this.alphaBar.isVisible({ timeout: PAGE_WAIT_TIME });
     }
   }
 
   async clickAlphaBarLetterByPosition(pos: number) {
-    await this.page.waitForLoadState('load', { timeout: 60000 });
+    await this.page.waitForLoadState('domcontentloaded', { timeout: PAGE_WAIT_TIME });
 
     const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
     const nthLetter = this.alphaBar.locator('#container ul > li').nth(pos);

@@ -76,7 +76,7 @@ test(`Load theater: software emulation`, async ({ detailsPage }) => {
 
 test(`Load theater: image (carousel)`, async ({ detailsPage }) => {
   await detailsPage.gotoPage(identifier.details.image_carousel);
-  const result = await detailsPage.imageCarouselMultipleImageDisplay(true);
+  const result = await detailsPage.imageCarouselMultipleImageDisplay();
   expect(result.carouselVisible).toBeTruthy();
   expect(result.carouselClass).toContain('carousel-inner multiple-images');
   expect(result.carouselItemsCount).toBeGreaterThan(1);
@@ -84,7 +84,7 @@ test(`Load theater: image (carousel)`, async ({ detailsPage }) => {
 
 test(`Load theater: image (single)`, async ({ detailsPage }) => {
   await detailsPage.gotoPage(identifier.details.image_single);
-  const result = await detailsPage.imageCarouselMultipleImageDisplay(false);
+  const result = await detailsPage.imageCarouselMultipleImageDisplay();
   expect(result.carouselVisible).toBeTruthy();
   expect(result.carouselClass).toContain('carousel-inner');
   expect(result.carouselItemsCount).toEqual(1);

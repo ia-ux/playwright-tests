@@ -146,3 +146,12 @@ export const CollectionFacetGroupHeaderNames = [
   ...CommonFacetGroupHeaders,
   FacetGroupFilterHeaderEnum.PART_OF,
 ];
+// Box Dimensions Types for Playwright Bounding Box
+export type BoxDimension = 'x' | 'y' | 'width' | 'height';
+
+export interface BoundingBoxDimensions {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}

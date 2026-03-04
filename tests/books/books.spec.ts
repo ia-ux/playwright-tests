@@ -151,15 +151,16 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         expect(zoomOutBookWidth).toBeGreaterThan(Number(initialBookWidth));
       });
 
-      test.fixme(`Clicking "full screen button" and BookReader fills browser window - ${bookIdentifier}`, async ({ bookPage }) => {
+      test(`Clicking "full screen button" and BookReader fills browser window - ${bookIdentifier}`, async ({ bookPage }) => {
         const windowWidth = await bookPage.getPageWidth();
         const brContainerBox = await bookPage.getBRContainerPageBoundingBox();
+        console.log('Window width:', windowWidth, 'br container box: ', brContainerBox?.width);
         // initial in-page
         expect(brContainerBox?.width).toBeLessThanOrEqual(windowWidth);
         await bookPage.clickFullScreen();
         // full screen
         expect(brContainerBox?.width).toEqual(windowWidth);
-        await bookPage.clickFullScreen();
+        await bookPage.clickExitFullScreen();
         // back to in-page
         expect(brContainerBox?.width).toBeLessThanOrEqual(windowWidth);
       });
