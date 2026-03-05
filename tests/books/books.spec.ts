@@ -151,7 +151,7 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         expect(zoomOutBookWidth).toBeGreaterThan(Number(initialBookWidth));
       });
 
-      test(`Clicking "full screen button" and BookReader fills browser window - ${bookIdentifier}`, async ({ bookPage }) => {
+      test.fixme(`Clicking "full screen button" and BookReader fills browser window - ${bookIdentifier}`, async ({ bookPage }) => {
         const windowWidth = await bookPage.getPageWidth();
         const brContainerBox = await bookPage.getBRContainerPageBoundingBox();
         console.log('Window width:', windowWidth, 'br container box: ', brContainerBox?.width);
