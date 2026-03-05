@@ -95,7 +95,7 @@ export class BookPage {
 
   async getBRPageBoundingBoxDimension(dimension: BoxDimension) {
     await this.brPageVisible.waitFor({ state: 'visible' });
-    const brPageBoundingBox = await this.brPageVisible.boundingBox();
+    const brPageBoundingBox = await this.brShell.boundingBox();
     return brPageBoundingBox ? brPageBoundingBox[dimension] : undefined;
   }
 

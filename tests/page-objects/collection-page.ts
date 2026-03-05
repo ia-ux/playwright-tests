@@ -59,6 +59,7 @@ export class CollectionPage {
 
   async clickCollectionTab(tabName: string) {
     const elem = this.pageTabs.locator('button.tab');
+    await elem.filter({ hasText: tabName }).waitFor({ state: 'visible' });
     await elem.filter({ hasText: tabName }).click();
   }
 
