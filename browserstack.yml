@@ -31,7 +31,7 @@ platforms:
   - browserName: chrome
     os: Windows
     osVersion: 11
-    browserVersion: 112.0 # or 'latest' to always use the latest version
+    browserVersion: 143.0 # or 'latest' to always use the latest version
   # - browserName: playwright-webkit
   #   os: OS X
   #   osVersion: Ventura
