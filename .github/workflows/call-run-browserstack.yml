@@ -64,12 +64,13 @@ jobs:
           START_MS=$(( ($(date +%s) - 10800) * 1000 ))
           END_MS=$(( $(date +%s) * 1000 ))
 
-          curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" "https://api-automation.browserstack.com/ext/v1/projects/${{ secrets.BROWSERSTACK_PROJECT_ID }}/builds?date_range=${START_MS},${END_MS}" > browserstack.json
-          export AUTOMATE_STATUS=$(jq -r '.builds[] | .status' browserstack.json)
-          export AUTOMATE_URL=$(jq -r '.builds[] | .observability_url' browserstack.json)
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" "https://api-automation.browserstack.com/ext/v1/projects/$BROWSERSTACK_PROJECT_ID/builds?date_range=${START_MS},${END_MS}" > browserstack.json
+
+          export AUTOMATE_STATUS=$(jq -r '.builds | last | .status' browserstack.json)
+          export AUTOMATE_URL=$(jq -r '.builds | last | .observability_url' browserstack.json)
           
           case ${AUTOMATE_STATUS} in
-            "done")
+            "passed")
               JOB_STATUS="✅ All tests passed."
               ;;
             "timeout")
@@ -84,4 +85,4 @@ jobs:
           esac
 
           curl_data=$'{"text": "['${{ inputs.message }}'] '$JOB_STATUS'\nView details in: '$AUTOMATE_URL'"}'
-          curl -X POST -H 'Content-type: application/json' --data "${curl_data}" ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data "${curl_data}" "$SLACK_WEBHOOK_URL"
