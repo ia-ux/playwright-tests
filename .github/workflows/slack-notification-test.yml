@@ -1,28 +1,11 @@
 name: Test Slack Notification 
 
 on: 
-  workflow_call:
+  workflow_dispatch:
     inputs:
       message:
         required: true
         type: string
-    secrets:
-      ARCHIVE_EMAIL:
-        required: true
-      ARCHIVE_PASSWORD:
-        required: true
-      BROWSERSTACK_USERNAME:
-        required: true
-      BROWSERSTACK_ACCESS_KEY:
-        required: true
-      BROWSERSTACK_PROJECT_ID:
-        required: true
-      PATRON_EMAIL:
-        required: true
-      PATRON_PASSWORD:
-        required: true
-      SLACK_WEBHOOK_URL:
-        required: true
 
 jobs:
   test:
