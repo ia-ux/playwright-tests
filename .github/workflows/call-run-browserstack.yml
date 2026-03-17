@@ -38,20 +38,20 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-      # - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     cache: 'npm'
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
 
-      # - name: Install dependencies
-      #   run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      # - name: 'BrowserStack Env Setup'
-      #   uses: 'browserstack/github-actions/setup-env@master'
-      #   with:
-      #     username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-      #     access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      - name: 'BrowserStack Env Setup'
+        uses: 'browserstack/github-actions/setup-env@master'
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
       # - name: Run Playwright tests in Browserstack
       #   id: browserstack_tests
@@ -59,13 +59,18 @@ jobs:
       #   continue-on-error: true
 
       - name: 'Send Slack Notification'
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BROWSERSTACK_PROJECT_ID: ${{ secrets.BROWSERSTACK_PROJECT_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           # Fetch the latest build information from BrowserStack API for the specified project and date range (last 3 hours)
           START_MS=$(( ($(date +%s) - 10800) * 1000 ))
           END_MS=$(( $(date +%s) * 1000 ))
 
-          curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" "https://api-automation.browserstack.com/ext/v1/projects/${{ secrets.BROWSERSTACK_PROJECT_ID }}/builds?date_range=${START_MS},${END_MS}" > browserstack.json
-          
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" "https://api-automation.browserstack.com/ext/v1/projects/$BROWSERSTACK_PROJECT_ID/builds?date_range=${START_MS},${END_MS}" > browserstack.json
+
           export AUTOMATE_STATUS=$(jq -r '.builds | last | .status' browserstack.json)
           export AUTOMATE_URL=$(jq -r '.builds | last | .observability_url' browserstack.json)
           
