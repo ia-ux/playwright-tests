@@ -1,4 +1,4 @@
-name: Install deps and run tests in Browserstack
+name: Test Slack Notification 
 
 on: 
   workflow_call:
@@ -38,26 +38,6 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: 'BrowserStack Env Setup'
-        uses: 'browserstack/github-actions/setup-env@master'
-        with:
-          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: Run Playwright tests in Browserstack
-        id: browserstack_tests
-        run: ./run-browserstack-tests.sh
-        continue-on-error: true
-
       - name: 'Send Slack Notification'
         run: |
           # Fetch the latest build information from BrowserStack API for the specified project and date range (last 3 hours)
