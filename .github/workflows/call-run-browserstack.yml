@@ -53,10 +53,10 @@ jobs:
           username:  ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-      # - name: Run Playwright tests in Browserstack
-      #   id: browserstack_tests
-      #   run: ./run-browserstack-tests.sh
-      #   continue-on-error: true
+      - name: Run Playwright tests in Browserstack
+        id: browserstack_tests
+        run: ./run-browserstack-tests.sh
+        continue-on-error: true
 
       - name: 'Send Slack Notification'
         env:
