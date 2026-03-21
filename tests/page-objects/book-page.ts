@@ -67,6 +67,12 @@ export class BookPage {
     return await this.brShell.boundingBox();
   }
 
+  /** Bounding box safe to call in fullscreen — skips #theatre-ia wait which may be hidden. */
+  async getBRShellBoundingBox() {
+    await this.brShell.waitFor({ state: 'visible' });
+    return await this.brShell.boundingBox();
+  }
+
   async getBRContainerPageBoundingBox() {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.locator('#theatre-ia').waitFor({ state: 'visible' });
@@ -103,6 +109,10 @@ export class BookPage {
     return await this.page.evaluate(() => window.innerWidth);
   }
 
+  async getPageHeight() {
+    return await this.page.evaluate(() => window.innerHeight);
+  }
+
   async clickZoomIn() {
     await this.bookReader.brZoomIn.click();
   }
@@ -113,9 +123,11 @@ export class BookPage {
 
   async clickFullScreen() {
     await this.bookReader.brFullScreen.click();
+    await this.page.locator('#BookReader.fullscreenActive').waitFor({ state: 'attached' });
   }
 
   async clickExitFullScreen() {
     await this.bookReader.brExitFullScreen.click();
+    await this.page.locator('#BookReader:not(.fullscreenActive)').waitFor({ state: 'attached' });
   }
 }

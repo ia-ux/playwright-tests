@@ -24,3 +24,5 @@ log/
 ctrf
 
 bstack-json
+
+.playwright-cli
