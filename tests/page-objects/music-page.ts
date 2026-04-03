@@ -31,13 +31,20 @@ export class MusicPage {
       .getByRole('listitem');
     this.trackList = this.iaMusicTheater.playAv.locator('div.playlist > div.track-list');
     this.waveformImage = this.iaMusicTheater.playAv.locator('#waveformer-wrap > img');
-    this.jwPlayerPlaying = page.locator('#jw6.jwplayer.jw-reset.jw-state-playing');
-    this.jwPlayerPaused = page.locator('#jw6.jwplayer.jw-reset.jw-state-paused');
-    this.elapsedTimer = page.locator('#jw6').locator(
+    this.jwPlayerPlaying = page.locator('.jwplayer.jw-reset.jw-state-playing');
+    this.jwPlayerPaused = page.locator('.jwplayer.jw-reset.jw-state-paused');
+    this.elapsedTimer = page.locator('.jwplayer').locator(
       'div.jw-icon.jw-icon-inline.jw-text.jw-reset.jw-text-elapsed',
     );
     this.closePhotoViewer = this.iaMusicTheater.iauxPhotoViewer.locator('#close-photo-viewer');
   }
+
+  async gotoPage(uri: string) {
+    await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(`/details/${uri}`);
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
 
   async getBookReaderClass() {
     return await this.bookReader.bookReaderShell.getAttribute('class');

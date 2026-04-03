@@ -20,7 +20,7 @@
     "@playwright/cli": "^0.1.1",
     "@playwright/test": "^1.58.2",
     "@types/node": "^20.19.37",
-    "browserstack-node-sdk": "^1.50.3",
+    "browserstack-node-sdk": "^1.50.10",
     "dotenv": "^16.0.3",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",

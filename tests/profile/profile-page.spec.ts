@@ -4,12 +4,12 @@ import { SearchFacetGroupHeaderNames } from '../models';
 const UNOWNED_TABS = ['uploads', 'lists', 'posts', 'reviews', 'collections', 'web-archive'];
 
 const TAB_LABEL: Record<string, string> = {
-  uploads: 'UPLOADS',
-  lists: 'LISTS',
-  posts: 'POSTS',
-  reviews: 'REVIEWS',
-  collections: 'COLLECTIONS',
-  'web-archive': 'WEB ARCHIVES',
+  uploads: 'Uploads',
+  lists: 'Lists',
+  posts: 'Posts',
+  reviews: 'Reviews',
+  collections: 'Collections',
+  'web-archive': 'Web Archives',
 };
 
 test.describe('Profile Page - Basic display tests', () => {

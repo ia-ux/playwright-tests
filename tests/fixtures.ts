@@ -21,8 +21,6 @@ type PageFixtures = {
   collectionPage: CollectionPage;
   searchPage: SearchPage;
   profilePage: ProfilePage;
-  patronLoginPage: LoginPage;
-  privsLoginPage: LoginPage;
   loginPage: LoginPage;
   profilePageUploads: ProfilePage;
 };
@@ -140,36 +138,6 @@ export const test = base.extend<PageFixtures>({
     });
 
     await use(profilePage);
-
-    // Clean up the fixture.
-    await page.close();
-  },
-  patronLoginPage: async ({ page }, use) => {
-    // Set up the fixture.
-    const loginPage = new LoginPage(page);
-    await loginPage.loginAs('patron');
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
-    await use(loginPage);
-
-    // Clean up the fixture.
-    await page.close();
-  },
-  privsLoginPage: async ({ page }, use) => {
-    // Set up the fixture.
-    const loginPage = new LoginPage(page);
-    await loginPage.loginAs('privs');
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
-    await use(loginPage);
 
     // Clean up the fixture.
     await page.close();

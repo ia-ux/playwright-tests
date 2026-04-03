@@ -1,10 +1,10 @@
 import { test, expect } from '../fixtures';
 import { identifier } from '../../config';
 
-const BLACK_WAVEFORM = 'https://archive.org/images/black.jpg';
+const BLACK_WAVEFORM = 'https://av.archive.org/img/black.jpg';
 
 test('Load Grateful Dead Soundtrack page to check page elements', async ({ musicPage }) => {
-  await musicPage.detailsPage.gotoPage(identifier.details.music_theater_grateful_dead);
+  await musicPage.gotoPage(identifier.details.music_theater_grateful_dead);
 
   await test.step(`Verify music theater and channel selector are visible`, async () => {
     await expect(musicPage.iaMusicTheater.musicTheater).toBeVisible();
@@ -25,7 +25,7 @@ test('Load Grateful Dead Soundtrack page to check page elements', async ({ music
 
 test(`Special case: Audio item without image - with waveform`, async ({ musicPage }) => {
   await test.step(`Load the page`, async () => {
-    await musicPage.detailsPage.gotoPage(
+    await musicPage.gotoPage(
       identifier.details.music_theater_no_image_with_waveform,
     );
   });
@@ -59,9 +59,7 @@ test(`Special case: Audio item without image - with waveform`, async ({ musicPag
 
 test(`Special case: Load a single track - no waveform`, async ({ musicPage }) => {
   await test.step(`Load the page`, async () => {
-    await musicPage.detailsPage.gotoPage(
-      identifier.details.music_theater_single_track_no_waveform,
-    );
+    await musicPage.gotoPage(identifier.details.music_theater_single_track_no_waveform);
   });
 
   await test.step(`Verify music theater and channel selector are visible`, async () => {
@@ -92,7 +90,7 @@ test(`Special case: Load a single track - no waveform`, async ({ musicPage }) =>
 });
 
 test(`Play a Grateful Dead track`, async ({ musicPage }) => {
-  await musicPage.detailsPage.gotoPage(identifier.details.music_theater_grateful_dead);
+  await musicPage.gotoPage(identifier.details.music_theater_grateful_dead);
 
   await test.step(`Play music and verify it starts playing`, async () => {
     await musicPage.iaMusicTheater.musicPlayerPlayButton.click();
@@ -113,9 +111,7 @@ test(`Play a Grateful Dead track`, async ({ musicPage }) => {
 });
 
 test(`Open and navigate liner notes`, async ({ musicPage }) => {
-  await musicPage.detailsPage.gotoPage(
-    identifier.details.music_theater_single_track_no_waveform,
-  );
+  await musicPage.gotoPage(identifier.details.music_theater_single_track_no_waveform);
 
   await test.step(`Open liner notes and verify BookReader loads in 1up mode`, async () => {
     await musicPage.iaMusicTheater.seeMoreCta.click({ timeout: 10000 });
@@ -139,7 +135,7 @@ test(`Open and navigate liner notes`, async ({ musicPage }) => {
   });
 
   await test.step(`Exit fullscreen mode`, async () => {
-    await musicPage.bookReader.brFullScreen.click();
+    await musicPage.bookReader.brExitFullScreen.click();
     expect(await musicPage.getBookReaderClass()).not.toContain('fullscreenActive');
   });
 

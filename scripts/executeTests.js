@@ -3,7 +3,7 @@ const { execSync } = require('child_process');
 const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 const buildCommand = (options) => {
-  const { category, trace, headed, debug, ui, title, browser, platform } = options;
+  const { category, trace, headed, debug, ui, title, browser, platform, workers } = options;
 
   let command = `CATEGORY=${category} npx playwright test`;
 
@@ -22,7 +22,7 @@ const buildCommand = (options) => {
     command += ` --project='${capitalizedPlatform} - ${capitalizedBrowser}'`;
   }
 
-  return `${command} --workers=5`;
+  return `${command} --workers=${workers}`;
 }
 
 const parseArguments = (args) => {
@@ -30,11 +30,12 @@ const parseArguments = (args) => {
   const validBrowserDevices = ['chromium', 'firefox', 'webkit'];
   const validPlatforms = ['mobile', 'desktop'];
 
-  const { test: testCategory, browser, title, headed, trace, debug, ui, device } = args;
+  const { test: testCategory, browser, title, headed, trace, debug, ui, device, workers } = args;
 
   let category = testCategory && validCategories.includes(testCategory) ? testCategory : 'all';
   let selectedBrowser = validBrowserDevices.includes(browser) ? browser : '';
   let platform = validPlatforms.includes(device) ? device : 'desktop';
+  let workerCount = Number.isInteger(workers) && workers > 0 ? workers : 5;
 
   if (title) category = 'grep';
 
@@ -46,7 +47,8 @@ const parseArguments = (args) => {
     trace: !!trace,
     debug: !!debug,
     ui: !!ui,
-    platform
+    platform,
+    workers: workerCount
   };
 }
 

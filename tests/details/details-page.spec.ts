@@ -267,6 +267,7 @@ test(`Load theater: video`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp`, async ({ detailsPage }) => {
+  test.fixme(true, 'Webamp does not load in headless mode — run with --headed to verify');
   test.info().annotations.push({
     type: 'Test',
     description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
@@ -291,6 +292,7 @@ test(`Load theater: webamp`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
+  test.fixme(true, 'Webamp does not load in headless mode — run with --headed to verify');
   test.info().annotations.push({
     type: 'Test',
     description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',

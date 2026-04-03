@@ -82,7 +82,7 @@ test.describe('About pages', () => {
     await test.step('Validate page title and content', async () => {
       await expect(page).toHaveTitle(/News Stories/);
       await expect(page.locator('h1:has-text("News stories")')).toBeVisible();
-      await expect(page.locator('#maincontent')).toContainText('Including The Wayback Machine');
+      await expect(page.locator('body')).toContainText('Including The Wayback Machine');
     });
   });
 

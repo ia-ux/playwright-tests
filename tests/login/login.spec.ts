@@ -1,38 +1,38 @@
 import { test, expect } from '../fixtures';
 
-test('Account settings - Login as a patron', async ({ patronLoginPage }) => {
-  await test.step('Navigate to account settings page', async () => {
-    await patronLoginPage.gotoAccountSettings();
-  });
+test.describe('Account settings - Login as a patron', () => {
+  test.use({ storageState: '.auth/patron.json' });
 
-  await test.step('Verify authentication template is visible', async () => {
-    await expect(patronLoginPage.authTemplate).toBeVisible();
-  });
+  test('Verify account settings page', async ({ loginPage }) => {
+    await test.step('Navigate to account settings page', async () => {
+      await loginPage.gotoAccountSettings();
+    });
 
-  await test.step('Verify account settings heading, form text, and verify button', async () => {
-    expect(await patronLoginPage.accountSettingsHeading.innerText()).toBe('Account settings');
-    expect(await patronLoginPage.accountSettingsFormText.innerText()).toBe(
-      'To access your account settings, as an extra security measure, please enter your password.',
-    );
-    expect(await patronLoginPage.verifyPasswordButton.innerText()).toBe('Verify password');
+    await test.step('Verify account settings heading, form text, and verify button', async () => {
+      await expect(loginPage.accountSettingsHeading).toBeVisible();
+      await expect(loginPage.accountSettingsFormText).toHaveText(
+        'To access your account settings, as an extra security measure, you will need to verify your identity.',
+      );
+      await expect(loginPage.verifyPasswordButton).toHaveText('Verify password');
+    });
   });
 });
 
-test('Account settings - Login as a admin', async ({ privsLoginPage }) => {
-  await test.step('Navigate to account settings page', async () => {
-    await privsLoginPage.gotoAccountSettings();
-  });
+test.describe('Account settings - Login as a admin', () => {
+  test.use({ storageState: '.auth/admin.json' });
 
-  await test.step('Verify authentication template is visible', async () => {
-    await expect(privsLoginPage.authTemplate).toBeVisible();
-  });
+  test('Verify account settings page', async ({ loginPage }) => {
+    await test.step('Navigate to account settings page', async () => {
+      await loginPage.gotoAccountSettings();
+    });
 
-  await test.step('Verify account settings heading, form text, and verify button', async () => {
-    expect(await privsLoginPage.accountSettingsHeading.innerText()).toBe('Account settings');
-    expect(await privsLoginPage.accountSettingsFormText.innerText()).toBe(
-      'To access your account settings, as an extra security measure, please enter your password.',
-    );
-    expect(await privsLoginPage.verifyPasswordButton.innerText()).toBe('Verify password');
+    await test.step('Verify account settings heading, form text, and verify button', async () => {
+      await expect(loginPage.accountSettingsHeading).toBeVisible();
+      await expect(loginPage.accountSettingsFormText).toHaveText(
+        'To access your account settings, as an extra security measure, you will need to verify your identity.',
+      );
+      await expect(loginPage.verifyPasswordButton).toHaveText('Verify password');
+    });
   });
 });
 
@@ -41,10 +41,8 @@ test('Account settings - Not logged in', async ({ loginPage }) => {
     await loginPage.gotoAccountSettings();
   });
 
-  await test.step('Verify authentication template is not shown and login prompt appears', async () => {
-    await expect(loginPage.authTemplate).not.toBeVisible();
-    expect(await loginPage.notLoggedInMessage.innerText()).toContain(
-      'You must be logged in to change your settings',
-    );
+  await test.step('Verify redirect to login page', async () => {
+    await expect(loginPage.accountSettingsHeading).not.toBeVisible();
+    await expect(loginPage.loginHeading).toBeVisible();
   });
 });

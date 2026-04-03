@@ -25,13 +25,11 @@ export class ProfilePage {
     this.page = page;
 
     this.profileHeader = page.locator('#profile-header');
-    this.thumbnailFrame = page.locator('#top-matter > div.thumbnail-frame');
+    this.thumbnailFrame = page.locator('div.thumbnail-frame');
     this.pageSummary = page.locator('#user-summary-container');
     this.actionBar = page.locator('action-bar');
-    this.pageTabs = page.locator(
-      '#page-container > tab-manager > div.tab-manager-container > nav.tabs-row > ul',
-    );
-    this.activeTab = this.pageTabs.locator('li.tab.active');
+    this.pageTabs = page.getByRole('tablist', { name: 'Navigation Tabs' });
+    this.activeTab = this.pageTabs.locator('[aria-selected="true"]');
     this.postsHeading = page.locator('div[slot="posts"] user-forum-posts h2');
 
     this.collectionFacets = new CollectionFacets(this.page);
@@ -46,11 +44,11 @@ export class ProfilePage {
   }
 
   async clickProfileTab(name: string) {
-    await this.pageTabs.getByRole('link', { name }).click();
+    await this.pageTabs.getByRole('tab', { name }).click();
   }
 
   getTabById(tabId: string): Locator {
-    return this.pageTabs.locator(`a[data-tab-id="${tabId}"]`);
+    return this.pageTabs.locator(`button[data-tab-id="${tabId}"]`);
   }
 
   getTabSlot(tabName: string): Locator {

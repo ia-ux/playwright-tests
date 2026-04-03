@@ -121,12 +121,10 @@ test('Redirect web search to Wayback machine page', async ({ homePage }) => {
   });
 
   await test.step('Verify redirect to Wayback Machine with query preserved', async () => {
-    await page.waitForURL(/web/);
-    const urlPattern = new RegExp(queryString);
-    expect(page.url()).toMatch(urlPattern);
-    expect(await page.title()).toContain('Wayback Machine');
+    await expect(page).toHaveURL(new RegExp(queryString));
+    await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
-    expect(await collectionBrowser.formInputWaybackPage.inputValue()).toContain(queryString);
+    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(new RegExp(queryString));
   });
 });
 
@@ -139,12 +137,10 @@ test('Use Wayback widget - Redirect web search', async ({ homePage }) => {
   });
 
   await test.step('Verify redirect to Wayback Machine with query preserved', async () => {
-    await page.waitForURL(/web/);
-    const urlPattern = new RegExp(queryString);
-    expect(page.url()).toMatch(urlPattern);
-    expect(await page.title()).toContain('Wayback Machine');
+    await expect(page).toHaveURL(new RegExp(queryString));
+    await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
-    expect(await collectionBrowser.formInputWaybackPage.inputValue()).toContain(queryString);
+    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(new RegExp(queryString));
   });
 });
 

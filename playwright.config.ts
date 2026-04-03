@@ -54,16 +54,29 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    { name: 'patron-setup', testMatch: '**/auth/patron.setup.ts' },
+    { name: 'admin-setup', testMatch: '**/auth/admin.setup.ts' },
     {
       name: 'Desktop - Chromium',
+      testIgnore: ['**/auth/*.setup.ts', '**/login/**'],
       use: {
         ...devices['Desktop Chrome'],
         ignoreHTTPSErrors: true,  // This is needed to avoid getting warnings like: The website is not safe
       },
     },
+    {
+      name: 'Desktop - Chromium (Auth)',
+      dependencies: ['patron-setup', 'admin-setup'],
+      testMatch: '**/login/**',
+      use: {
+        ...devices['Desktop Chrome'],
+        ignoreHTTPSErrors: true,
+      },
+    },
     // Uncomment the following projects to test on more browsers. 
     // Note that you will need to have the browsers installed on your machine to run these tests, and they will run slower than Chromium in headless mode, 
     // so we recommend only running these tests in headed mode and not in CI for now.
+
     // {
     //   name: 'Desktop - Firefox',
     //   use: {

@@ -8,41 +8,27 @@ const { accountSettings, login } = identifier;
 export class LoginPage {
   readonly page: Page;
 
-  readonly authTemplate: Locator;
   readonly accountSettingsHeading: Locator;
   readonly accountSettingsFormText: Locator;
   readonly verifyPasswordButton: Locator;
-  readonly notLoggedInMessage: Locator;
+  readonly loginHeading: Locator;
 
   public constructor(page: Page) {
     this.page = page;
 
-    this.authTemplate = this.page.locator('authentication-template');
-    this.accountSettingsHeading = this.authTemplate
-      .locator('div.form-element')
-      .first()
-      .locator('h2');
-    this.accountSettingsFormText = this.authTemplate.locator('form > p');
-    this.verifyPasswordButton = this.authTemplate
-      .locator('div.form-element')
-      .last()
-      .locator('button');
-    this.notLoggedInMessage = this.page.locator('#maincontent > div > div');
+    this.accountSettingsHeading = this.page.getByRole('heading', { name: 'Account settings', level: 2 });
+    this.accountSettingsFormText = this.page.locator('main p').first();
+    this.verifyPasswordButton = this.page.locator('ia-button.submit-btn');
+    this.loginHeading = this.page.getByRole('heading', { name: 'Log In', level: 1 });
   }
 
   async loginAs(user: UserType) {
     const asUser = user === 'privs' ? config.privUser : config.patronUser;
 
     await this.page.goto(login.url, { waitUntil: 'domcontentloaded' });
-    await this.page.fill(
-      'input.form-element.input-email[type=email]',
-      asUser.email,
-    );
-    await this.page.fill(
-      'input.form-element.input-password[type=password]',
-      asUser.password,
-    );
-    await this.page.locator('input.btn.btn-primary.btn-submit').click();
+    await this.page.getByRole('textbox', { name: 'Email address' }).fill(asUser.email);
+    await this.page.getByRole('textbox', { name: 'Password' }).fill(asUser.password);
+    await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
 
     // should go back to baseUrl
     await this.page.waitForURL('/');
@@ -50,6 +36,5 @@ export class LoginPage {
 
   async gotoAccountSettings() {
     await this.page.goto(accountSettings.url, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(/settings=1/);
   }
 }
