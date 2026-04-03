@@ -30,7 +30,7 @@ export const identifier = {
     default: '/details/CSPAN_20160425_022500_2011_White_House_Correspondents_Dinner',
   },
   accountSettings: {
-    url: '/account/index.php?settings=1',
+    url: '/account/settings?settings=1',
     default: '',
   },
   books: {
@@ -66,7 +66,7 @@ export const identifier = {
     webamp: 'OTRR_Philip_Marlowe_Singles',
     webamp_with_skin: 'winampskin_Tundra_Winamp_Skin_Actualized',
     music_theater_grateful_dead: 'gd73-06-10.sbd.hollister.174.sbeok.shnf',
-    music_theater_no_image_with_waveform: 'gd77-05-08.sbd.hicks.4982.sbeok.shn',
+    music_theater_no_image_with_waveform: 'phish1994-11-25.002456.chicago.akg480.flac1644',
     music_theater_single_track_no_waveform: 'berceuse00benj',
   },
   home: {
@@ -78,7 +78,7 @@ export const identifier = {
     default: 'oldtimeradio',
   },
   login: {
-    url: '/account/login',
+    url: '/login',
     default: '',
   },
   profile: {

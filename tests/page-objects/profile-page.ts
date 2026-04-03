@@ -1,17 +1,20 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
-import { SearchPage } from './search-page';
 import { CollectionFacets } from './collection-facets';
 import { InfiniteScroller } from './infinite-scroller';
+import { SearchPage } from './search-page';
 import { SortBar } from './sort-bar';
-
-import { FacetGroup, FacetGroupLocatorLabel } from '../models';
 
 export class ProfilePage {
   readonly page: Page;
 
+  readonly profileHeader: Locator;
+  readonly thumbnailFrame: Locator;
   readonly pageSummary: Locator;
+  readonly actionBar: Locator;
   readonly pageTabs: Locator;
+  readonly activeTab: Locator;
+  readonly postsHeading: Locator;
 
   readonly collectionFacets: CollectionFacets;
   readonly infiniteScroller: InfiniteScroller;
@@ -21,10 +24,13 @@ export class ProfilePage {
   public constructor(page: Page) {
     this.page = page;
 
+    this.profileHeader = page.locator('#profile-header');
+    this.thumbnailFrame = page.locator('div.thumbnail-frame');
     this.pageSummary = page.locator('#user-summary-container');
-    this.pageTabs = page.locator(
-      '#page-container > tab-manager > div.tab-manager-container > nav.tabs-row > ul',
-    );
+    this.actionBar = page.locator('action-bar');
+    this.pageTabs = page.getByRole('tablist', { name: 'Navigation Tabs' });
+    this.activeTab = this.pageTabs.locator('[aria-selected="true"]');
+    this.postsHeading = page.locator('div[slot="posts"] user-forum-posts h2');
 
     this.collectionFacets = new CollectionFacets(this.page);
     this.infiniteScroller = new InfiniteScroller(this.page);
@@ -38,86 +44,18 @@ export class ProfilePage {
   }
 
   async clickProfileTab(name: string) {
-    await this.pageTabs.getByRole('link', { name }).click();
+    await this.pageTabs.getByRole('tab', { name }).click();
   }
 
-  async validatePageHeaderElements() {
-    await expect(this.page.locator('#profile-header')).toBeVisible();
-    await expect(
-      this.page.locator('#top-matter > div.thumbnail-frame'),
-    ).toBeVisible();
-    await expect(this.pageSummary).toBeVisible();
-    await expect(this.page.locator('action-bar')).toBeVisible();
+  getTabById(tabId: string): Locator {
+    return this.pageTabs.locator(`button[data-tab-id="${tabId}"]`);
   }
 
-  async validateUnownedProfilePageTabs() {
-    await expect(this.pageTabs).toBeVisible({ timeout: 60000 });
-    // Only the six basic tabs when viewing another patron's profile.
-    await Promise.all([
-      expect(this.pageTabs.locator('a[data-tab-id="uploads"]')).toBeVisible(),
-      expect(this.pageTabs.locator('a[data-tab-id="lists"]')).toBeVisible(),
-      expect(this.pageTabs.locator('a[data-tab-id="posts"]')).toBeVisible(),
-      expect(this.pageTabs.locator('a[data-tab-id="reviews"]')).toBeVisible(),
-      expect(
-        this.pageTabs.locator('a[data-tab-id="collections"]'),
-      ).toBeVisible(),
-      expect(
-        this.pageTabs.locator('a[data-tab-id="web-archive"]'),
-      ).toBeVisible(),
-    ]);
+  getTabSlot(tabName: string): Locator {
+    return this.page.locator(`div[slot="${tabName}"]`);
   }
 
-  async validateOwnProfilePageTabs() {
-    // If viewing *your own* profile, the Loans tab appears too, in addition to all the others.
-    await Promise.all([
-      this.validateUnownedProfilePageTabs(),
-
-      expect(this.pageTabs.locator('a[data-tab-id="loans"]')).toBeVisible(),
-    ]);
-  }
-
-  async validateDatePickerIsVisible() {
-    const facetContainer = await this.collectionFacets.getFacetGroupContent(
-      FacetGroup.DATE,
-    );
-
-    if (facetContainer) {
-      await facetContainer
-        .locator('histogram-date-range #container')
-        .waitFor({ state: 'visible', timeout: 60000 });
-    }
-  }
-
-  async validateClickedTabAppeared(tabName: string) {
-    const pageTabsText = {
-      uploads: 'UPLOADS',
-      lists: 'LISTS',
-      posts: 'POSTS',
-      reviews: 'REVIEWS',
-      collections: 'COLLECTIONS',
-      'web-archive': 'WEB ARCHIVES',
-    };
-
-    await expect(this.page.locator(`div[slot="${tabName}"]`)).toBeVisible({
-      timeout: 1000,
-    });
-
-    expect(await this.pageTabs.locator('li.tab.active').innerText()).toContain(
-      pageTabsText[tabName],
-    );
-  }
-
-  async validateResultCountElement(tabName: string) {
-    const resultCountElement = this.page.locator(
-      `div[slot="${tabName}"] collection-browser #results-total`,
-    );
-    await expect(resultCountElement).toBeVisible({ timeout: 100 });
-  }
-
-  async validateResultForPostsTab() {
-    const resultElement = this.page.locator(
-      'div[slot="posts"] user-forum-posts h2',
-    );
-    expect(await resultElement.innerText()).toContain('Posts by');
+  getTabResultCount(tabName: string): Locator {
+    return this.page.locator(`div[slot="${tabName}"] collection-browser #results-total`);
   }
 }

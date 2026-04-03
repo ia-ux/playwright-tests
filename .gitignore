@@ -3,6 +3,7 @@ node_modules/
 /playwright-report
 /playwright/.cache
 /playwright/.auth
+/.auth
 /playwright-summary
 
 .env
@@ -24,3 +25,6 @@ log/
 ctrf
 
 bstack-json
+
+.playwright
+.playwright-cli

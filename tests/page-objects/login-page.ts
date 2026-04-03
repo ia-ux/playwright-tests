@@ -1,72 +1,40 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { config, identifier } from '../../config';
 import { UserType } from '../models';
 
 const { accountSettings, login } = identifier;
-export class LoginPage {
-  readonly authTemplate: Locator;
 
+export class LoginPage {
   readonly page: Page;
+
+  readonly accountSettingsHeading: Locator;
+  readonly accountSettingsFormText: Locator;
+  readonly verifyPasswordButton: Locator;
+  readonly loginHeading: Locator;
 
   public constructor(page: Page) {
     this.page = page;
 
-    this.authTemplate = this.page.locator('authentication-template');
+    this.accountSettingsHeading = this.page.getByRole('heading', { name: 'Account settings', level: 2 });
+    this.accountSettingsFormText = this.page.locator('main p').first();
+    this.verifyPasswordButton = this.page.locator('ia-button.submit-btn');
+    this.loginHeading = this.page.getByRole('heading', { name: 'Log In', level: 1 });
   }
 
   async loginAs(user: UserType) {
     const asUser = user === 'privs' ? config.privUser : config.patronUser;
 
     await this.page.goto(login.url, { waitUntil: 'domcontentloaded' });
-    await this.page.fill(
-      'input.form-element.input-email[type=email]',
-      asUser.email,
-    );
-    await this.page.fill(
-      'input.form-element.input-password[type=password]',
-      asUser.password,
-    );
-    await this.page.locator('input.btn.btn-primary.btn-submit').click();
+    await this.page.getByRole('textbox', { name: 'Email address' }).fill(asUser.email);
+    await this.page.getByRole('textbox', { name: 'Password' }).fill(asUser.password);
+    await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
 
     // should go back to baseUrl
     await this.page.waitForURL('/');
   }
 
-  async assertAccountSettingsDisplayed() {
+  async gotoAccountSettings() {
     await this.page.goto(accountSettings.url, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(/settings=1/);
-
-    await expect(this.authTemplate).toBeVisible();
-
-    expect(
-      await this.authTemplate
-        .locator('div.form-element')
-        .first()
-        .locator('h2')
-        .innerText(),
-    ).toBe('Account settings');
-
-    expect(await this.authTemplate.locator('form > p').innerText()).toBe(
-      'To access your account settings, as an extra security measure, please enter your password.',
-    );
-
-    expect(
-      await this.authTemplate
-        .locator('div.form-element')
-        .last()
-        .locator('button')
-        .innerText(),
-    ).toBe('Verify password');
-  }
-
-  async notLoggedIn() {
-    await this.page.goto(accountSettings.url);
-    await this.page.waitForURL(/settings=1/);
-
-    await expect(this.authTemplate).not.toBeVisible();
-    expect(
-      await this.page.locator('#maincontent > div > div').innerText(),
-    ).toContain('You must be logged in to change your settings');
   }
 }

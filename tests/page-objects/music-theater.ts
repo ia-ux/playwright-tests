@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 import { ChannelSelector } from '../models';
 
 export class IAMusicTheater {
@@ -7,6 +7,7 @@ export class IAMusicTheater {
   readonly musicTheater: Locator;
   readonly channelSelector: Locator;
   readonly iauxPhotoViewer: Locator;
+  readonly noImageLocator: Locator;
   readonly playAv: Locator;
   readonly seeMoreCta: Locator;
 
@@ -27,6 +28,7 @@ export class IAMusicTheater {
     this.channelSelector = this.musicTheater.locator('channel-selector');
 
     this.iauxPhotoViewer = this.musicTheater.locator('iaux-photo-viewer');
+    this.noImageLocator = this.iauxPhotoViewer.locator('iamusic-noimage');
     this.playAv = this.page.locator('play-av');
     this.seeMoreCta = this.iauxPhotoViewer.locator('#see-more-cta');
 
@@ -45,20 +47,6 @@ export class IAMusicTheater {
     this.mainWindow = this.page.locator('#main-window');
     this.playlistWindow = this.page.locator('#playlist-window');
     this.equalizerWindow = this.page.locator('#equalizer-window');
-  }
-
-  async placeholderImageDisplay(noPlaceholder: boolean) {
-    if (noPlaceholder) {
-      await expect(this.iauxPhotoViewer).toHaveAttribute('noimageavailable');
-      await expect(
-        this.iauxPhotoViewer.locator('iamusic-noimage'),
-      ).toBeVisible();
-    } else {
-      await expect(this.iauxPhotoViewer).not.toHaveAttribute(
-        'noimageavailable',
-      );
-      await expect(this.seeMoreCta).toBeVisible();
-    }
   }
 
   async selectChannelSelector(channel: ChannelSelector) {
