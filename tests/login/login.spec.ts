@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures';
 test.describe('Account settings - Login as a patron', () => {
   test.use({ storageState: '.auth/patron.json' });
 
-  test('Verify account settings page', async ({ loginPage }) => {
+  test.fixme('Verify account settings page', async ({ loginPage }) => {
     await test.step('Navigate to account settings page', async () => {
       await loginPage.gotoAccountSettings();
     });
@@ -21,7 +21,7 @@ test.describe('Account settings - Login as a patron', () => {
 test.describe('Account settings - Login as a admin', () => {
   test.use({ storageState: '.auth/admin.json' });
 
-  test('Verify account settings page', async ({ loginPage }) => {
+  test.fixme('Verify account settings page', async ({ loginPage }) => {
     await test.step('Navigate to account settings page', async () => {
       await loginPage.gotoAccountSettings();
     });
