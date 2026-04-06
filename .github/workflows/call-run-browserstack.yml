@@ -71,6 +71,7 @@ jobs:
 
           curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" "https://api-automation.browserstack.com/ext/v1/projects/$BROWSERSTACK_PROJECT_ID/builds?date_range=${START_MS},${END_MS}" > browserstack.json
 
+          cat browserstack.json
           export AUTOMATE_STATUS=$(jq -r '.builds | last | .status' browserstack.json)
           export AUTOMATE_URL=$(jq -r '.builds | last | .observability_url' browserstack.json)
           
