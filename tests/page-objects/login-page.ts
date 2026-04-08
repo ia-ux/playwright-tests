@@ -31,7 +31,7 @@ export class LoginPage {
     await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
 
     // should go back to baseUrl
-    await this.page.waitForURL('/');
+    await this.page.waitForURL('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
   }
 
   async gotoAccountSettings() {

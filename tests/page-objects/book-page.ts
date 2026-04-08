@@ -95,8 +95,10 @@ export class BookPage {
 
   async getPageImages() {
     const onLoadBrState = this.brContainer.nth(0);
-    await onLoadBrState.waitFor({ state: 'attached' });
-    return onLoadBrState.locator('img');
+    await onLoadBrState.waitFor({ state: 'visible' });
+    const images = onLoadBrState.locator('img');
+    await images.first().waitFor({ state: 'visible' });
+    return images;
   }
 
   async getBRPageBoundingBoxDimension(dimension: BoxDimension) {

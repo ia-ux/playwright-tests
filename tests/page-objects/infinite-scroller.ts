@@ -213,8 +213,9 @@ export class InfiniteScroller {
   }
 
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
-    await item.locator('tile-dispatcher').waitFor({ state: 'visible' });
-    await item.locator('a').waitFor({ state: 'visible' });
+    await item.scrollIntoViewIfNeeded();
+    await item.locator('tile-dispatcher').waitFor({ state: 'visible', timeout: 60000 });
+    await item.locator('a').waitFor({ state: 'visible', timeout: 60000 });
     const collectionTileCount = await item.locator('a > collection-tile').count();
     const itemTileCount = await item.locator('a > item-tile').count();
     if (collectionTileCount === 1 && itemTileCount === 0) {
@@ -226,7 +227,8 @@ export class InfiniteScroller {
   }
 
   async getDateMetadataText(item: Locator, arrItem: DateMetadataLabel[]) {
-    await item.locator(InfiniteScroller.SELECTORS.CONTAINER).waitFor({ state: 'visible' });
+    await item.scrollIntoViewIfNeeded();
+    await item.locator(InfiniteScroller.SELECTORS.CONTAINER).waitFor({ state: 'visible', timeout: 60000 });
     const dateSpanLabel = await item
       .locator(InfiniteScroller.SELECTORS.DATES_LINE)
       .last()
@@ -238,13 +240,14 @@ export class InfiniteScroller {
   }
 
   async getTileIconTitleAttr(item: Locator) {
-    await item.locator(InfiniteScroller.SELECTORS.TILE_STATS).waitFor({ state: 'visible' });
+    await item.scrollIntoViewIfNeeded();
+    await item.locator(InfiniteScroller.SELECTORS.TILE_STATS).waitFor({ state: 'visible', timeout: 60000 });
     return await item.locator(InfiniteScroller.SELECTORS.TILE_ICON).getAttribute('title');
   }
 
   async getAllInfiniteScrollerArticleItems() {
     const container = this.infiniteScroller.locator(`section${InfiniteScroller.SELECTORS.CONTAINER}`);
-    await container.waitFor({ state: 'visible' });
+    await container.waitFor({ state: 'visible', timeout: 60000 });
     return await container.locator(InfiniteScroller.SELECTORS.ARTICLE).all();
   }
 

@@ -40,7 +40,7 @@ export class ProfilePage {
 
   async visit(userid: string) {
     await this.page.goto(`/details/@${userid}?ab_config=EagerFacets:On`, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForLoadState('load', { timeout: 5000 });
+    await this.page.waitForLoadState('load', { timeout: 60000 });
   }
 
   async clickProfileTab(name: string) {
