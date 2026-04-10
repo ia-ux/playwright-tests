@@ -215,7 +215,7 @@ export class InfiniteScroller {
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
     await item.scrollIntoViewIfNeeded();
     await item.locator('tile-dispatcher').waitFor({ state: 'visible', timeout: 60000 });
-    await item.locator('a').waitFor({ state: 'visible', timeout: 60000 });
+    await item.locator('tile-dispatcher > a').waitFor({ state: 'visible', timeout: 60000 });
     const collectionTileCount = await item.locator('a > collection-tile').count();
     const itemTileCount = await item.locator('a > item-tile').count();
     if (collectionTileCount === 1 && itemTileCount === 0) {
