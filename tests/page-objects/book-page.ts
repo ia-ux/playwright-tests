@@ -97,7 +97,7 @@ export class BookPage {
     const onLoadBrState = this.brContainer.nth(0);
     await onLoadBrState.waitFor({ state: 'visible' });
     await onLoadBrState.locator('.BRpageloading').first().waitFor({ state: 'hidden', timeout: 60000 });
-    const images = onLoadBrState.locator('img');
+    const images = onLoadBrState.locator('.BRpage-visible img');
     await images.first().waitFor({ state: 'visible', timeout: 60000 });
     return images;
   }

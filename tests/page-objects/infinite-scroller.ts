@@ -255,6 +255,7 @@ export class InfiniteScroller {
     viewFacetMetadata: ViewFacetMetadata,
     displayItemCount: Number,
   ): Promise<string[] | null> {
+    await this.waitForFirstItemTile();
     const allItems = await this.getAllInfiniteScrollerArticleItems();
     const itemsToCheck = allItems.slice(0, Number(displayItemCount));
     
