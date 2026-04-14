@@ -5,12 +5,12 @@ dotenv.config();
 export const config = {
   baseURL: process.env.BASE_URL ?? "https://archive.org",
   patronUser: {
-    email: process.env.ARCHIVE_EMAIL || '',
-    password: process.env.ARCHIVE_PASSWORD || ''
-  },
-  privUser: {
     email: process.env.PATRON_EMAIL || '',
     password: process.env.PATRON_PASSWORD || '',
+  },
+  privUser: {
+    email: process.env.ARCHIVE_EMAIL || '',
+    password: process.env.ARCHIVE_PASSWORD || ''
   },
 }
 
@@ -44,7 +44,7 @@ export const identifier = {
     faq: '/legal/faq'
   },
   lending: {
-    chromium: 'hitrun0000haro',
+    chromium: 'cornellstudiesin26unse',
     firefox: 'cornellstudiesin26unse',
     webkit: 'annualreport0000meth_x3r2',
   },

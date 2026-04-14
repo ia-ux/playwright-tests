@@ -3,8 +3,7 @@ import { type Page, Locator } from '@playwright/test';
 import { BookReader } from './book-reader';
 
 import { BookPageViewMode, BoxDimension } from '../models';
-
-const PAGE_WAIT_TIME = 5000;
+import { PAGE_WAIT_TIME } from '../utils';
 export class BookPage {
   readonly page: Page;
 
@@ -31,24 +30,20 @@ export class BookPage {
 
   // Check URL page parameter in # and path
   async isPageInUrl() {
-    const hash = await this.page.evaluate(() => window.location.hash);
-    const href = await this.page.evaluate(() => window.location.href);
-    if (hash) {
-      return hash.indexOf('#page/') > -1;
-    } else {
-      return href.indexOf('/page/') > -1;
-    }
+    const { hash, href } = await this.page.evaluate(() => ({
+      hash: window.location.hash,
+      href: window.location.href,
+    }));
+    return hash ? hash.includes('#page/') : href.includes('/page/');
   }
 
   // Check URL mode parameter in # and path
   async isModeInUrl(mode: BookPageViewMode) {
-    const hash = await this.page.evaluate(() => window.location.hash);
-    const href = await this.page.evaluate(() => window.location.href);
-    if (hash) {
-      return hash.indexOf('/mode/' + mode) > -1;
-    } else {
-      return href.indexOf('/mode/' + mode) > -1;
-    }
+    const { hash, href } = await this.page.evaluate(() => ({
+      hash: window.location.hash,
+      href: window.location.href,
+    }));
+    return hash ? hash.includes('/mode/' + mode) : href.includes('/mode/' + mode);
   }
 
   async getPageHash() {
@@ -97,9 +92,7 @@ export class BookPage {
     const onLoadBrState = this.brContainer.nth(0);
     await onLoadBrState.waitFor({ state: 'visible' });
     await onLoadBrState.locator('.BRpageloading').first().waitFor({ state: 'hidden', timeout: 60000 });
-    const images = onLoadBrState.locator('.BRpage-visible img');
-    await images.first().waitFor({ state: 'visible', timeout: 60000 });
-    return images;
+    return onLoadBrState.locator('img');
   }
 
   async getBRPageBoundingBoxDimension(dimension: BoxDimension) {

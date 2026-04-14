@@ -15,6 +15,7 @@ import { testBeforeEachConfig } from '../config';
 type PageFixtures = {
   lendingBarAutoRenew: LendingBarAutoRenew;
   detailsPage: DetailsPage;
+  patronDetailsPage: DetailsPage;
   bookPage: BookPage;
   homePage: HomePage;
   musicPage: MusicPage;
@@ -40,11 +41,26 @@ export const test = base.extend<PageFixtures>({
     // Clean up the fixture.
     await page.close();
   },
+  patronDetailsPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: '.auth/patron.json',
+    });
+    const page = await context.newPage();
+    const detailsPage = new DetailsPage(page);
+
+    await page.route(/(analytics|fonts|googletag|doubleclick|adservice)/, route => {
+      route.abort();
+    });
+
+    await use(detailsPage);
+
+    await context.close();
+  },
   detailsPage: async ({ page }, use) => {
     // Set up the fixture.
     const detailsPage = new DetailsPage(page);
 
-    await page.route(/(analytics|fonts)/, route => {
+    await page.route(/(analytics|fonts|googletag|doubleclick|adservice)/, route => {
       route.abort();
     });
 
@@ -72,11 +88,11 @@ export const test = base.extend<PageFixtures>({
     // Set up the fixture.
     const homePage = new HomePage(page);
 
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Use the fixture value in the test.
     await use(homePage);
@@ -101,11 +117,12 @@ export const test = base.extend<PageFixtures>({
   collectionPage: async ({ page }, use) => {
     // Set up the fixture.
     const collectionPage = new CollectionPage(page);
-    await collectionPage.visit('oldtimeradio');
 
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });
+
+    await collectionPage.visit('oldtimeradio');
 
     // Use the fixture value in the test.
     await use(collectionPage);
@@ -116,11 +133,12 @@ export const test = base.extend<PageFixtures>({
   searchPage: async ({ page }, use) => {
     // Set up the fixture.
     const searchPage = new SearchPage(page);
-    await searchPage.visit();
 
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });
+
+    await searchPage.visit();
 
     // Use the fixture value in the test.
     await use(searchPage);
@@ -131,11 +149,12 @@ export const test = base.extend<PageFixtures>({
   profilePage: async ({ page }, use) => {
     // Set up the fixture.
     const profilePage = new ProfilePage(page);
-    await profilePage.visit('brewster');
 
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });
+
+    await profilePage.visit('brewster');
 
     await use(profilePage);
 
@@ -159,11 +178,12 @@ export const test = base.extend<PageFixtures>({
   profilePageUploads: async ({ page }, use) => {
     // Set up the fixture.
     const profilePage = new ProfilePage(page);
-    await profilePage.visit('brewster/uploads');
 
     await page.route(/(analytics|fonts)/, route => {
       route.abort();
     });
+
+    await profilePage.visit('brewster/uploads');
 
     // Use the fixture value in the test.
     await use(profilePage);

@@ -1,7 +1,6 @@
 import { type Page, type Locator } from '@playwright/test';
 
 import { BookReader } from './book-reader';
-import { DetailsPage } from './details-page';
 import { IAMusicTheater } from './music-theater';
 
 export class MusicPage {
@@ -12,18 +11,17 @@ export class MusicPage {
   readonly waveformImage: Locator;
   readonly jwPlayerPlaying: Locator;
   readonly jwPlayerPaused: Locator;
+  readonly jwPlayerIdle: Locator;
   readonly elapsedTimer: Locator;
   readonly closePhotoViewer: Locator;
 
   readonly bookReader: BookReader;
-  readonly detailsPage: DetailsPage;
   readonly iaMusicTheater: IAMusicTheater;
 
   public constructor(page: Page) {
     this.page = page;
 
     this.bookReader = new BookReader(page);
-    this.detailsPage = new DetailsPage(page);
     this.iaMusicTheater = new IAMusicTheater(page);
 
     this.channelSelectorRows = this.iaMusicTheater.channelSelector
@@ -33,6 +31,7 @@ export class MusicPage {
     this.waveformImage = this.iaMusicTheater.playAv.locator('#waveformer-wrap > img');
     this.jwPlayerPlaying = page.locator('.jwplayer.jw-reset.jw-state-playing');
     this.jwPlayerPaused = page.locator('.jwplayer.jw-reset.jw-state-paused');
+    this.jwPlayerIdle = page.locator('.jwplayer.jw-reset.jw-state-idle');
     this.elapsedTimer = page.locator('.jwplayer').locator(
       'div.jw-icon.jw-icon-inline.jw-text.jw-reset.jw-text-elapsed',
     );
@@ -40,9 +39,12 @@ export class MusicPage {
   }
 
   async gotoPage(uri: string) {
-    await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(`/details/${uri}`);
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.goto(`/details/${uri}`, { waitUntil: 'load' });
+  }
+
+  async waitForPlayerReady() {
+    // Play button is only rendered once JW player is initialized and ready
+    await this.iaMusicTheater.musicPlayerPlayButton.waitFor({ state: 'visible', timeout: 30000 });
   }
 
 

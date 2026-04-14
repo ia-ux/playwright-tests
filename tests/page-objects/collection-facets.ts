@@ -29,7 +29,7 @@ export class CollectionFacets {
     await this.btnClearAllFilters.click();
   }
 
-  async datePickerVisible() {
+  async waitForDatePicker() {
     await this.yearPublishedFacetGroup.waitFor({ state: 'visible' });
   }
 

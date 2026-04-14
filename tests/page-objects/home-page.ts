@@ -3,7 +3,6 @@ import { type Page, Locator } from '@playwright/test';
 import { CollectionBrowser } from './collection-browser';
 import { CollectionSearchInput } from './collection-search-input';
 import { TopNav } from './top-nav';
-import { DetailsPage } from './details-page';
 
 export class HomePage {
   readonly page: Page;
@@ -21,7 +20,6 @@ export class HomePage {
 
   readonly collectionBrowser: CollectionBrowser;
   readonly collectionSearchInput: CollectionSearchInput;
-  readonly detailsPage: DetailsPage;
   readonly topNav: TopNav;
 
   public constructor(page: Page) {
@@ -40,7 +38,6 @@ export class HomePage {
     this.collectionBrowser = new CollectionBrowser(page);
     this.collectionSearchInput = new CollectionSearchInput(page);
     this.topNav = new TopNav(page);
-    this.detailsPage = new DetailsPage(page);
   }
 
   async waybackSearchFor(query: string) {
@@ -50,6 +47,9 @@ export class HomePage {
 
     const wbSearchInput = this.waybackSearch.locator('#url');
     await wbSearchInput.fill(query);
-    await wbSearchInput.press('Enter');
+    await Promise.all([
+      this.page.waitForURL(/web\.archive\.org/),
+      wbSearchInput.press('Enter'),
+    ]);
   }
 }

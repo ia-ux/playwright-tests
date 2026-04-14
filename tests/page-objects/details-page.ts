@@ -3,8 +3,7 @@ import { type Page, type Locator } from '@playwright/test';
 import { BookReader } from './book-reader';
 import { LendingBar } from './lending-bar';
 import { IAMusicTheater } from './music-theater';
-
-const PAGE_WAIT_TIME = 5000;
+import { PAGE_WAIT_TIME } from '../utils';
 
 export class DetailsPage {
   readonly page: Page;
@@ -46,9 +45,7 @@ export class DetailsPage {
   }
 
   async gotoPage(uri: string) {
-    await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(`/details/${uri}`);
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.goto(`/details/${uri}`, { waitUntil: 'load' });
   }
 
   async assertPageElements() {
@@ -106,27 +103,13 @@ export class DetailsPage {
 
   async bookreaderDisplay() {
     await this.bookReader.bookReaderShell.waitFor({ state: 'visible' });
-    return await this.bookReader.bookReaderShell.isVisible();
+    return true;
   }
 
-  async musicTheaterDisplayWithPlaceholder() {
+  async musicTheaterDisplay() {
     return {
       musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
-      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
-    };
-  }
-
-  async musicTheaterDisplayWithCoverArt() {
-    return {
-      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
-      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
-    };
-  }
-
-  async musicTheaterDisplaySingleImage() {
-    return {
-      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
-      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible()
+      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible(),
     };
   }
 
@@ -166,19 +149,11 @@ export class DetailsPage {
     };
   }
 
-  async verifyRadioBorrowProgramAvailable() {
+  async getRadioBorrowProgramState() {
     return {
       borrowButtonVisible: await this.page.locator('div.topinblock.borrow-program-btn').isVisible(),
       radioBorrowButtonVisible: await this.page.locator('#radio-borrow-button').isVisible(),
-      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible()
-    };
-  }
-
-  async verifyRadioBorrowProgramUnavailable() {
-    return {
-      borrowButtonVisible: await this.page.locator('div.topinblock.borrow-program-btn').isVisible(),
-      radioBorrowButtonVisible: await this.page.locator('#radio-borrow-button').isVisible(),
-      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible()
+      borrowProgramTextVisible: await this.page.locator('span:has-text("Borrow Program")').isVisible(),
     };
   }
 
@@ -272,7 +247,7 @@ export class DetailsPage {
     };
   }
 
-  async searchResultEntryIndex(): Promise<Number> {
+  async searchResultEntryIndex(): Promise<number> {
     const itemCount = 10;
     const transcriptView = this.page.locator('transcript-view');
     const entries = await transcriptView.locator('transcript-entry').all();

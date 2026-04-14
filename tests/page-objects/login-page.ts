@@ -34,6 +34,15 @@ export class LoginPage {
     await this.page.waitForURL('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
   }
 
+  async fillCredentials(user: UserType) {
+    const asUser = user === 'privs' ? config.privUser : config.patronUser;
+    await this.page.getByRole('textbox', { name: 'Email address' }).fill(asUser.email);
+    await this.page.getByRole('textbox', { name: 'Password' }).fill(asUser.password);
+    await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
+    // wait until redirected away from the login page (referer returns to original page)
+    await this.page.waitForURL(/^(?!.*\/login)/, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  }
+
   async gotoAccountSettings() {
     await this.page.goto(accountSettings.url, { waitUntil: 'domcontentloaded' });
   }

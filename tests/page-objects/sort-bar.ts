@@ -1,8 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
 
 import { SortOrder } from '../models';
-
-const PAGE_WAIT_TIME = 5000;
+import { PAGE_WAIT_TIME } from '../utils';
 
 export class SortBar {
   readonly page: Page;
@@ -44,17 +43,12 @@ export class SortBar {
   }
 
   async checkAlphaBarVisibility(filter: string) {
-    if (!['Title', 'Creator'].includes(filter)) {
-      return await this.alphaBar.isVisible({ timeout: PAGE_WAIT_TIME });
-    } else {
-      return await this.alphaBar.isVisible({ timeout: PAGE_WAIT_TIME });
-    }
+    return await this.alphaBar.isVisible({ timeout: PAGE_WAIT_TIME });
   }
 
   async clickAlphaBarLetterByPosition(pos: number) {
     await this.page.waitForLoadState('domcontentloaded', { timeout: PAGE_WAIT_TIME });
 
-    const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
     const nthLetter = this.alphaBar.locator('#container ul > li').nth(pos);
     const letterSelected = this.alphaBar.locator('#container ul > li.selected');
 
@@ -63,7 +57,7 @@ export class SortBar {
     return {
       letterText: await nthLetter.innerText(),
       selectedCount: await letterSelected.count(),
-      expectedLetter: alphabet[pos]
+      expectedLetter: String.fromCharCode(65 + pos),
     };
   }
 }

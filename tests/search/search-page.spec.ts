@@ -78,9 +78,8 @@ test('Do simple web search', async ({ searchPage }) => {
 
   await test.step(`Check Wayback search page is displayed`, async () => {
     // Note: The page is redirected to Wayback Machine search page
-    await page.waitForURL(/web/);
-    const title = await page.title();
-    expect(title === 'Wayback Machine' || title.includes('web.archive.org')).toBe(true);
+    await expect(page).toHaveURL(/web\.archive\.org/);
+    await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
     expect(await collectionBrowser.formInputWaybackPage.inputValue()).toContain(queryString);
   });

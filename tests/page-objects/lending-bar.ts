@@ -10,23 +10,25 @@ export class LendingBar {
   }
 
   async verifyDefaultTexts() {
-    const textGroup = await this.iaBookActions.locator(
+    await this.iaBookActions.waitFor({ state: 'visible' });
+    const textGroup = this.iaBookActions.locator(
       'text-group > .variable-texts',
     );
+    await expect(textGroup).toBeVisible();
     const textGroupTexts = await textGroup.textContent();
 
-    await expect(textGroup).toBeVisible();
-    await expect(textGroupTexts).toContain(
+    expect(textGroupTexts).toContain(
       'Renews automatically with continued use.',
     );
   }
 
   async verifyInfoIcon() {
-    const infoIcon = await this.iaBookActions.locator('info-icon');
+    await this.iaBookActions.waitFor({ state: 'visible' });
+    const infoIcon = this.iaBookActions.locator('info-icon');
+    await expect(infoIcon).toBeVisible();
     const infoIconUrl = await infoIcon.locator('a').getAttribute('href');
 
-    await expect(infoIcon).toBeVisible();
-    await expect(infoIconUrl).toContain(
+    expect(infoIconUrl).toContain(
       'https://help.archive.org/help/borrowing-from-the-lending-library',
     );
   }
@@ -34,15 +36,13 @@ export class LendingBar {
   async verifyLendingBarBasicNonLoggedIn() {
     await expect(this.iaBookActions).toBeVisible();
 
-    const actionGroup = await this.iaBookActions.locator(
-      'collapsible-action-group',
-    );
-    const primaryAction = await actionGroup.locator('button.initial').first();
-    const primaryActionText = await primaryAction.textContent();
+    const actionGroup = this.iaBookActions.locator('collapsible-action-group');
+    const primaryAction = actionGroup.locator('button.initial').first();
 
     await expect(actionGroup).toBeVisible();
     await expect(primaryAction).toBeVisible();
-    await expect(primaryActionText).toContain('Log In and Borrow');
+    const primaryActionText = await primaryAction.textContent();
+    expect(primaryActionText).toContain('Log In and Borrow');
 
     // click on this primaryAction button should send you on login page
     await primaryAction.click();
@@ -51,43 +51,30 @@ export class LendingBar {
     await this.page.waitForLoadState('load');
 
     // Assert that the current URL contains a specific substring or matches a pattern
-    await expect(this.page.url()).toContain('/account/login');
+    await expect(this.page).toHaveURL(/\/login/);
   }
 
   async verifyLendingBarLoggedIn() {
-    const actionGroup = await this.iaBookActions.locator(
-      'collapsible-action-group',
-    );
-    const borrowButton = await actionGroup.locator('button.initial').first();
-    const borrowButtonText = await borrowButton.textContent();
+    await this.iaBookActions.waitFor({ state: 'visible' });
 
-    await expect(actionGroup).toBeVisible();
+    // Both states: borrow button is inside collapsible-action-group;
+    // return button is a direct child of ia-book-actions with class "danger initial"
+    const actionGroup = this.iaBookActions.locator('collapsible-action-group');
+    const borrowButton = actionGroup.getByRole('button', { name: 'Borrow', exact: true });
+    const returnNowButton = this.iaBookActions.locator('button.ia-button', { hasText: 'Return now' });
 
-    if (borrowButtonText?.includes('Borrow')) {
-      // case before user has borrowed book
-      await expect(borrowButton).toBeVisible();
-      await expect(borrowButtonText).toContain('Borrow');
+    const isBorrowState = await borrowButton.isVisible();
 
-      // click on this primaryAction button should send you on login page
+    if (isBorrowState) {
+      // patron hasn't borrowed yet — verify borrow button and click it
+      await expect(borrowButton).toContainText('Borrow');
       await borrowButton.click();
-
-      // wait for navigation to complete
       await this.page.waitForLoadState('load');
     } else {
-      // case after user has borrowed book
-      const iaBookActions = await this.page.locator('ia-book-actions');
-      const returnNowButton = await iaBookActions
-        .locator('button.ia-button')
-        .first();
-      const returnNowButtonText = await returnNowButton.textContent();
-
+      // patron already has the book — verify return controls
       await expect(returnNowButton).toBeVisible();
-      await expect(returnNowButtonText).toContain('Return now');
-
-      // click on this primaryAction button should send you on login page
+      await expect(returnNowButton).toContainText('Return now');
       await returnNowButton.click();
-
-      // wait for navigation to complete
       await this.page.waitForLoadState('load');
     }
   }

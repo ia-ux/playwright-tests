@@ -59,6 +59,7 @@ export default defineConfig({
     { name: 'admin-setup', testMatch: '**/auth/admin.setup.ts' },
     {
       name: 'Desktop - Chromium',
+      dependencies: ['patron-setup'],
       testIgnore: ['**/auth/*.setup.ts', '**/login/**'],
       use: {
         ...devices['Desktop Chrome'],

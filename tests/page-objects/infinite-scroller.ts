@@ -11,9 +11,7 @@ import {
   LayoutViewModeLocator,
 } from '../models';
 
-import { datesSorted, viewsSorted, parseViewCount } from '../utils';
-
-const PAGE_WAIT_TIME = 5000;
+import { datesSorted, viewsSorted, parseViewCount, PAGE_WAIT_TIME } from '../utils';
 
 export class InfiniteScroller {
   private static readonly SELECTORS = {
@@ -109,7 +107,7 @@ export class InfiniteScroller {
   async validateSortingResults(
     filter: SortFilter,
     order: SortOrder,
-    displayItemCount: Number,
+    displayItemCount: number,
   ) {
     // Validate view count sorting (tile view mode)
     if (filter === 'Weekly views' || filter === 'All-time views') {
@@ -128,7 +126,7 @@ export class InfiniteScroller {
   private async validateViewSorting(
     filter: SortFilter,
     order: SortOrder,
-    displayItemCount: Number,
+    displayItemCount: number,
   ): Promise<boolean> {
     const tileStatsViews = await this.getTileStatsViewCountTitles(displayItemCount);
     const isAllViews = tileStatsViews.every(stat => stat.includes(filter.toLowerCase()));
@@ -140,7 +138,7 @@ export class InfiniteScroller {
   private async validateDateSorting(
     filter: SortFilter,
     order: SortOrder,
-    displayItemCount: Number,
+    displayItemCount: number,
   ): Promise<boolean> {
     const dateMetadataLabels = await this.getDateMetadataLabels(displayItemCount);
     const checkFilterText = filter.split('Date ')[1].replace(/^./, str => str.toUpperCase());
@@ -153,14 +151,14 @@ export class InfiniteScroller {
     viewFacetMetadata: ViewFacetMetadata,
     facetLabels: string[],
     toInclude: boolean,
-    displayItemCount: Number,
+    displayItemCount: number,
   ) {
     const facetedResults = await this.getFacetedResultsByViewFacetGroup(
       viewFacetMetadata,
       displayItemCount,
     );
     if (facetedResults) {
-      const isAllFacettedCorrectly = facetLabels.some(label => {
+      const isAllFacettedCorrectly = facetLabels.every(label => {
         return toInclude
           ? facetedResults.includes(label)
           : !facetedResults.includes(label);
@@ -173,7 +171,7 @@ export class InfiniteScroller {
   // Getters
   async getTileStatsViewCountTitles(displayItemCount: Number): Promise<string[]> {
     const allItems = await this.getAllInfiniteScrollerArticleItems();
-    const itemsToCheck = allItems.slice(0, Number(displayItemCount));
+    const itemsToCheck = allItems.slice(0, displayItemCount);
     
     const titles: string[] = [];
     for (const item of itemsToCheck) {
@@ -190,7 +188,7 @@ export class InfiniteScroller {
 
   async getDateMetadataLabels(displayItemCount: Number): Promise<DateMetadataLabel[]> {
     const allItems = await this.getAllInfiniteScrollerArticleItems();
-    const itemsToCheck = allItems.slice(0, Number(displayItemCount));
+    const itemsToCheck = allItems.slice(0, displayItemCount);
     
     const dateLabels: DateMetadataLabel[] = [];
     for (const item of itemsToCheck) {
@@ -214,10 +212,11 @@ export class InfiniteScroller {
 
   async getCollectionItemTileTitle(item: Locator, arrItem: string[]) {
     await item.scrollIntoViewIfNeeded();
-    await item.locator('tile-dispatcher').waitFor({ state: 'visible', timeout: 60000 });
-    await item.locator('tile-dispatcher > a').waitFor({ state: 'visible', timeout: 60000 });
-    const collectionTileCount = await item.locator('a > collection-tile').count();
-    const itemTileCount = await item.locator('a > item-tile').count();
+    const tileDispatcher = item.locator('tile-dispatcher');
+    await tileDispatcher.waitFor({ state: 'visible', timeout: 60000 });
+    await tileDispatcher.locator('a').waitFor({ state: 'visible', timeout: 60000 });
+    const collectionTileCount = await tileDispatcher.locator('collection-tile').count();
+    const itemTileCount = await tileDispatcher.locator('item-tile').count();
     if (collectionTileCount === 1 && itemTileCount === 0) {
       arrItem.push('collection');
     } else if (collectionTileCount === 0 && itemTileCount === 1) {
@@ -251,13 +250,19 @@ export class InfiniteScroller {
     return await container.locator(InfiniteScroller.SELECTORS.ARTICLE).all();
   }
 
+  private async waitForResultsReady() {
+    const loadingTile = this.firstItemTile.locator('collection-browser-loading-tile');
+    await loadingTile.waitFor({ state: 'hidden' });
+    await this.firstItemTile.waitFor({ state: 'visible' });
+  }
+
   async getFacetedResultsByViewFacetGroup(
     viewFacetMetadata: ViewFacetMetadata,
-    displayItemCount: Number,
+    displayItemCount: number,
   ): Promise<string[] | null> {
-    await this.waitForFirstItemTile();
+    await this.waitForResultsReady();
     const allItems = await this.getAllInfiniteScrollerArticleItems();
-    const itemsToCheck = allItems.slice(0, Number(displayItemCount));
+    const itemsToCheck = allItems.slice(0, displayItemCount);
     
     const arrTitles: string[] = [];
     const arrDates: DateMetadataLabel[] = [];

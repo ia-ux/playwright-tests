@@ -1,10 +1,10 @@
-import { test, expect } from '../../tests/fixtures';
+import { test, expect } from '../fixtures';
 
 import {
   CollectionFacetGroupHeaderNames,
   FacetGroup,
   LayoutViewModeLocator
-} from '../../tests/models';
+} from '../models';
 
 test(`Verify if facets appear on first load`, async ({ collectionPage }) => {
   await test.step('Assert facet group headers count', async () => {
@@ -41,7 +41,7 @@ test(`Select Year Published range via date picker`, async ({
   collectionPage,
 }) => {
   const { collectionFacets, infiniteScroller } = collectionPage;
-  await test.step(`Enter 2014 in start date text field (leftmost text box) and new results will be loaded`, async () => {
+  await test.step(`Enter 1954–1955 in start/end date fields and new results will be loaded`, async () => {
     await expect(collectionFacets.yearPublishedFacetGroup).toBeVisible();
     await collectionFacets.fillUpYearFilters('1954', '1955');
     await expect(collectionFacets.resultsTotal).toBeVisible();

@@ -1,5 +1,6 @@
 import { SortOrder, DateMetadataLabel } from './models';
 
+export const PAGE_WAIT_TIME = 5000;
 
 export function parseViewCount(viewStr: string): number {
   const match = viewStr.match(/^([\d.]+)([MK]?)\s/);
@@ -11,7 +12,7 @@ export function parseViewCount(viewStr: string): number {
   return num;
 }
 
-export function viewsSorted(order: SortOrder, arr: Number[]): boolean {
+export function viewsSorted(order: SortOrder, arr: number[]): boolean {
   if (order === 'ascending') {
     return arr.every((x, i) => i === 0 || x >= arr[i - 1]);
   } else {

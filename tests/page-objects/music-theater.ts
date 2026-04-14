@@ -50,18 +50,13 @@ export class IAMusicTheater {
   }
 
   async selectChannelSelector(channel: ChannelSelector) {
-    const channelSelectorRow = await this.channelSelector
-      .locator('#radio')
-      .getByRole('listitem');
-    const channelSelectorRowCount = await this.channelSelector
-      .locator('#radio')
-      .getByRole('listitem')
-      .count();
+    const channelSelectorRows = this.channelSelector.locator('#radio').getByRole('listitem');
+    const channelSelectorRowCount = await channelSelectorRows.count();
 
     // just Player | Webamp
     if (channelSelectorRowCount === 2) {
-      if (channel === 'Player') await channelSelectorRow.nth(0).click();
-      if (channel === 'Webamp') await channelSelectorRow.nth(1).click();
+      if (channel === 'Player') await channelSelectorRows.nth(0).click();
+      if (channel === 'Webamp') await channelSelectorRows.nth(1).click();
     }
 
     await this.page.waitForLoadState('domcontentloaded');
@@ -73,34 +68,26 @@ export class IAMusicTheater {
     await this.page.waitForLoadState('networkidle');
 
     if (fromChannelSelector) {
-      const urlPatternCheck = new RegExp(`webamp=default`);
-      await this.page.waitForURL(urlPatternCheck);
+      await this.page.waitForURL('**/webamp=default**');
     }
 
     // Wait for webamp container to be attached and visible
-    await this.theatreIa.waitFor({ state: 'attached' });
     await this.theatreIa.waitFor({ state: 'visible', timeout: 10000 });
 
     // Wait for webamp iframes/elements to be ready
-    await this.jsWebamp.waitFor({ state: 'attached' });
     await this.jsWebamp.waitFor({ state: 'visible', timeout: 10000 });
 
     // Check playlist and equalizer windows
-    await this.mainWindow.waitFor({ state: 'attached' });
     await this.mainWindow.waitFor({ state: 'visible', timeout: 10000 });
-
-    await this.playlistWindow.waitFor({ state: 'attached' });
     await this.playlistWindow.waitFor({ state: 'visible', timeout: 10000 });
-
-    await this.equalizerWindow.waitFor({ state: 'attached' });
     await this.equalizerWindow.waitFor({ state: 'visible', timeout: 10000 });
 
     return {
-      theatreIaVisible: await this.theatreIa.isVisible(),
-      jsWebampVisible: await this.jsWebamp.isVisible(),
-      mainWindowVisible: await this.mainWindow.isVisible(),
-      playlistWindowVisible: await this.playlistWindow.isVisible(),
-      equalizerWindowVisible: await this.equalizerWindow.isVisible(),
+      theatreIaVisible: true,
+      jsWebampVisible: true,
+      mainWindowVisible: true,
+      playlistWindowVisible: true,
+      equalizerWindowVisible: true,
     };
   }
 

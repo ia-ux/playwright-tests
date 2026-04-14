@@ -7,8 +7,9 @@ test('Basic display: Items display item details page', async ({ detailsPage }) =
     await detailsPage.gotoPage(identifier.details.default);
   });
 
+  const elements = await detailsPage.assertPageElements();
+
   await test.step('Verify metadata elements are visible', async () => {
-    const elements = await detailsPage.assertPageElements();
     expect(elements.metadataElements.leftIconVisible).toBeTruthy();
     expect(elements.metadataElements.itemTitleVisible).toBeTruthy();
     expect(elements.metadataElements.metadataDefinitionVisible).toBeTruthy();
@@ -20,7 +21,6 @@ test('Basic display: Items display item details page', async ({ detailsPage }) =
   });
 
   await test.step('Verify action buttons and terms of service are visible', async () => {
-    const elements = await detailsPage.assertPageElements();
     expect(elements.actionButtons.favoriteVisible).toBeTruthy();
     expect(elements.actionButtons.shareVisible).toBeTruthy();
     expect(elements.actionButtons.flagVisible).toBeTruthy();
@@ -45,7 +45,7 @@ test(`Load theater: audio (image carousel / bookreader)`, async ({ detailsPage }
   });
 
   await test.step('Verify music theater and see-more CTA are visible', async () => {
-    const result = await detailsPage.musicTheaterDisplayWithCoverArt();
+    const result = await detailsPage.musicTheaterDisplay();
     expect(result.musicTheaterVisible).toBeTruthy();
     expect(result.seeMoreCtaVisible).toBeTruthy();
   });
@@ -57,7 +57,7 @@ test(`Load theater: audio single image`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify music theater is visible and see-more CTA is hidden', async () => {
-    const result = await detailsPage.musicTheaterDisplaySingleImage();
+    const result = await detailsPage.musicTheaterDisplay();
     expect(result.musicTheaterVisible).toBeTruthy();
     expect(result.seeMoreCtaVisible).toBeFalsy();
   });
@@ -67,7 +67,7 @@ test(`Load theater: audio single image`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify music theater is visible and see-more CTA is hidden', async () => {
-    const result = await detailsPage.musicTheaterDisplaySingleImage();
+    const result = await detailsPage.musicTheaterDisplay();
     expect(result.musicTheaterVisible).toBeTruthy();
     expect(result.seeMoreCtaVisible).toBeFalsy();
   });
@@ -148,7 +148,7 @@ test.fixme(
     await test.step(`Verify radio player and borrow program are available`, async () => {
       const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
       expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.verifyRadioBorrowProgramAvailable();
+      const borrowResult = await detailsPage.getRadioBorrowProgramState();
       expect(borrowResult.borrowButtonVisible).toBeTruthy();
       expect(borrowResult.radioBorrowButtonVisible).toBeTruthy();
       expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
@@ -170,7 +170,7 @@ test.fixme(
     await test.step(`Verify radio player is visible and borrow program is unavailable`, async () => {
       const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
       expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.verifyRadioBorrowProgramUnavailable();
+      const borrowResult = await detailsPage.getRadioBorrowProgramState();
       expect(borrowResult.borrowButtonVisible).toBeFalsy();
       expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
       expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
@@ -188,7 +188,7 @@ test.fixme(
     await test.step(`Verify radio player is visible and borrow program is unavailable for guests`, async () => {
       const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
       expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.verifyRadioBorrowProgramUnavailable();
+      const borrowResult = await detailsPage.getRadioBorrowProgramState();
       expect(borrowResult.borrowButtonVisible).toBeFalsy();
       expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
       expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
