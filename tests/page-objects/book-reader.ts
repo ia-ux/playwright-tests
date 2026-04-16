@@ -28,16 +28,36 @@ export class BookReader {
     this.bookReaderShell = this.page.locator('#BookReader');
     this.brContainer = this.bookReaderShell.locator('.BRcontainer');
 
-    this.brFlipPrev = this.bookReaderShell.getByRole('button', { name: 'Flip left' });
-    this.brFlipNext = this.bookReaderShell.getByRole('button', { name: 'Flip right' });
-    this.brOnePage = this.bookReaderShell.getByRole('button', { name: 'One-page view' });
-    this.brTwoPage = this.bookReaderShell.getByRole('button', { name: 'Two-page view' });
-    this.brThumb = this.bookReaderShell.getByRole('button', { name: 'Thumbnail view' });
-    this.brReadAloud = this.bookReaderShell.getByRole('button', { name: 'Read this book aloud' });
-    this.brZoomIn = this.bookReaderShell.getByRole('button', { name: 'Zoom in' });
-    this.brZoomOut = this.bookReaderShell.getByRole('button', { name: 'Zoom out' });
-    this.brFullScreen = this.bookReaderShell.getByRole('button', { name: 'Go fullscreen' });
-    this.brExitFullScreen = this.bookReaderShell.getByRole('button', { name: 'Exit fullscreen' });
+    this.brFlipPrev = this.bookReaderShell.getByRole('button', {
+      name: 'Flip left',
+    });
+    this.brFlipNext = this.bookReaderShell.getByRole('button', {
+      name: 'Flip right',
+    });
+    this.brOnePage = this.bookReaderShell.getByRole('button', {
+      name: 'One-page view',
+    });
+    this.brTwoPage = this.bookReaderShell.getByRole('button', {
+      name: 'Two-page view',
+    });
+    this.brThumb = this.bookReaderShell.getByRole('button', {
+      name: 'Thumbnail view',
+    });
+    this.brReadAloud = this.bookReaderShell.getByRole('button', {
+      name: 'Read this book aloud',
+    });
+    this.brZoomIn = this.bookReaderShell.getByRole('button', {
+      name: 'Zoom in',
+    });
+    this.brZoomOut = this.bookReaderShell.getByRole('button', {
+      name: 'Zoom out',
+    });
+    this.brFullScreen = this.bookReaderShell.getByRole('button', {
+      name: 'Go fullscreen',
+    });
+    this.brExitFullScreen = this.bookReaderShell.getByRole('button', {
+      name: 'Exit fullscreen',
+    });
 
     this.brOneUpView = this.brContainer.locator('br-mode-1up');
     this.brTwoUpView = this.brContainer.locator('br-mode-2up');
@@ -54,19 +74,28 @@ export class BookReader {
   async clickOneUpMode() {
     await this.brOnePage.click();
     await this.brOneUpView.waitFor({ state: 'visible' });
-    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
+    await this.brContainer
+      .locator('.BRpageloading')
+      .first()
+      .waitFor({ state: 'hidden' });
   }
 
-  async clickTwoUpMode(){
+  async clickTwoUpMode() {
     await this.brTwoPage.click();
     await this.brTwoUpView.waitFor({ state: 'visible' });
-    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
+    await this.brContainer
+      .locator('.BRpageloading')
+      .first()
+      .waitFor({ state: 'hidden' });
   }
 
-  async clickThumbnailMode(){
+  async clickThumbnailMode() {
     await this.brThumb.click();
     await this.brOneUpView.waitFor({ state: 'hidden' });
     await this.brTwoUpView.waitFor({ state: 'hidden' });
-    await this.brContainer.locator('.BRpageloading').first().waitFor({ state: 'hidden' });
+    await this.brContainer
+      .locator('.BRpageloading')
+      .first()
+      .waitFor({ state: 'hidden' });
   }
 }

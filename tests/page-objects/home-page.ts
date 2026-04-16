@@ -1,4 +1,4 @@
-import { type Page, Locator } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
 import { CollectionSearchInput } from './collection-search-input';
@@ -26,13 +26,21 @@ export class HomePage {
     this.page = page;
     this.waybackSearch = this.page.locator('ia-wayback-search');
     this.searchInput = this.page.locator('collection-search-input');
-    this.announcements = this.page.locator('#announcements > hero-block-announcements');
-    this.mediaTypeIcons = this.page.locator('#icon-block-container > home-page-hero-block-icon-bar'); 
-    this.mediaTypeHeroIconBars = this.mediaTypeIcons.locator('#mediacount-icon-container > a');
+    this.announcements = this.page.locator(
+      '#announcements > hero-block-announcements',
+    );
+    this.mediaTypeIcons = this.page.locator(
+      '#icon-block-container > home-page-hero-block-icon-bar',
+    );
+    this.mediaTypeHeroIconBars = this.mediaTypeIcons.locator(
+      '#mediacount-icon-container > a',
+    );
     this.onboarding = this.page.locator('home-page-onboarding');
     this.onboardingCarousel = this.onboarding.locator('basic-carousel > a');
     this.infiniteScroller = this.page.locator('infinite-scroller');
-    this.topCollections = this.infiniteScroller.locator('#container > .cell-container');
+    this.topCollections = this.infiniteScroller.locator(
+      '#container > .cell-container',
+    );
     this.termsOfService = this.page.locator('footer > app-footer');
 
     this.collectionBrowser = new CollectionBrowser(page);

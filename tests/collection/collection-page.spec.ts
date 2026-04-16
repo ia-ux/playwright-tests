@@ -14,7 +14,9 @@ test(`Collections basic display - use collection page layout`, async ({
     await expect(collectionPage.pageTabs).toBeVisible();
     // this could cause an error in some detailsPage that doesn't have Forum tab like ytjdradio
     // should be tackled in a different task
-    await expect(collectionPage.pageTabs.getByLabel('Collection', { exact: true })).toBeVisible();
+    await expect(
+      collectionPage.pageTabs.getByLabel('Collection', { exact: true }),
+    ).toBeVisible();
     await expect(collectionPage.pageTabs.getByLabel('Forum')).toBeVisible();
     await expect(collectionPage.pageTabs.getByLabel('About')).toBeVisible();
   });
@@ -22,7 +24,7 @@ test(`Collections basic display - use collection page layout`, async ({
 
 test(`Collections page - "More..." link to About tab appears below description`, async ({
   collectionPage,
-}) => {  
+}) => {
   await test.step(`Go to "ytjdradio" collection page`, async () => {
     await collectionPage.visit('ytjdradio');
   });
@@ -38,7 +40,8 @@ test(`Collections page - "More..." link to About tab appears below description`,
 test(`Tab navigation`, async ({ collectionPage }) => {
   test.info().annotations.push({
     type: 'Test',
-    description: "Need to consider that other collections don't have Forums page like `ytjdradio`",
+    description:
+      "Need to consider that other collections don't have Forums page like `ytjdradio`",
   });
 
   await test.step(`Click "About" tab button and check if About page is displayed in "oldtimeradio" collection page`, async () => {

@@ -2,7 +2,9 @@ import { test, expect } from '../fixtures';
 
 import { identifier } from '../../config';
 
-test('Basic display: Items display item details page', async ({ detailsPage }) => {
+test('Basic display: Items display item details page', async ({
+  detailsPage,
+}) => {
   await test.step('Navigate to default item details page', async () => {
     await detailsPage.gotoPage(identifier.details.default);
   });
@@ -39,7 +41,9 @@ test('Load theater: 3d viewer', async ({ detailsPage }) => {
   });
 });
 
-test(`Load theater: audio (image carousel / bookreader)`, async ({ detailsPage }) => {
+test(`Load theater: audio (image carousel / bookreader)`, async ({
+  detailsPage,
+}) => {
   await test.step('Navigate to audio item with image carousel', async () => {
     await detailsPage.gotoPage(identifier.details.audio_image_carousel);
   });
@@ -134,112 +138,92 @@ test(`Load theater: image (single)`, async ({ detailsPage }) => {
   });
 });
 
-test.fixme(
-  `Load theater: radio as priv'd user`,
-  async ({ loginPage, detailsPage }) => {
-    await test.step(`Login as priv'd user`, async () => {
-      await loginPage.loginAs('privs');
-    });
-
-    await test.step(`Navigate to radio details page`, async () => {
-      await detailsPage.gotoPage(identifier.details.radio_borrow);
-    });
-
-    await test.step(`Verify radio player and borrow program are available`, async () => {
-      const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
-      expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.getRadioBorrowProgramState();
-      expect(borrowResult.borrowButtonVisible).toBeTruthy();
-      expect(borrowResult.radioBorrowButtonVisible).toBeTruthy();
-      expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
-    });
-  },
-);
-
-test.fixme(
-  `Load theater: radio as regular patron user`,
-  async ({ loginPage, detailsPage }) => {
-    await test.step(`Login as patron user`, async () => {
-      await loginPage.loginAs('patron');
-    });
-
-    await test.step(`Navigate to radio details page`, async () => {
-      await detailsPage.gotoPage(identifier.details.radio_borrow);
-    });
-
-    await test.step(`Verify radio player is visible and borrow program is unavailable`, async () => {
-      const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
-      expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.getRadioBorrowProgramState();
-      expect(borrowResult.borrowButtonVisible).toBeFalsy();
-      expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
-      expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
-    });
-  },
-);
-
-test.fixme(
-  `Load theater: radio as guest/not logged in user`,
-  async ({ detailsPage }) => {
-    await test.step(`Navigate to radio details page`, async () => {
-      await detailsPage.gotoPage(identifier.details.radio_borrow);
-    });
-
-    await test.step(`Verify radio player is visible and borrow program is unavailable for guests`, async () => {
-      const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
-      expect(playerVisible).toBeTruthy();
-      const borrowResult = await detailsPage.getRadioBorrowProgramState();
-      expect(borrowResult.borrowButtonVisible).toBeFalsy();
-      expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
-      expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
-    });
-  },
-);
-
-test.fixme(`Load theater: tv as priv'd user`, async ({ loginPage, detailsPage }) => {
-  await test.step(`Login as priv'd user`, async () => {
-    await loginPage.loginAs('privs');
+test(`Load theater: radio as priv'd user`, async ({ adminDetailsPage }) => {
+  await test.step(`Navigate to radio details page`, async () => {
+    await adminDetailsPage.gotoPage(identifier.details.radio_borrow);
   });
 
+  await test.step(`Verify radio player and borrow program are available`, async () => {
+    const playerVisible = await adminDetailsPage.radioPlayerTheaterDisplay();
+    expect(playerVisible).toBeTruthy();
+    const borrowResult = await adminDetailsPage.getRadioBorrowProgramState();
+    expect(borrowResult.borrowButtonVisible).toBeTruthy();
+    expect(borrowResult.radioBorrowButtonVisible).toBeTruthy();
+    expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
+  });
+});
+
+test(`Load theater: radio as regular patron user`, async ({
+  patronDetailsPage,
+}) => {
+  await test.step(`Navigate to radio details page`, async () => {
+    await patronDetailsPage.gotoPage(identifier.details.radio_borrow);
+  });
+
+  await test.step(`Verify radio player is visible and borrow program is unavailable`, async () => {
+    const playerVisible = await patronDetailsPage.radioPlayerTheaterDisplay();
+    expect(playerVisible).toBeTruthy();
+    const borrowResult = await patronDetailsPage.getRadioBorrowProgramState();
+    expect(borrowResult.borrowButtonVisible).toBeFalsy();
+    expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
+    expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
+  });
+});
+
+test(`Load theater: radio as guest/not logged in user`, async ({
+  detailsPage,
+}) => {
+  await test.step(`Navigate to radio details page`, async () => {
+    await detailsPage.gotoPage(identifier.details.radio_borrow);
+  });
+
+  await test.step(`Verify radio player is visible and borrow program is unavailable for guests`, async () => {
+    const playerVisible = await detailsPage.radioPlayerTheaterDisplay();
+    expect(playerVisible).toBeTruthy();
+    const borrowResult = await detailsPage.getRadioBorrowProgramState();
+    expect(borrowResult.borrowButtonVisible).toBeFalsy();
+    expect(borrowResult.radioBorrowButtonVisible).toBeFalsy();
+    expect(borrowResult.borrowProgramTextVisible).toBeFalsy();
+  });
+});
+
+test(`Load theater: tv as priv'd user`, async ({ adminDetailsPage }) => {
   await test.step(`Navigate to TV details page`, async () => {
-    await detailsPage.gotoPage(identifier.details.tv_borrow);
+    await adminDetailsPage.gotoPage(identifier.details.tv_borrow);
   });
 
   await test.step(`Verify TV theater and borrow program are available`, async () => {
-    const theaterResult = await detailsPage.tvTheaterDisplay();
+    const theaterResult = await adminDetailsPage.tvTheaterDisplay();
     expect(theaterResult.tvBannerVisible).toBeTruthy();
     expect(theaterResult.colsVisible).toBeTruthy();
-    const borrowResult = await detailsPage.verifyTVBorrowProgramAvailable();
+    const borrowResult =
+      await adminDetailsPage.verifyTVBorrowProgramAvailable();
     expect(borrowResult.borrowButtonVisible).toBeTruthy();
     expect(borrowResult.tvBorrowVisible).toBeTruthy();
     expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
   });
 });
 
-test.fixme(
-  `Load theater: tv as patron user`,
-  async ({ loginPage, detailsPage }) => {
-    await test.step(`Login as patron user`, async () => {
-      await loginPage.loginAs('patron');
-    });
+test(`Load theater: tv as patron user`, async ({ patronDetailsPage }) => {
+  await test.step(`Navigate to TV details page`, async () => {
+    await patronDetailsPage.gotoPage(identifier.details.tv_borrow);
+  });
 
-    await test.step(`Navigate to TV details page`, async () => {
-      await detailsPage.gotoPage(identifier.details.tv_borrow);
-    });
+  await test.step(`Verify TV theater is visible and borrow program is available`, async () => {
+    const theaterResult = await patronDetailsPage.tvTheaterDisplay();
+    expect(theaterResult.tvBannerVisible).toBeTruthy();
+    expect(theaterResult.colsVisible).toBeTruthy();
+    const borrowResult =
+      await patronDetailsPage.verifyTVBorrowProgramAvailable();
+    expect(borrowResult.borrowButtonVisible).toBeTruthy();
+    expect(borrowResult.tvBorrowVisible).toBeTruthy();
+    expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
+  });
+});
 
-    await test.step(`Verify TV theater is visible and borrow program is available`, async () => {
-      const theaterResult = await detailsPage.tvTheaterDisplay();
-      expect(theaterResult.tvBannerVisible).toBeTruthy();
-      expect(theaterResult.colsVisible).toBeTruthy();
-      const borrowResult = await detailsPage.verifyTVBorrowProgramAvailable();
-      expect(borrowResult.borrowButtonVisible).toBeTruthy();
-      expect(borrowResult.tvBorrowVisible).toBeTruthy();
-      expect(borrowResult.borrowProgramTextVisible).toBeTruthy();
-    });
-  },
-);
-
-test(`Load theater: tv as guest/not logged in user`, async ({ detailsPage }) => {
+test(`Load theater: tv as guest/not logged in user`, async ({
+  detailsPage,
+}) => {
   await test.step(`Navigate to TV details page`, async () => {
     await detailsPage.gotoPage(identifier.details.tv_borrow);
   });
@@ -267,10 +251,14 @@ test(`Load theater: video`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp`, async ({ detailsPage }) => {
-  test.fixme(true, 'Webamp does not load in headless mode — run with --headed to verify');
+  test.fixme(
+    true,
+    'Webamp does not load in headless mode — run with --headed to verify',
+  );
   test.info().annotations.push({
     type: 'Test',
-    description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
+    description:
+      'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
   });
 
   await test.step('Navigate to webamp item page', async () => {
@@ -282,7 +270,8 @@ test(`Load theater: webamp`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify Webamp windows are visible', async () => {
-    const result = await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(true);
+    const result =
+      await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(true);
     expect(result.theatreIaVisible).toBeTruthy();
     expect(result.jsWebampVisible).toBeTruthy();
     expect(result.mainWindowVisible).toBeTruthy();
@@ -292,10 +281,14 @@ test(`Load theater: webamp`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
-  test.fixme(true, 'Webamp does not load in headless mode — run with --headed to verify');
+  test.fixme(
+    true,
+    'Webamp does not load in headless mode — run with --headed to verify',
+  );
   test.info().annotations.push({
     type: 'Test',
-    description: 'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
+    description:
+      'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
   });
 
   await test.step('Navigate to webamp skin page and activate skin', async () => {
@@ -308,7 +301,8 @@ test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify Webamp loads with previously activated skin', async () => {
-    const result = await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(false);
+    const result =
+      await detailsPage.iaMusicTheater.webAmpDisplayFromChannelSelector(false);
     expect(result.theatreIaVisible).toBeTruthy();
     expect(result.jsWebampVisible).toBeTruthy();
     expect(result.mainWindowVisible).toBeTruthy();
@@ -317,7 +311,9 @@ test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
   });
 });
 
-test(`Functionality: Image (carousel) - Navigate images`, async ({ detailsPage }) => {
+test(`Functionality: Image (carousel) - Navigate images`, async ({
+  detailsPage,
+}) => {
   await test.step('Navigate to image carousel item page', async () => {
     await detailsPage.gotoPage(identifier.details.image_carousel);
   });
@@ -329,22 +325,22 @@ test(`Functionality: Image (carousel) - Navigate images`, async ({ detailsPage }
   });
 });
 
-test.fixme(
-  `Functionality: Radio - Search transcript`,
-  async ({ detailsPage }) => {
-    await test.step('Navigate to radio item page', async () => {
-      await detailsPage.gotoPage(identifier.details.radio_borrow);
-    });
+test(`Functionality: Radio - Search transcript`, async ({ detailsPage }) => {
+  await test.step('Navigate to radio item page', async () => {
+    await detailsPage.gotoPage(identifier.details.radio_borrow);
+  });
 
-    await test.step('Search transcript and verify entry positions', async () => {
-      const result = await detailsPage.searchRadioTranscriptAndVerifySearchEntryPositions('and');
-      expect(result.searchInputVisible).toBeTruthy();
-      expect(result.searchResultsVisible).toBeTruthy();
-      expect(result.currentResult).toBe('1');
-      expect(result.numberOfResults).toBe('127');
-      expect(result.defaultEntryIndex).toBe(2);
-      expect(result.nextEntryIndex).toBe(5);
-      expect(result.prevEntryIndex).toBe(2);
-    });
-  },
-);
+  await test.step('Search transcript and verify entry positions', async () => {
+    const result =
+      await detailsPage.searchRadioTranscriptAndVerifySearchEntryPositions(
+        'and',
+      );
+    expect(result.searchInputVisible).toBeTruthy();
+    expect(result.searchResultsVisible).toBeTruthy();
+    expect(result.currentResult).toBe('1');
+    expect(result.numberOfResults).toBe('127');
+    expect(result.defaultEntryIndex).toBe(2);
+    expect(result.nextEntryIndex).toBe(5);
+    expect(result.prevEntryIndex).toBe(2);
+  });
+});

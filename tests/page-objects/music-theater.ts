@@ -50,15 +50,10 @@ export class IAMusicTheater {
   }
 
   async selectChannelSelector(channel: ChannelSelector) {
-    const channelSelectorRows = this.channelSelector.locator('#radio').getByRole('listitem');
-    const channelSelectorRowCount = await channelSelectorRows.count();
-
-    // just Player | Webamp
-    if (channelSelectorRowCount === 2) {
-      if (channel === 'Player') await channelSelectorRows.nth(0).click();
-      if (channel === 'Webamp') await channelSelectorRows.nth(1).click();
-    }
-
+    const channelSelectorRows = this.channelSelector
+      .locator('#radio')
+      .getByRole('listitem');
+    await channelSelectorRows.getByText(channel, { exact: true }).click();
     await this.page.waitForLoadState('domcontentloaded');
   }
 
@@ -90,7 +85,4 @@ export class IAMusicTheater {
       equalizerWindowVisible: true,
     };
   }
-
-  // TODO
-  async verifyWebampSkin() {}
 }

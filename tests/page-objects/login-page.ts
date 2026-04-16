@@ -16,34 +16,103 @@ export class LoginPage {
   public constructor(page: Page) {
     this.page = page;
 
-    this.accountSettingsHeading = this.page.getByRole('heading', { name: 'Account settings', level: 2 });
-    this.accountSettingsFormText = this.page.locator('main p').first();
-    this.verifyPasswordButton = this.page.locator('ia-button.submit-btn');
-    this.loginHeading = this.page.getByRole('heading', { name: 'Log In', level: 1 });
+    this.accountSettingsHeading = page.getByRole('heading', {
+      name: 'Account settings',
+      level: 2,
+    });
+    this.accountSettingsFormText = page
+      .locator('p')
+      .filter({ hasText: 'extra security measure' });
+    this.verifyPasswordButton = page.getByRole('button', {
+      name: 'Verify password',
+    });
+    this.loginHeading = page.getByRole('heading', { name: 'Log In', level: 1 });
+  }
+
+  private resolveUser(user: UserType) {
+    return user === 'privs' ? config.privUser : config.patronUser;
   }
 
   async loginAs(user: UserType) {
-    const asUser = user === 'privs' ? config.privUser : config.patronUser;
+    const asUser = this.resolveUser(user);
 
     await this.page.goto(login.url, { waitUntil: 'domcontentloaded' });
-    await this.page.getByRole('textbox', { name: 'Email address' }).fill(asUser.email);
-    await this.page.getByRole('textbox', { name: 'Password' }).fill(asUser.password);
-    await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
 
-    // should go back to baseUrl
-    await this.page.waitForURL('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+    // Wait for login form to be fully loaded
+    await this.page.waitForSelector('main form', { timeout: 10000 });
+
+    await this.page
+      .getByRole('textbox', { name: 'Email address' })
+      .fill(asUser.email);
+    await this.page
+      .getByRole('textbox', { name: 'Password' })
+      .fill(asUser.password);
+
+    // Small delay to ensure form is ready before submission
+    await this.page.waitForTimeout(500);
+
+    await this.page
+      .getByRole('button', { name: 'Log in', exact: true })
+      .click();
+
+    // Wait for network to settle to ensure login response is received
+    await this.page.waitForLoadState('networkidle').catch(() => null);
+
+    // Detect login error by looking for the error message paragraph
+    const errorParagraph = this.page.locator('main paragraph, main p').filter({
+      hasText: /unable to log you in|incorrect|invalid|error|sorry/i,
+    });
+
+    const redirected = this.page.waitForURL('/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
+
+    const result = await Promise.race([
+      redirected.then(() => 'success'),
+      errorParagraph
+        .first()
+        .waitFor({ state: 'visible', timeout: 15000 })
+        .then(async () => {
+          // Get the text content from the error element
+          const errorElement = errorParagraph.first();
+          const msg = await errorElement
+            .textContent()
+            .catch(() => 'login failed');
+          return `error: ${msg?.trim() || 'unknown error'}`;
+        })
+        .catch(() => 'redirect_timeout'),
+    ]);
+
+    if (result !== 'success') {
+      throw new Error(
+        `Auth setup failed for ${user} (${asUser.email}): ${result}`,
+      );
+    }
   }
 
   async fillCredentials(user: UserType) {
-    const asUser = user === 'privs' ? config.privUser : config.patronUser;
-    await this.page.getByRole('textbox', { name: 'Email address' }).fill(asUser.email);
-    await this.page.getByRole('textbox', { name: 'Password' }).fill(asUser.password);
-    await this.page.getByRole('button', { name: 'Log in', exact: true }).click();
+    const asUser = this.resolveUser(user);
+    await this.page
+      .getByRole('textbox', { name: 'Email address' })
+      .fill(asUser.email);
+    await this.page
+      .getByRole('textbox', { name: 'Password' })
+      .fill(asUser.password);
+    await this.page
+      .getByRole('button', { name: 'Log in', exact: true })
+      .click();
     // wait until redirected away from the login page (referer returns to original page)
-    await this.page.waitForURL(/^(?!.*\/login)/, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await this.page.waitForURL(/^(?!.*\/login)/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
   }
 
   async gotoAccountSettings() {
-    await this.page.goto(accountSettings.url, { waitUntil: 'domcontentloaded' });
+    await this.page.goto(accountSettings.url, {
+      waitUntil: 'domcontentloaded',
+    });
+    await this.page.locator('main').waitFor({ state: 'attached' });
   }
 }

@@ -1,7 +1,14 @@
 import { test, expect } from '../fixtures';
 import { SearchFacetGroupHeaderNames } from '../models';
 
-const UNOWNED_TABS = ['uploads', 'lists', 'posts', 'reviews', 'collections', 'web-archive'];
+const UNOWNED_TABS = [
+  'uploads',
+  'lists',
+  'posts',
+  'reviews',
+  'collections',
+  'web-archive',
+];
 
 const TAB_LABEL: Record<string, string> = {
   uploads: 'Uploads',
@@ -32,46 +39,80 @@ test.describe('Profile Page - Basic display tests', () => {
     });
   });
 
-  test(`Tab navigation: Click the different tabs on profile page`, async ({ profilePage }) => {
+  test(`Tab navigation: Click the different tabs on profile page`, async ({
+    profilePage,
+  }) => {
     await test.step(`Click "Uploads" tab and verify it is active with results`, async () => {
       await profilePage.clickProfileTab('uploads');
-      await expect(profilePage.getTabSlot('uploads')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['uploads']);
-      await expect(profilePage.getTabResultCount('uploads')).toBeVisible({ timeout: 100 });
+      await expect(profilePage.getTabSlot('uploads')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['uploads'],
+      );
+      await expect(profilePage.getTabResultCount('uploads')).toBeVisible({
+        timeout: 100,
+      });
     });
 
     await test.step(`Click "Lists" tab and verify it is active`, async () => {
       await profilePage.clickProfileTab('lists');
-      await expect(profilePage.getTabSlot('lists')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['lists']);
+      await expect(profilePage.getTabSlot('lists')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['lists'],
+      );
     });
 
     await test.step(`Click "Posts" tab and verify it is active with heading`, async () => {
       await profilePage.clickProfileTab('posts');
-      await expect(profilePage.getTabSlot('posts')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['posts']);
+      await expect(profilePage.getTabSlot('posts')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['posts'],
+      );
       expect(await profilePage.postsHeading.innerText()).toContain('Posts by');
     });
 
     await test.step(`Click "Reviews" tab and verify it is active with results`, async () => {
       await profilePage.clickProfileTab('reviews');
-      await expect(profilePage.getTabSlot('reviews')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['reviews']);
-      await expect(profilePage.getTabResultCount('reviews')).toBeVisible({ timeout: 100 });
+      await expect(profilePage.getTabSlot('reviews')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['reviews'],
+      );
+      await expect(profilePage.getTabResultCount('reviews')).toBeVisible({
+        timeout: 100,
+      });
     });
 
     await test.step(`Click "Collections" tab and verify it is active with results`, async () => {
       await profilePage.clickProfileTab('collections');
-      await expect(profilePage.getTabSlot('collections')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['collections']);
-      await expect(profilePage.getTabResultCount('collections')).toBeVisible({ timeout: 100 });
+      await expect(profilePage.getTabSlot('collections')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['collections'],
+      );
+      await expect(profilePage.getTabResultCount('collections')).toBeVisible({
+        timeout: 100,
+      });
     });
 
     await test.step(`Click "Web Archives" tab and verify it is active with results`, async () => {
       await profilePage.clickProfileTab('web archives');
-      await expect(profilePage.getTabSlot('web-archive')).toBeVisible({ timeout: 1000 });
-      expect(await profilePage.activeTab.innerText()).toContain(TAB_LABEL['web-archive']);
-      await expect(profilePage.getTabResultCount('web-archive')).toBeVisible({ timeout: 100 });
+      await expect(profilePage.getTabSlot('web-archive')).toBeVisible({
+        timeout: 1000,
+      });
+      expect(await profilePage.activeTab.innerText()).toContain(
+        TAB_LABEL['web-archive'],
+      );
+      await expect(profilePage.getTabResultCount('web-archive')).toBeVisible({
+        timeout: 100,
+      });
     });
   });
 });
@@ -88,7 +129,9 @@ test.describe('Profile Page - Lists', () => {
 
     await test.step(`Verify 7 facet group headers are visible`, async () => {
       for (const header of SearchFacetGroupHeaderNames) {
-        const facet = profilePage.collectionFacets.facets.getByRole('heading', { name: header });
+        const facet = profilePage.collectionFacets.facets.getByRole('heading', {
+          name: header,
+        });
         const facetText = (await facet.innerText()).replace(/\n/g, ' ');
         await expect(facet).toBeVisible();
         expect(facetText).toContain(header);
@@ -96,7 +139,9 @@ test.describe('Profile Page - Lists', () => {
     });
 
     await test.step(`Verify date picker is visible`, async () => {
-      await expect(profilePage.collectionFacets.yearPublishedFacetGroup).toBeVisible({
+      await expect(
+        profilePage.collectionFacets.yearPublishedFacetGroup,
+      ).toBeVisible({
         timeout: 60000,
       });
     });

@@ -12,9 +12,15 @@ test('Bookserver page has correct title and text', async ({ page }) => {
   });
 
   await test.step('Verify page title and content', async () => {
-    await expect(page).toHaveTitle(/Internet Archive: A Future for Books -- BookServer/);
-    await expect(page.locator('h1:has-text("A Future for Books -- BookServer")')).toBeVisible();
-    await expect(page.locator('#maincontent')).toContainText('The widespread success of digital reading');
+    await expect(page).toHaveTitle(
+      /Internet Archive: A Future for Books -- BookServer/,
+    );
+    await expect(
+      page.locator('h1:has-text("A Future for Books -- BookServer")'),
+    ).toBeVisible();
+    await expect(page.locator('#maincontent')).toContainText(
+      'The widespread success of digital reading',
+    );
   });
 });
 
@@ -25,9 +31,13 @@ test('Scanning page has correct title and text', async ({ page }) => {
 
   await test.step('Verify page title and content', async () => {
     await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
-    await expect(page.locator('h1:has-text("Digitize & Preserve")')).toBeVisible();
+    await expect(
+      page.locator('h1:has-text("Digitize & Preserve")'),
+    ).toBeVisible();
     await expect(page.getByText('Our digitization services')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Learn About What We Digitize' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Learn About What We Digitize' }),
+    ).toBeVisible();
   });
 });
 
@@ -38,8 +48,12 @@ test('Web > Petabox page has correct title and text', async ({ page }) => {
 
   await test.step('Verify page title and content', async () => {
     await expect(page).toHaveTitle(/Internet Archive: Petabox/);
-    await expect(page.locator('#content-container').locator('h1:has-text("Petabox")')).toBeVisible();
-    await expect(page.locator('#maincontent')).toContainText('A few highlights from the Petabox');
+    await expect(
+      page.locator('#content-container').locator('h1:has-text("Petabox")'),
+    ).toBeVisible();
+    await expect(page.locator('#maincontent')).toContainText(
+      'A few highlights from the Petabox',
+    );
   });
 });
 
@@ -50,7 +64,11 @@ test('Web > SFlan page has correct title and text', async ({ page }) => {
 
   await test.step('Verify page title and content', async () => {
     await expect(page).toHaveTitle(/Internet Archive: SFLan/);
-    await expect(page.locator('h1:has-text("Community Wireless")')).toBeVisible();
-    await expect(page.locator('#maincontent')).toContainText('Internet access in bulk, delivered');
+    await expect(
+      page.locator('h1:has-text("Community Wireless")'),
+    ).toBeVisible();
+    await expect(page.locator('#maincontent')).toContainText(
+      'Internet access in bulk, delivered',
+    );
   });
 });

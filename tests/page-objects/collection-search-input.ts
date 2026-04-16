@@ -56,7 +56,10 @@ export class CollectionSearchInput {
     await this.tabManager.getByTestId(option).click();
   }
 
-  async selectSearchOption(cpOption?: CollectionPageSearchOption, spOption?: SearchPageSearchOption) {
+  async selectSearchOption(
+    cpOption?: CollectionPageSearchOption,
+    spOption?: SearchPageSearchOption,
+  ) {
     await this.waitForSearchInputReady();
     await this.formInputSearchPage.click({ force: true });
 
@@ -66,5 +69,4 @@ export class CollectionSearchInput {
       await this.selectSearchPageOption(spOption);
     }
   }
-
 }

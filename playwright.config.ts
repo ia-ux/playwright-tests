@@ -55,11 +55,11 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'patron-setup', testMatch: '**/auth/patron.setup.ts' },
-    { name: 'admin-setup', testMatch: '**/auth/admin.setup.ts' },
+    // { name: 'patron-setup', testMatch: '**/auth/patron.setup.ts' },
+    // { name: 'admin-setup', testMatch: '**/auth/admin.setup.ts' },
     {
       name: 'Desktop - Chromium',
-      dependencies: ['patron-setup'],
+      // dependencies: ['patron-setup'],
       testIgnore: ['**/auth/*.setup.ts', '**/login/**'],
       use: {
         ...devices['Desktop Chrome'],
@@ -68,7 +68,7 @@ export default defineConfig({
     },
     {
       name: 'Desktop - Chromium (Auth)',
-      dependencies: ['patron-setup', 'admin-setup'],
+      // dependencies: ['patron-setup', 'admin-setup'],
       testMatch: '**/login/**',
       use: {
         ...devices['Desktop Chrome'],

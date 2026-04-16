@@ -39,7 +39,9 @@ export class ProfilePage {
   }
 
   async visit(userid: string) {
-    await this.page.goto(`/details/@${userid}?ab_config=EagerFacets:On`, { waitUntil: 'domcontentloaded' });
+    await this.page.goto(`/details/@${userid}?ab_config=EagerFacets:On`, {
+      waitUntil: 'domcontentloaded',
+    });
     await this.page.waitForLoadState('load', { timeout: 60000 });
   }
 
@@ -56,6 +58,8 @@ export class ProfilePage {
   }
 
   getTabResultCount(tabName: string): Locator {
-    return this.page.locator(`div[slot="${tabName}"] collection-browser #results-total`);
+    return this.page.locator(
+      `div[slot="${tabName}"] collection-browser #results-total`,
+    );
   }
 }

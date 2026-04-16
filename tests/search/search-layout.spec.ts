@@ -2,7 +2,6 @@ import { test, expect } from '../fixtures';
 
 import { LayoutViewModeLocator } from '../models';
 
-
 test.beforeEach(async ({ searchPage }) => {
   test.info().annotations.push({
     type: 'Test',
@@ -14,7 +13,9 @@ test.beforeEach(async ({ searchPage }) => {
   });
 });
 
-test('Tile, List, and Compact layout buttons change layout', async ({ searchPage }) => {
+test('Tile, List, and Compact layout buttons change layout', async ({
+  searchPage,
+}) => {
   const { infiniteScroller } = searchPage;
   await test.step('Display List View', async () => {
     await infiniteScroller.clickViewMode(LayoutViewModeLocator.LIST);
@@ -40,12 +41,15 @@ test('Tile hover pane appears', async ({ searchPage }) => {
   const { infiniteScroller } = searchPage;
   await test.step('Hover first item tile and check for title text inside tile-hover-pane and item-tile', async () => {
     await infiniteScroller.hoverToFirstItem();
-    const isSameText = await infiniteScroller.firstTileTitleMatchesHoverPaneTitle();
+    const isSameText =
+      await infiniteScroller.firstTileTitleMatchesHoverPaneTitle();
     expect(isSameText).toBeTruthy();
   });
 });
 
-test(`Clicking on an item tile takes you to the item`, async ({ searchPage }) => {
+test(`Clicking on an item tile takes you to the item`, async ({
+  searchPage,
+}) => {
   test.slow();
   const { infiniteScroller, page } = searchPage;
   await test.step('Click first item result and check if it directs to details page', async () => {
@@ -70,14 +74,23 @@ test('Sort by All-time views in Tile view', async ({ searchPage }) => {
     await searchPage.sortBar.applySortFilter(sortFilter);
     const expectedText = await searchPage.sortBar.clickSortDirection(sortOrder);
     if (expectedText) {
-      await expect(sortBar.srSortText).toContainText(`Change to ${expectedText} sort`);
+      await expect(sortBar.srSortText).toContainText(
+        `Change to ${expectedText} sort`,
+      );
     }
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
-    const isSortedCorrectly = await infiniteScroller.validateSortingResults(sortFilter, sortOrder, 10);
+    const isSortedCorrectly = await infiniteScroller.validateSortingResults(
+      sortFilter,
+      sortOrder,
+      10,
+    );
     expect(isSortedCorrectly).toBeTruthy();
-    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(sortFilter, sortOrder);
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(
+      sortFilter,
+      sortOrder,
+    );
     await expect(collectionBrowser.page).toHaveURL(urlPattern);
   });
 });
@@ -97,28 +110,41 @@ test(`Sort by Date published in List view`, async ({ searchPage }) => {
     await sortBar.applySortFilter(sortFilter);
     const expectedText = await sortBar.clickSortDirection(sortOrder);
     if (expectedText) {
-      await expect(sortBar.srSortText).toContainText(`Change to ${expectedText} sort`);
+      await expect(sortBar.srSortText).toContainText(
+        `Change to ${expectedText} sort`,
+      );
     }
   });
 
   await test.step('Check the first 10 results if sort filters were applied', async () => {
-    const isSortedCorrectly = await infiniteScroller.validateSortingResults(sortFilter, sortOrder, 5);
+    const isSortedCorrectly = await infiniteScroller.validateSortingResults(
+      sortFilter,
+      sortOrder,
+      5,
+    );
     expect(isSortedCorrectly).toBeTruthy();
   });
 
   await test.step('Check for url params with sort filter date published', async () => {
-    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(sortFilter, sortOrder);
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(
+      sortFilter,
+      sortOrder,
+    );
     await expect(collectionBrowser.page).toHaveURL(urlPattern);
   });
 });
 
-test(`Sort by Date archived (ascending) in Compact view`, async ({ searchPage }) => {
+test(`Sort by Date archived (ascending) in Compact view`, async ({
+  searchPage,
+}) => {
   const { collectionBrowser, sortBar } = searchPage;
   const sortOrder = 'ascending';
   const sortFilter = 'Date archived';
 
   await test.step('Switch to compact view mode', async () => {
-    await searchPage.infiniteScroller.clickViewMode(LayoutViewModeLocator.COMPACT);
+    await searchPage.infiniteScroller.clickViewMode(
+      LayoutViewModeLocator.COMPACT,
+    );
   });
 
   await test.step(`Sort by ${sortFilter} - ${sortOrder} order`, async () => {
@@ -127,12 +153,18 @@ test(`Sort by Date archived (ascending) in Compact view`, async ({ searchPage })
   });
 
   await test.step(`Check list column headers for sort filter "${sortFilter}"`, async () => {
-    const filterText = collectionBrowser.getCompactModeLineDateFilterText(sortFilter);
-    expect(await collectionBrowser.tileCompactListHeaderDate.innerText()).toContain(filterText);
+    const filterText =
+      collectionBrowser.getCompactModeLineDateFilterText(sortFilter);
+    expect(
+      await collectionBrowser.tileCompactListHeaderDate.innerText(),
+    ).toContain(filterText);
   });
 
   await test.step(`Check URL parameter as ${sortFilter} ${sortOrder}`, async () => {
-    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(sortFilter, sortOrder);
+    const urlPattern = collectionBrowser.getURLParamsWithSortFilter(
+      sortFilter,
+      sortOrder,
+    );
     await expect(collectionBrowser.page).toHaveURL(urlPattern);
-  })
+  });
 });

@@ -1,7 +1,14 @@
 import { type Page, type Locator } from '@playwright/test';
 
 export class TopNav {
-  readonly mediaTypeTexts = ['web', 'texts', 'video', 'audio', 'software', 'images'];
+  readonly mediaTypeTexts = [
+    'web',
+    'texts',
+    'video',
+    'audio',
+    'software',
+    'images',
+  ];
 
   readonly page: Page;
 
@@ -18,10 +25,14 @@ export class TopNav {
     this.iaTopNav = this.page.locator('ia-topnav');
     this.navHome = this.iaTopNav.locator('primary-nav nav > div.branding');
     this.mediaMenu = this.iaTopNav.locator('media-menu');
-    this.mediaMenuButtons = this.mediaMenu.locator('.menu-group').locator('media-button');
+    this.mediaMenuButtons = this.mediaMenu
+      .locator('.menu-group')
+      .locator('media-button');
 
     this.mediaSlider = this.page.locator('media-slider');
-    this.infoBox = this.mediaSlider.locator('.information-menu').locator('.info-box');
+    this.infoBox = this.mediaSlider
+      .locator('.information-menu')
+      .locator('.info-box');
   }
 
   async getMediaSliderState() {
@@ -32,19 +43,21 @@ export class TopNav {
     return await this.infoBox.isVisible();
   }
 
-  async checkSubNavInfoBoxHasFocus (mediaType: string) {
+  async checkSubNavInfoBoxHasFocus(mediaType: string) {
     const subNav = await this.infoBox.locator('media-subnav').all();
 
     for (const nav of subNav) {
       const navMenuText = await nav.getAttribute('menu');
-      if(navMenuText === mediaType) {
+      if (navMenuText === mediaType) {
         return await nav.getAttribute('class');
       }
     }
   }
 
-  async clickMediaButton (mediaType: string) {
-    const mediaButton = this.iaTopNav.getByRole('link', { name: `${mediaType} icon` });
+  async clickMediaButton(mediaType: string) {
+    const mediaButton = this.iaTopNav.getByRole('link', {
+      name: `${mediaType} icon`,
+    });
     await mediaButton.click();
   }
 }

@@ -38,10 +38,14 @@ export class CollectionPage {
     this.actionBar = page.locator('action-bar');
 
     this.aboutPageActivity = page.getByRole('heading', { name: 'Activity' });
-    this.aboutPageCollectionInfo = page.getByRole('heading', { name: 'Collection Info' });
+    this.aboutPageCollectionInfo = page.getByRole('heading', {
+      name: 'Collection Info',
+    });
 
     this.forumContainer = page.locator('ia-forum #forum-container');
-    this.newPostButton = this.forumContainer.getByRole('link', {name: 'New Post'});
+    this.newPostButton = this.forumContainer.getByRole('link', {
+      name: 'New Post',
+    });
     this.rssButton = this.forumContainer.getByRole('link', { name: 'RSS' });
 
     this.cbContainer = page.locator('#collection-browser-container');
@@ -54,7 +58,9 @@ export class CollectionPage {
   }
 
   async visit(collection: string) {
-    await this.page.goto(`/details/${collection}?ab_config=EagerFacets:On`, { waitUntil: 'domcontentloaded' });
+    await this.page.goto(`/details/${collection}?ab_config=EagerFacets:On`, {
+      waitUntil: 'domcontentloaded',
+    });
   }
 
   async clickCollectionTab(tabName: string) {
@@ -71,5 +77,4 @@ export class CollectionPage {
   getPageActiveTabText() {
     return this.pageTabs.locator('button.tab.active').innerText();
   }
-
 }

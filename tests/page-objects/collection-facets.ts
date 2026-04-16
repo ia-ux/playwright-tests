@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 import { FacetGroup, FacetType } from '../models';
 
 export class CollectionFacets {

@@ -2,7 +2,9 @@ import { test, expect } from '../../tests/fixtures';
 
 import { ResultsCategory, SearchPageSearchOption } from '../../tests/models';
 
-test(`"Begin searching" page displays prior to searching`, async ({ searchPage }) => {
+test(`"Begin searching" page displays prior to searching`, async ({
+  searchPage,
+}) => {
   await test.step(`Check if the empty page placeholder is displayed`, async () => {
     await expect(searchPage.collectionBrowser.emptyPlaceholder).toBeVisible();
   });
@@ -22,12 +24,16 @@ test('Do simple text contents search', async ({ searchPage }) => {
   const { collectionBrowser, collectionSearchInput, page } = searchPage;
   await test.step(`Select search option for text search and search for dogs`, async () => {
     await collectionSearchInput.queryFor('dogs');
-    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.TEXTS);
+    await collectionSearchInput.selectSearchOption(
+      undefined,
+      SearchPageSearchOption.TEXTS,
+    );
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
     expect(await collectionBrowser.resultSection.isVisible());
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.TEXTS);
     const urlPattern = new RegExp(`tab=${SearchPageSearchOption.TEXTS}`);
     expect(page.url()).toMatch(urlPattern);
@@ -39,12 +45,16 @@ test('Do simple TV search', async ({ searchPage }) => {
   const queryString = 'iguanas';
   await test.step(`Select search option for text search and search for iguanas`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.TV);
+    await collectionSearchInput.selectSearchOption(
+      undefined,
+      SearchPageSearchOption.TV,
+    );
   });
 
   await test.step(`Check TV results are displayed`, async () => {
     expect(await collectionBrowser.resultSection.isVisible());
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.TV);
     const urlPattern = new RegExp(`tab=${SearchPageSearchOption.TV}`);
     expect(page.url()).toMatch(urlPattern);
@@ -56,12 +66,16 @@ test('Do simple radio search', async ({ searchPage }) => {
   const queryString = 'rabbits';
   await test.step(`Select search option for text search and search for rabbits`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.RADIO);
+    await collectionSearchInput.selectSearchOption(
+      undefined,
+      SearchPageSearchOption.RADIO,
+    );
   });
 
   await test.step(`Check Radio results are displayed`, async () => {
     expect(await collectionBrowser.resultSection.isVisible());
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.RADIO);
     const urlPattern = new RegExp(`tab=${SearchPageSearchOption.RADIO}`);
     expect(page.url()).toMatch(urlPattern);
@@ -73,7 +87,10 @@ test('Do simple web search', async ({ searchPage }) => {
   const queryString = 'parrots';
   await test.step(`Select search option for text search and search for parrots`, async () => {
     await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(undefined, SearchPageSearchOption.WEB);
+    await collectionSearchInput.selectSearchOption(
+      undefined,
+      SearchPageSearchOption.WEB,
+    );
   });
 
   await test.step(`Check Wayback search page is displayed`, async () => {
@@ -81,7 +98,9 @@ test('Do simple web search', async ({ searchPage }) => {
     await expect(page).toHaveURL(/web\.archive\.org/);
     await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
-    expect(await collectionBrowser.formInputWaybackPage.inputValue()).toContain(queryString);
+    expect(await collectionBrowser.formInputWaybackPage.inputValue()).toContain(
+      queryString,
+    );
   });
 });
 
@@ -90,6 +109,8 @@ test('No results page displays when no results', async ({ searchPage }) => {
     await searchPage.collectionSearchInput.queryFor(
       'catsshfksahfkjhfkjsdhfkiewhkdsfahkjhfkjsda',
     );
-    await expect(searchPage.collectionBrowser.emptyPlaceholderTitleText).toBeVisible();
+    await expect(
+      searchPage.collectionBrowser.emptyPlaceholderTitleText,
+    ).toBeVisible();
   });
 });

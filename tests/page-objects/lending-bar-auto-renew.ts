@@ -1,4 +1,21 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
+
+interface KeepReadingConfig {
+  warnAfter: string;
+  wait: string;
+  expireAfter: string;
+}
+
+interface PageFlipConfig {
+  flipBefore: string;
+  wait: string;
+  expireAfter: string;
+}
+
+interface ClockConfig {
+  keepReading: Record<number, KeepReadingConfig>;
+  pageFlip: Record<number, PageFlipConfig>;
+}
 
 /**
  * Objects representing the total loan time configurations for different durations.
@@ -42,7 +59,7 @@ export class LendingBarAutoRenew {
 
   private timeInBrowser: string;
 
-  private clockConfig: object;
+  private readonly clockConfig: ClockConfig;
 
   /**
    * @param {Page} page - The Playwright page object.
@@ -91,27 +108,10 @@ export class LendingBarAutoRenew {
    * @param {string} scenario - The scenario for auto-renew testing.
    */
   async autoRenewTest(minutes: number, scenario: 'keepReading' | 'pageFlip') {
-    const autoRenewFunctions = {
-      keepReading: {
-        5: this.autoRenewWhenClickOnKeepReadingBtn.bind(this, 5),
-        10: this.autoRenewWhenClickOnKeepReadingBtn.bind(this, 10),
-        60: this.autoRenewWhenClickOnKeepReadingBtn.bind(this, 60),
-      },
-      pageFlip: {
-        5: this.autoRenewWhenUserFlipPage.bind(this, 5),
-        10: this.autoRenewWhenUserFlipPage.bind(this, 10),
-        60: this.autoRenewWhenUserFlipPage.bind(this, 60),
-      },
-    };
-
-    const autoRenewFunction = autoRenewFunctions[scenario][minutes];
-
-    if (autoRenewFunction) {
-      await autoRenewFunction();
+    if (scenario === 'keepReading') {
+      await this.autoRenewWhenClickOnKeepReadingBtn(minutes);
     } else {
-      console.warn(
-        `No auto-renew function defined for ${scenario} scenario with ${minutes} minutes.`,
-      );
+      await this.autoRenewWhenUserFlipPage(minutes);
     }
   }
 
@@ -207,10 +207,8 @@ export class LendingBarAutoRenew {
    * @returns {Promise<Date>} The incremented time.
    */
   async getIncrementedTime(minutes: number): Promise<Date> {
-    const timeObj = new Date(this.timeInBrowser.toString());
-    const incrementedTime = new Date(timeObj.getTime() + minutes * 60000);
-    // console.log('timeInBrowser: ', this.timeInBrowser, ' incremented: ' ,incrementedTime);
-    return incrementedTime;
+    const timeObj = new Date(this.timeInBrowser);
+    return new Date(timeObj.getTime() + minutes * 60000);
   }
 
   /**
@@ -284,7 +282,7 @@ export class LendingBarAutoRenew {
       new Date().toISOString(),
     );
 
-    await this.page.clock.setSystemTime(this.timeInBrowser.toString());
+    await this.page.clock.setSystemTime(this.timeInBrowser);
     await this.page.waitForTimeout(1000);
   }
 }

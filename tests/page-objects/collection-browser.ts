@@ -22,15 +22,20 @@ export class CollectionBrowser {
     );
 
     this.tileCompactListHeaderDate = page.locator(
-      'tile-list-compact-header #list-line-header #date'
-    )
+      'tile-list-compact-header #list-line-header #date',
+    );
 
-    this.resultSection = page.locator('section#results > h2.results-section-heading');
+    this.resultSection = page.locator(
+      'section#results > h2.results-section-heading',
+    );
     this.resultsCategory = page.locator('span.results-category');
   }
 
   getCompactModeLineDateFilterText(filter: SortFilter) {
-    return filter.split('Date ')[1].replace(/^./, (str: string) => str.toUpperCase());
+    const dateSuffix = filter.split('Date ')[1];
+    return (
+      dateSuffix?.replace(/^./, (str: string) => str.toUpperCase()) ?? filter
+    );
   }
 
   getURLParamsWithSortFilter(filter: SortFilter, order: SortOrder) {

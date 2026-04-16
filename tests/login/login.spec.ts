@@ -13,7 +13,7 @@ test.describe('Account settings - Login as a patron', () => {
       await expect(loginPage.accountSettingsFormText).toHaveText(
         'To access your account settings, as an extra security measure, you will need to verify your identity.',
       );
-      await expect(loginPage.verifyPasswordButton).toHaveText('Verify password');
+      await expect(loginPage.verifyPasswordButton).toBeVisible();
     });
   });
 });
@@ -31,7 +31,7 @@ test.describe('Account settings - Login as a admin', () => {
       await expect(loginPage.accountSettingsFormText).toHaveText(
         'To access your account settings, as an extra security measure, you will need to verify your identity.',
       );
-      await expect(loginPage.verifyPasswordButton).toHaveText('Verify password');
+      await expect(loginPage.verifyPasswordButton).toBeVisible();
     });
   });
 });

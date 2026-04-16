@@ -16,6 +16,7 @@ type PageFixtures = {
   lendingBarAutoRenew: LendingBarAutoRenew;
   detailsPage: DetailsPage;
   patronDetailsPage: DetailsPage;
+  adminDetailsPage: DetailsPage;
   bookPage: BookPage;
   homePage: HomePage;
   musicPage: MusicPage;
@@ -28,17 +29,9 @@ type PageFixtures = {
 
 export const test = base.extend<PageFixtures>({
   lendingBarAutoRenew: async ({ page }, use) => {
-    // Set up the fixture.
     const lendingBarAutoRenew = new LendingBarAutoRenew(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await use(lendingBarAutoRenew);
-
-    // Clean up the fixture.
     await page.close();
   },
   patronDetailsPage: async ({ browser }, use) => {
@@ -47,148 +40,86 @@ export const test = base.extend<PageFixtures>({
     });
     const page = await context.newPage();
     const detailsPage = new DetailsPage(page);
-
-    await page.route(/(analytics|fonts|googletag|doubleclick|adservice)/, route => {
-      route.abort();
-    });
-
+    await page.route(
+      /(analytics|fonts|googletag|doubleclick|adservice)/,
+      route => route.abort(),
+    );
     await use(detailsPage);
-
+    await context.close();
+  },
+  adminDetailsPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: '.auth/admin.json',
+    });
+    const page = await context.newPage();
+    const detailsPage = new DetailsPage(page);
+    await page.route(
+      /(analytics|fonts|googletag|doubleclick|adservice)/,
+      route => route.abort(),
+    );
+    await use(detailsPage);
     await context.close();
   },
   detailsPage: async ({ page }, use) => {
-    // Set up the fixture.
     const detailsPage = new DetailsPage(page);
-
-    await page.route(/(analytics|fonts|googletag|doubleclick|adservice)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
+    await page.route(
+      /(analytics|fonts|googletag|doubleclick|adservice)/,
+      route => route.abort(),
+    );
     await use(detailsPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   bookPage: async ({ page }, use) => {
-    // Set up the fixture.
     const bookPage = new BookPage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await use(bookPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   homePage: async ({ page }, use) => {
-    // Set up the fixture.
     const homePage = new HomePage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-    // Use the fixture value in the test.
     await use(homePage);
-
-    // Clean up the fixture.
     await page.close();
   },
   musicPage: async ({ page }, use) => {
-    // Set up the fixture.
     const musicPage = new MusicPage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await use(musicPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   collectionPage: async ({ page }, use) => {
-    // Set up the fixture.
     const collectionPage = new CollectionPage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await collectionPage.visit('oldtimeradio');
-
-    // Use the fixture value in the test.
     await use(collectionPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   searchPage: async ({ page }, use) => {
-    // Set up the fixture.
     const searchPage = new SearchPage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await searchPage.visit();
-
-    // Use the fixture value in the test.
     await use(searchPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   profilePage: async ({ page }, use) => {
-    // Set up the fixture.
     const profilePage = new ProfilePage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await profilePage.visit('brewster');
-
     await use(profilePage);
-
-    // Clean up the fixture.
     await page.close();
   },
   loginPage: async ({ page }, use) => {
-    // Set up the fixture.
     const loginPage = new LoginPage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
-    // Use the fixture value in the test.
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await use(loginPage);
-
-    // Clean up the fixture.
     await page.close();
   },
   profilePageUploads: async ({ page }, use) => {
-    // Set up the fixture.
     const profilePage = new ProfilePage(page);
-
-    await page.route(/(analytics|fonts)/, route => {
-      route.abort();
-    });
-
+    await page.route(/(analytics|fonts)/, route => route.abort());
     await profilePage.visit('brewster/uploads');
-
-    // Use the fixture value in the test.
     await use(profilePage);
-
-    // Clean up the fixture.
     await page.close();
   },
 });

@@ -43,7 +43,8 @@ test('Do simple metadata search', async ({ homePage }) => {
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
-    const formInputValue = await collectionSearchInput.formInputSearchPage.inputValue();
+    const formInputValue =
+      await collectionSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
   });
 });
@@ -53,7 +54,10 @@ test('Do simple full-text search', async ({ homePage }) => {
   const queryString = 'dogs';
 
   await test.step(`Select text contents option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.TEXT, undefined);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.TEXT,
+      undefined,
+    );
     await homePage.collectionSearchInput.queryFor(queryString);
   });
 
@@ -62,9 +66,11 @@ test('Do simple full-text search', async ({ homePage }) => {
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
-    const formInputValue = await collectionSearchInput.formInputSearchPage.inputValue();
+    const formInputValue =
+      await collectionSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.FULLTEXT);
   });
 });
@@ -74,7 +80,10 @@ test('Do simple TV news captions search', async ({ homePage }) => {
   const queryString = 'iguanas';
 
   await test.step(`Select TV captions option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.TV_CAPTIONS, undefined);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.TV_CAPTIONS,
+      undefined,
+    );
     await homePage.collectionSearchInput.queryFor(queryString);
   });
 
@@ -83,9 +92,11 @@ test('Do simple TV news captions search', async ({ homePage }) => {
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
-    const formInputValue = await collectionSearchInput.formInputSearchPage.inputValue();
+    const formInputValue =
+      await collectionSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.TV_CAPTIONS);
   });
 });
@@ -95,7 +106,10 @@ test('Do simple radio search', async ({ homePage }) => {
   const queryString = 'rabbits';
 
   await test.step(`Select radio transcripts option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.RADIO_TRANSCRIPTS, undefined);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.RADIO_TRANSCRIPTS,
+      undefined,
+    );
     await homePage.collectionSearchInput.queryFor(queryString);
   });
 
@@ -104,9 +118,11 @@ test('Do simple radio search', async ({ homePage }) => {
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
-    const formInputValue = await collectionSearchInput.formInputSearchPage.inputValue();
+    const formInputValue =
+      await collectionSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
-    const resultCategoryText = await collectionBrowser.resultsCategory.innerText();
+    const resultCategoryText =
+      await collectionBrowser.resultsCategory.innerText();
     expect(resultCategoryText).toContain(ResultsCategory.RADIO_TRANSCRIPTS);
   });
 });
@@ -116,15 +132,23 @@ test('Redirect web search to Wayback machine page', async ({ homePage }) => {
   const queryString = 'parrots';
 
   await test.step(`Select web option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.WEB, undefined);
-    await homePage.collectionSearchInput.queryFor(queryString);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.WEB,
+      undefined,
+    );
+    await Promise.all([
+      page.waitForURL(/web\.archive\.org/),
+      homePage.collectionSearchInput.queryFor(queryString),
+    ]);
   });
 
   await test.step('Verify redirect to Wayback Machine with query preserved', async () => {
     await expect(page).toHaveURL(new RegExp(queryString));
     await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
-    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(new RegExp(queryString));
+    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(
+      new RegExp(queryString),
+    );
   });
 });
 
@@ -140,7 +164,9 @@ test('Use Wayback widget - Redirect web search', async ({ homePage }) => {
     await expect(page).toHaveURL(new RegExp(queryString));
     await expect(page).toHaveTitle(/Wayback Machine/);
     await expect(collectionBrowser.formInputWaybackPage).toBeVisible();
-    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(new RegExp(queryString));
+    await expect(collectionBrowser.formInputWaybackPage).toHaveValue(
+      new RegExp(queryString),
+    );
   });
 });
 
@@ -164,7 +190,9 @@ test('TopNav Functionality', async ({ homePage }) => {
   await test.step('Click "Texts" button and verify Open Library link appears', async () => {
     await topNav.clickMediaButton('texts');
     await expect(topNav.infoBox).toBeVisible();
-    await expect(topNav.infoBox.locator('a:has-text("Open Library")')).toBeVisible();
+    await expect(
+      topNav.infoBox.locator('a:has-text("Open Library")'),
+    ).toBeVisible();
     const focusedClass = await topNav.checkSubNavInfoBoxHasFocus('texts');
     expect(focusedClass).toEqual('has-focused');
   });
@@ -180,7 +208,9 @@ test('TopNav Functionality', async ({ homePage }) => {
   await test.step('Click "Audio" button and verify Live Music Archive link appears', async () => {
     await topNav.clickMediaButton('audio');
     await expect(topNav.infoBox).toBeVisible();
-    await expect(topNav.infoBox.locator('a:has-text("Live Music Archive")')).toBeVisible();
+    await expect(
+      topNav.infoBox.locator('a:has-text("Live Music Archive")'),
+    ).toBeVisible();
     const focusedClass = await topNav.checkSubNavInfoBoxHasFocus('audio');
     expect(focusedClass).toEqual('has-focused');
   });
@@ -188,7 +218,9 @@ test('TopNav Functionality', async ({ homePage }) => {
   await test.step('Click "Software" button and verify Internet Arcade link appears', async () => {
     await topNav.clickMediaButton('software');
     await expect(topNav.infoBox).toBeVisible();
-    await expect(topNav.infoBox.locator('a:has-text("Internet Arcade")')).toBeVisible();
+    await expect(
+      topNav.infoBox.locator('a:has-text("Internet Arcade")'),
+    ).toBeVisible();
     const focusedClass = await topNav.checkSubNavInfoBoxHasFocus('software');
     expect(focusedClass).toEqual('has-focused');
   });
@@ -196,7 +228,9 @@ test('TopNav Functionality', async ({ homePage }) => {
   await test.step('Click "Images" button and verify Metropolitan Museum link appears', async () => {
     await topNav.clickMediaButton('images');
     await expect(topNav.infoBox).toBeVisible();
-    await expect(topNav.infoBox.locator('a:has-text("Metropolitan Museum")')).toBeVisible();
+    await expect(
+      topNav.infoBox.locator('a:has-text("Metropolitan Museum")'),
+    ).toBeVisible();
     const focusedClass = await topNav.checkSubNavInfoBoxHasFocus('images');
     expect(focusedClass).toEqual('has-focused');
   });

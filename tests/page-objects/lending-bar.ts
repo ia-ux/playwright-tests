@@ -1,4 +1,4 @@
-import { type Page, Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 
 export class LendingBar {
   readonly page: Page;
@@ -60,8 +60,13 @@ export class LendingBar {
     // Both states: borrow button is inside collapsible-action-group;
     // return button is a direct child of ia-book-actions with class "danger initial"
     const actionGroup = this.iaBookActions.locator('collapsible-action-group');
-    const borrowButton = actionGroup.getByRole('button', { name: 'Borrow', exact: true });
-    const returnNowButton = this.iaBookActions.locator('button.ia-button', { hasText: 'Return now' });
+    const borrowButton = actionGroup.getByRole('button', {
+      name: 'Borrow',
+      exact: true,
+    });
+    const returnNowButton = this.iaBookActions.locator('button.ia-button', {
+      hasText: 'Return now',
+    });
 
     const isBorrowState = await borrowButton.isVisible();
 

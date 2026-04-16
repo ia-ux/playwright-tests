@@ -2,9 +2,12 @@ import { test, expect } from '../fixtures';
 import { CollectionPageSearchOption } from '../models';
 
 test('Collection search metadata', async ({ collectionPage }) => {
-  const { collectionFacets, collectionSearchInput, infiniteScroller } = collectionPage;
+  const { collectionFacets, collectionSearchInput, infiniteScroller } =
+    collectionPage;
   await test.step(`Select "Search metadata"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.METADATA);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.METADATA,
+    );
   });
 
   await test.step(`Search for "radio" in the search input text field`, async () => {
@@ -20,9 +23,12 @@ test('Collection search metadata', async ({ collectionPage }) => {
 test('Collection search text contents and clear filters', async ({
   collectionPage,
 }) => {
-  const { collectionFacets, collectionSearchInput, infiniteScroller } = collectionPage;
+  const { collectionFacets, collectionSearchInput, infiniteScroller } =
+    collectionPage;
   await test.step(`Select "Search text contents"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.TEXT);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.TEXT,
+    );
   });
 
   await test.step(`Search for "dragnet" in the search input text field`, async () => {
@@ -38,18 +44,24 @@ test('Collection search text contents and clear filters', async ({
     const { collectionSearchInput } = collectionPage;
     await collectionSearchInput.clickClearSearchInput();
     await expect(collectionSearchInput.btnClearInput).not.toBeVisible();
-    expect(await collectionSearchInput.formInputSearchPage.inputValue()).toBe('');
+    expect(await collectionSearchInput.formInputSearchPage.inputValue()).toBe(
+      '',
+    );
   });
 });
 
 test('No results page displays when no results', async ({ collectionPage }) => {
   const { collectionBrowser, collectionSearchInput } = collectionPage;
   await test.step(`Select "Search metadata"`, async () => {
-    await collectionSearchInput.selectSearchOption(CollectionPageSearchOption.METADATA);
+    await collectionSearchInput.selectSearchOption(
+      CollectionPageSearchOption.METADATA,
+    );
   });
 
   await test.step(`Search for "catsshfksahfkjhfkjsdhfkiewhkdsfahkjhfkjsda" and validate that the "No results" placeholder appears in place of the display area`, async () => {
-    await collectionSearchInput.queryFor('catsshfksahfkjhfkjsdhfkiewhkdsfahkjhfkjsda');
+    await collectionSearchInput.queryFor(
+      'catsshfksahfkjhfkjsdhfkiewhkdsfahkjhfkjsda',
+    );
     await expect(collectionBrowser.emptyPlaceholder).toBeVisible();
   });
 });
