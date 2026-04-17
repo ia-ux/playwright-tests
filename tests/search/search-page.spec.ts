@@ -12,7 +12,7 @@ test(`"Begin searching" page displays prior to searching`, async ({
 
 test('Do simple metadata search', async ({ searchPage }) => {
   await test.step(`Select search option for metadata search and search for cats`, async () => {
-    await searchPage.collectionSearchInput.queryFor('cats');
+    await searchPage.dropdownSearchInput.queryFor('cats');
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
@@ -21,13 +21,10 @@ test('Do simple metadata search', async ({ searchPage }) => {
 });
 
 test('Do simple text contents search', async ({ searchPage }) => {
-  const { collectionBrowser, collectionSearchInput, page } = searchPage;
+  const { collectionBrowser, dropdownSearchInput, page } = searchPage;
   await test.step(`Select search option for text search and search for dogs`, async () => {
-    await collectionSearchInput.queryFor('dogs');
-    await collectionSearchInput.selectSearchOption(
-      undefined,
-      SearchPageSearchOption.TEXTS,
-    );
+    await dropdownSearchInput.queryFor('dogs');
+    await searchPage.selectTab(SearchPageSearchOption.TEXTS);
   });
 
   await test.step(`Searching and search result count should be displayed`, async () => {
@@ -41,14 +38,11 @@ test('Do simple text contents search', async ({ searchPage }) => {
 });
 
 test('Do simple TV search', async ({ searchPage }) => {
-  const { collectionBrowser, collectionSearchInput, page } = searchPage;
+  const { collectionBrowser, dropdownSearchInput, page } = searchPage;
   const queryString = 'iguanas';
   await test.step(`Select search option for text search and search for iguanas`, async () => {
-    await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(
-      undefined,
-      SearchPageSearchOption.TV,
-    );
+    await dropdownSearchInput.queryFor(queryString);
+    await searchPage.selectTab(SearchPageSearchOption.TV);
   });
 
   await test.step(`Check TV results are displayed`, async () => {
@@ -62,14 +56,11 @@ test('Do simple TV search', async ({ searchPage }) => {
 });
 
 test('Do simple radio search', async ({ searchPage }) => {
-  const { collectionBrowser, collectionSearchInput, page } = searchPage;
+  const { collectionBrowser, dropdownSearchInput, page } = searchPage;
   const queryString = 'rabbits';
   await test.step(`Select search option for text search and search for rabbits`, async () => {
-    await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(
-      undefined,
-      SearchPageSearchOption.RADIO,
-    );
+    await dropdownSearchInput.queryFor(queryString);
+    await searchPage.selectTab(SearchPageSearchOption.RADIO);
   });
 
   await test.step(`Check Radio results are displayed`, async () => {
@@ -83,14 +74,11 @@ test('Do simple radio search', async ({ searchPage }) => {
 });
 
 test('Do simple web search', async ({ searchPage }) => {
-  const { collectionBrowser, collectionSearchInput, page } = searchPage;
+  const { collectionBrowser, dropdownSearchInput, page } = searchPage;
   const queryString = 'parrots';
   await test.step(`Select search option for text search and search for parrots`, async () => {
-    await collectionSearchInput.queryFor(queryString);
-    await collectionSearchInput.selectSearchOption(
-      undefined,
-      SearchPageSearchOption.WEB,
-    );
+    await dropdownSearchInput.queryFor(queryString);
+    await searchPage.selectTab(SearchPageSearchOption.WEB);
   });
 
   await test.step(`Check Wayback search page is displayed`, async () => {
@@ -106,7 +94,7 @@ test('Do simple web search', async ({ searchPage }) => {
 
 test('No results page displays when no results', async ({ searchPage }) => {
   await test.step(`Search for a query that we expect will return no results at all and validate the empty page placeholder is displayed`, async () => {
-    await searchPage.collectionSearchInput.queryFor(
+    await searchPage.dropdownSearchInput.queryFor(
       'catsshfksahfkjhfkjsdhfkiewhkdsfahkjhfkjsda',
     );
     await expect(

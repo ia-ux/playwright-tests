@@ -9,7 +9,7 @@ test.beforeEach(async ({ searchPage }) => {
   });
 
   await test.step(`Select "Search metadata" and do a metadata search for "cats"`, async () => {
-    await searchPage.collectionSearchInput.queryFor('cats');
+    await searchPage.dropdownSearchInput.queryFor('cats');
   });
 });
 

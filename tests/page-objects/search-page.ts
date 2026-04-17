@@ -1,28 +1,31 @@
-import { type Page } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
 import { CollectionFacets } from './collection-facets';
+import { DropdownSearchBar } from './dropdown-search-bar';
 import { InfiniteScroller } from './infinite-scroller';
 import { SortBar } from './sort-bar';
-import { CollectionSearchInput } from './collection-search-input';
+import { SearchPageSearchOption } from '../models';
 
 export class SearchPage {
   readonly page: Page;
 
   readonly collectionBrowser: CollectionBrowser;
   readonly collectionFacets: CollectionFacets;
-  readonly collectionSearchInput: CollectionSearchInput;
+  readonly dropdownSearchInput: DropdownSearchBar;
   readonly infiniteScroller: InfiniteScroller;
   readonly sortBar: SortBar;
+  readonly tabManager: Locator;
 
   public constructor(page: Page) {
     this.page = page;
 
     this.collectionBrowser = new CollectionBrowser(this.page);
     this.collectionFacets = new CollectionFacets(this.page);
-    this.collectionSearchInput = new CollectionSearchInput(this.page);
+    this.dropdownSearchInput = new DropdownSearchBar(this.page);
     this.infiniteScroller = new InfiniteScroller(this.page);
     this.sortBar = new SortBar(this.page);
+    this.tabManager = page.getByTestId('tab-manager-tabs-row');
   }
 
   async visit() {
@@ -31,5 +34,9 @@ export class SearchPage {
 
   async goBackToSearchPage() {
     await this.visit();
+  }
+
+  async selectTab(option: SearchPageSearchOption) {
+    await this.tabManager.getByTestId(option).click();
   }
 }

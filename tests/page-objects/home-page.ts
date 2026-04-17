@@ -1,7 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
 
 import { CollectionBrowser } from './collection-browser';
-import { CollectionSearchInput } from './collection-search-input';
+import { DropdownSearchBar } from './dropdown-search-bar';
 import { TopNav } from './top-nav';
 
 export class HomePage {
@@ -19,13 +19,13 @@ export class HomePage {
   readonly termsOfService: Locator;
 
   readonly collectionBrowser: CollectionBrowser;
-  readonly collectionSearchInput: CollectionSearchInput;
+  readonly dropdownSearchInput: DropdownSearchBar;
   readonly topNav: TopNav;
 
   public constructor(page: Page) {
     this.page = page;
     this.waybackSearch = this.page.locator('ia-wayback-search');
-    this.searchInput = this.page.locator('collection-search-input');
+    this.searchInput = this.page.locator('dropdown-search-bar');
     this.announcements = this.page.locator(
       '#announcements > hero-block-announcements',
     );
@@ -44,7 +44,7 @@ export class HomePage {
     this.termsOfService = this.page.locator('footer > app-footer');
 
     this.collectionBrowser = new CollectionBrowser(page);
-    this.collectionSearchInput = new CollectionSearchInput(page);
+    this.dropdownSearchInput = new DropdownSearchBar(page);
     this.topNav = new TopNav(page);
   }
 

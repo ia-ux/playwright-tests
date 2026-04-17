@@ -1,6 +1,5 @@
 import { type Page, type Locator } from '@playwright/test';
 
-import { CollectionSearchInput } from './collection-search-input';
 import { SortBar } from './sort-bar';
 
 import {
@@ -42,12 +41,10 @@ export class InfiniteScroller {
   readonly compactDisplayMode: Locator;
 
   readonly sortBar: SortBar;
-  readonly collectionSearchInput: CollectionSearchInput;
 
   public constructor(page: Page) {
     this.page = page;
 
-    this.collectionSearchInput = new CollectionSearchInput(page);
     this.sortBar = new SortBar(page);
 
     this.infiniteScroller = page.locator('infinite-scroller');

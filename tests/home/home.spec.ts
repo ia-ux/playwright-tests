@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures';
 
-import { ResultsCategory, CollectionPageSearchOption } from '../models';
+import { HomePageSearchOption, ResultsCategory } from '../models';
 
 test('Home page displays all of its elements', async ({ homePage }) => {
   await test.step('Verify WBM widget and search box are visible', async () => {
@@ -31,43 +31,42 @@ test('Home page displays all of its elements', async ({ homePage }) => {
 });
 
 test('Do simple metadata search', async ({ homePage }) => {
-  const { collectionSearchInput, page } = homePage;
+  const { dropdownSearchInput, page } = homePage;
   const queryString = 'cats';
 
   await test.step(`Search for "${queryString}"`, async () => {
-    await collectionSearchInput.queryFor(queryString);
+    await dropdownSearchInput.queryFor(queryString);
   });
 
   await test.step(`Verify URL and search input reflect the query`, async () => {
     await page.waitForURL(/search/);
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
-    await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
+    await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
     const formInputValue =
-      await collectionSearchInput.formInputSearchPage.inputValue();
+      await dropdownSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
   });
 });
 
 test('Do simple full-text search', async ({ homePage }) => {
-  const { collectionSearchInput, page, collectionBrowser } = homePage;
+  const { dropdownSearchInput, page, collectionBrowser } = homePage;
   const queryString = 'dogs';
 
   await test.step(`Select text contents option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(
-      CollectionPageSearchOption.TEXT,
-      undefined,
+    await dropdownSearchInput.selectSearchOption(
+      HomePageSearchOption.TEXT_CONTENTS,
     );
-    await homePage.collectionSearchInput.queryFor(queryString);
+    await dropdownSearchInput.queryFor(queryString);
   });
 
   await test.step(`Verify URL, search input, and results category reflect full-text search`, async () => {
     await page.waitForURL(/search/);
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
-    await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
+    await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
     const formInputValue =
-      await collectionSearchInput.formInputSearchPage.inputValue();
+      await dropdownSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
     const resultCategoryText =
       await collectionBrowser.resultsCategory.innerText();
@@ -75,70 +74,63 @@ test('Do simple full-text search', async ({ homePage }) => {
   });
 });
 
-test('Do simple TV news captions search', async ({ homePage }) => {
-  const { collectionSearchInput, page, collectionBrowser } = homePage;
+test('Do simple TV search', async ({ homePage }) => {
+  const { dropdownSearchInput, page, collectionBrowser } = homePage;
   const queryString = 'iguanas';
 
-  await test.step(`Select TV captions option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(
-      CollectionPageSearchOption.TV_CAPTIONS,
-      undefined,
-    );
-    await homePage.collectionSearchInput.queryFor(queryString);
+  await test.step(`Select TV option and search for "${queryString}"`, async () => {
+    await dropdownSearchInput.selectSearchOption(HomePageSearchOption.TV);
+    await dropdownSearchInput.queryFor(queryString);
   });
 
-  await test.step(`Verify URL, search input, and results category reflect TV captions search`, async () => {
+  await test.step(`Verify URL, search input, and results category reflect TV search`, async () => {
     await page.waitForURL(/search/);
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
-    await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
+    await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
     const formInputValue =
-      await collectionSearchInput.formInputSearchPage.inputValue();
+      await dropdownSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
     const resultCategoryText =
       await collectionBrowser.resultsCategory.innerText();
-    expect(resultCategoryText).toContain(ResultsCategory.TV_CAPTIONS);
+    expect(resultCategoryText).toContain(ResultsCategory.TV);
   });
 });
 
 test('Do simple radio search', async ({ homePage }) => {
-  const { collectionSearchInput, page, collectionBrowser } = homePage;
+  const { dropdownSearchInput, page, collectionBrowser } = homePage;
   const queryString = 'rabbits';
 
-  await test.step(`Select radio transcripts option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(
-      CollectionPageSearchOption.RADIO_TRANSCRIPTS,
-      undefined,
-    );
-    await homePage.collectionSearchInput.queryFor(queryString);
+  await test.step(`Select radio option and search for "${queryString}"`, async () => {
+    await dropdownSearchInput.selectSearchOption(HomePageSearchOption.RADIO);
+    await dropdownSearchInput.queryFor(queryString);
   });
 
   await test.step(`Verify URL, search input, and results category reflect radio search`, async () => {
     await page.waitForURL(/search/);
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
-    await expect(collectionSearchInput.formInputSearchPage).toBeVisible();
+    await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
     const formInputValue =
-      await collectionSearchInput.formInputSearchPage.inputValue();
+      await dropdownSearchInput.formInputSearchPage.inputValue();
     expect(formInputValue).toContain(queryString);
     const resultCategoryText =
       await collectionBrowser.resultsCategory.innerText();
-    expect(resultCategoryText).toContain(ResultsCategory.RADIO_TRANSCRIPTS);
+    expect(resultCategoryText).toContain(ResultsCategory.RADIO);
   });
 });
 
 test('Redirect web search to Wayback machine page', async ({ homePage }) => {
-  const { collectionSearchInput, page, collectionBrowser } = homePage;
+  const { dropdownSearchInput, page, collectionBrowser } = homePage;
   const queryString = 'parrots';
 
-  await test.step(`Select web option and search for "${queryString}"`, async () => {
-    await collectionSearchInput.selectSearchOption(
-      CollectionPageSearchOption.WEB,
-      undefined,
+  await test.step(`Select web sites option and search for "${queryString}"`, async () => {
+    await dropdownSearchInput.selectSearchOption(
+      HomePageSearchOption.WEB_SITES,
     );
     await Promise.all([
       page.waitForURL(/web\.archive\.org/),
-      homePage.collectionSearchInput.queryFor(queryString),
+      dropdownSearchInput.queryFor(queryString),
     ]);
   });
 

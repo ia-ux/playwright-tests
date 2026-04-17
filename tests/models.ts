@@ -21,6 +21,22 @@ export enum CollectionPageSearchOption {
   WEB = `Search archived web sites`,
 }
 
+export enum HomePageSearchOption {
+  ALL = 'All',
+  BOOKS_DOCUMENTS = 'Books/Documents',
+  TEXT_CONTENTS = 'Text Contents',
+  RADIO = 'Radio',
+  TV = 'TV',
+  VIDEO = 'Video',
+  AUDIO = 'Audio',
+  SOFTWARE = 'Software',
+  IMAGES = 'Images',
+  LIVE_MUSIC = 'Live Music',
+  COLLECTIONS = 'Collections',
+  DATA = 'Data',
+  WEB_SITES = 'Web Sites',
+}
+
 export enum SearchPageSearchOption {
   ALL = 'all',
   TEXTS = 'texts',
