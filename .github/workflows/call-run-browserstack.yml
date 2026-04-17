@@ -47,8 +47,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Intall Playwright browsers
-        run: npx playwright install --with-deps
       - name: 'BrowserStack Env Setup'
         uses: 'browserstack/github-actions/setup-env@master'
         with:
