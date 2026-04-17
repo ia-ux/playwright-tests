@@ -85,6 +85,6 @@ consoleLogs: errors # <string> Remote browser's console debug levels to be print
 # Visit observability.browserstack.com to see your test reports and insights. To disable test observability, specify `testObservability: false` in the key below.
 testObservability: true
 
-browserstack.playwrightVersion: 1.59.1
+browserstack.playwrightVersion: 1.58.1
 
 idleTimeout: 3500
