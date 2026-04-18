@@ -45,7 +45,7 @@ export class MusicPage {
   }
 
   async gotoPage(uri: string) {
-    await this.page.goto(`/details/${uri}`, { waitUntil: 'load' });
+    await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForPlayerReady() {

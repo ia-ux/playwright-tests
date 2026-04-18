@@ -47,7 +47,7 @@ export class DetailsPage {
   }
 
   async gotoPage(uri: string) {
-    await this.page.goto(`/details/${uri}`, { waitUntil: 'load' });
+    await this.page.goto(`/details/${uri}`, { waitUntil: 'domcontentloaded' });
   }
 
   async assertPageElements() {
@@ -145,9 +145,9 @@ export class DetailsPage {
   }
 
   async imageCarouselMultipleImageDisplay() {
-    const carouselVisible = await this.iaTheater
-      .locator('#ia-carousel')
-      .isVisible();
+    const carouselLocator = this.iaTheater.locator('#ia-carousel');
+    await carouselLocator.waitFor({ state: 'visible' });
+    const carouselVisible = await carouselLocator.isVisible();
 
     const innerCarousel = this.iaTheater.locator('#ia-carousel > div');
     const innerCarouselItem = this.iaTheater.locator(
