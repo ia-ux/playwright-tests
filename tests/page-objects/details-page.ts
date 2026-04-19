@@ -120,7 +120,9 @@ export class DetailsPage {
   }
 
   async container3dDisplay() {
-    return this.page.locator('#container3D').isVisible();
+    const locator = this.page.locator('#container3D');
+    await locator.waitFor({ state: 'visible' });
+    return locator.isVisible();
   }
 
   async bookreaderDisplay() {
@@ -129,6 +131,7 @@ export class DetailsPage {
   }
 
   async musicTheaterDisplay() {
+    await this.iaMusicTheater.iauxPhotoViewer.waitFor({ state: 'visible' });
     return {
       musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
       seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible(),
@@ -165,7 +168,9 @@ export class DetailsPage {
   }
 
   async radioPlayerTheaterDisplay() {
-    return this.iaTheater.locator('radio-player').isVisible();
+    const locator = this.iaTheater.locator('radio-player');
+    await locator.waitFor({ state: 'visible' });
+    return locator.isVisible();
   }
 
   async tvTheaterDisplay() {
@@ -202,10 +207,13 @@ export class DetailsPage {
   }
 
   async videoPlayerTheaterDisplay() {
-    return this.iaTheater.locator('#jw6').isVisible();
+    const locator = this.iaTheater.locator('#jw6');
+    await locator.waitFor({ state: 'visible' });
+    return locator.isVisible();
   }
 
   async softwareEmulationTheaterDisplay() {
+    await this.page.locator('#emulate').waitFor({ state: 'visible' });
     return {
       emulatorVisible: await this.page.locator('#emulate').isVisible(),
       theatreEmulatorVisible: await this.iaTheater

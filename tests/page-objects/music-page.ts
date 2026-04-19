@@ -54,6 +54,8 @@ export class MusicPage {
       state: 'visible',
       timeout: 60000,
     });
+    // Wait for JW Player to reach idle state — media config loaded, ready to play
+    await this.jwPlayerIdle.waitFor({ state: 'visible', timeout: 60000 });
   }
 
   async getBookReaderClass() {
