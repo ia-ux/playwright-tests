@@ -60,10 +60,10 @@ export class IAMusicTheater {
   async webAmpDisplayFromChannelSelector(fromChannelSelector: boolean) {
     // Wait for multiple load states to ensure everything is ready in headless mode
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle').catch(() => {});
 
     if (fromChannelSelector) {
-      await this.page.waitForURL('**/webamp=default**');
+      await this.page.waitForURL('**/webamp=default**', { timeout: 30000 });
     }
 
     // Wait for webamp container to be attached and visible

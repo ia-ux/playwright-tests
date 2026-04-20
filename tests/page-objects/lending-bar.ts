@@ -48,7 +48,7 @@ export class LendingBar {
     await primaryAction.click();
 
     // wait for navigation to complete
-    await this.page.waitForLoadState('load');
+    await this.page.waitForLoadState('domcontentloaded');
 
     // Assert that the current URL contains a specific substring or matches a pattern
     await expect(this.page).toHaveURL(/\/login/);
@@ -74,13 +74,13 @@ export class LendingBar {
       // patron hasn't borrowed yet — verify borrow button and click it
       await expect(borrowButton).toContainText('Borrow');
       await borrowButton.click();
-      await this.page.waitForLoadState('load');
+      await this.page.waitForLoadState('domcontentloaded');
     } else {
       // patron already has the book — verify return controls
       await expect(returnNowButton).toBeVisible();
       await expect(returnNowButton).toContainText('Return now');
       await returnNowButton.click();
-      await this.page.waitForLoadState('load');
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 }

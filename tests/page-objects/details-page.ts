@@ -132,8 +132,13 @@ export class DetailsPage {
 
   async musicTheaterDisplay() {
     await this.iaMusicTheater.channelSelector.waitFor({ state: 'visible' });
-    // For single-image items, iaux-photo-viewer has class="hide" and is never visible.
-    // For multi-image items it is visible — wait for its img to confirm shadow DOM settled.
+    // Both single-image and multi-image items start with iaux-photo-viewer class="hide".
+    // Multi-image items remove the hide class asynchronously once images load;
+    // single-image items keep it permanently. Wait up to 10s for the transition.
+    await this.iaMusicTheater.iauxPhotoViewer
+      .waitFor({ state: 'visible', timeout: 10000 })
+      .catch(() => {});
+    // If photo viewer became visible (multi-image), confirm img is loaded in shadow DOM
     if (await this.iaMusicTheater.iauxPhotoViewer.isVisible()) {
       await this.iaMusicTheater.iauxPhotoViewer
         .locator('img')

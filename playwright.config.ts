@@ -43,13 +43,13 @@ export default defineConfig({
     ],
   ],
   expect: {
-    timeout: 10 * 60 * 1000,  // set to 10mins
+    timeout: 60 * 1000,  // 60s — fail fast, let retries handle transient issues
   },
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // This is set in config/index.ts
     baseURL: config.baseURL,
-    actionTimeout: 10 * 60 * 1000,  // set to 10mins
+    actionTimeout: 60 * 1000,  // 60s — fail fast, let retries handle transient issues
     screenshot: 'only-on-failure',
   },
 
