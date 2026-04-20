@@ -56,6 +56,11 @@ export class MusicPage {
     });
     // Wait for JW Player to reach idle state — media config loaded, ready to play
     await this.jwPlayerIdle.waitFor({ state: 'visible', timeout: 60000 });
+    // Allow JW Player to complete initial audio pre-fetch requests so
+    // the buffer is warm before play is clicked
+    await this.page
+      .waitForLoadState('networkidle', { timeout: 15000 })
+      .catch(() => {});
   }
 
   async getBookReaderClass() {

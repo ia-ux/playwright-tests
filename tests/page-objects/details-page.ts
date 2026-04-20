@@ -132,12 +132,14 @@ export class DetailsPage {
 
   async musicTheaterDisplay() {
     await this.iaMusicTheater.channelSelector.waitFor({ state: 'visible' });
-    // Wait for iaux-photo-viewer shadow DOM to settle: the cover img appears for
-    // all audio items; seeMoreCta is then visible (multi-image) or hidden (single-image)
-    await this.iaMusicTheater.iauxPhotoViewer
-      .locator('img')
-      .first()
-      .waitFor({ state: 'visible' });
+    // For single-image items, iaux-photo-viewer has class="hide" and is never visible.
+    // For multi-image items it is visible — wait for its img to confirm shadow DOM settled.
+    if (await this.iaMusicTheater.iauxPhotoViewer.isVisible()) {
+      await this.iaMusicTheater.iauxPhotoViewer
+        .locator('img')
+        .first()
+        .waitFor({ state: 'visible', timeout: 30000 });
+    }
     return {
       musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
       seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible(),

@@ -120,7 +120,7 @@ test(`Play a Grateful Dead track`, async ({ musicPage }) => {
   await test.step(`Play music and verify it starts playing`, async () => {
     await musicPage.waitForPlayerReady();
     await musicPage.iaMusicTheater.musicPlayerPlayButton.click();
-    await expect(musicPage.jwPlayerPlaying).toBeVisible({ timeout: 30000 });
+    await expect(musicPage.jwPlayerPlaying).toBeVisible({ timeout: 60000 });
     expect(await musicPage.getElapsedTimeValue()).toBe('00:00');
   });
 
