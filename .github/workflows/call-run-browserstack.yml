@@ -68,6 +68,9 @@ jobs:
           BROWSERSTACK_PROJECT_ID: ${{ secrets.BROWSERSTACK_PROJECT_ID }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          # Wait for a short period to ensure that the build information is available in BrowserStack API
+          sleep 30
+
           # Fetch the latest build information from BrowserStack API for the specified project and date range (last 3 hours)
           START_MS=$(( ($(date +%s) - 10800) * 1000 ))
           END_MS=$(( $(date +%s) * 1000 ))
