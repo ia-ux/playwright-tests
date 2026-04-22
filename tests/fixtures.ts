@@ -32,7 +32,7 @@ export const test = base.extend<PageFixtures>({
     const lendingBarAutoRenew = new LendingBarAutoRenew(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await use(lendingBarAutoRenew);
-    await page.close();
+    await page.close().catch(() => {});
   },
   patronDetailsPage: async ({ browser }, use) => {
     const context = await browser.newContext({
@@ -45,7 +45,7 @@ export const test = base.extend<PageFixtures>({
       route => route.abort(),
     );
     await use(detailsPage);
-    await context.close();
+    await context.close().catch(() => {});
   },
   adminDetailsPage: async ({ browser }, use) => {
     const context = await browser.newContext({
@@ -58,7 +58,7 @@ export const test = base.extend<PageFixtures>({
       route => route.abort(),
     );
     await use(detailsPage);
-    await context.close();
+    await context.close().catch(() => {});
   },
   detailsPage: async ({ page }, use) => {
     const detailsPage = new DetailsPage(page);
@@ -67,60 +67,60 @@ export const test = base.extend<PageFixtures>({
       route => route.abort(),
     );
     await use(detailsPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   bookPage: async ({ page }, use) => {
     const bookPage = new BookPage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await use(bookPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   homePage: async ({ page }, use) => {
     const homePage = new HomePage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await use(homePage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   musicPage: async ({ page }, use) => {
     const musicPage = new MusicPage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await use(musicPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   collectionPage: async ({ page }, use) => {
     const collectionPage = new CollectionPage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await collectionPage.visit('oldtimeradio');
     await use(collectionPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   searchPage: async ({ page }, use) => {
     const searchPage = new SearchPage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await searchPage.visit();
     await use(searchPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await profilePage.visit('brewster');
     await use(profilePage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   loginPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await use(loginPage);
-    await page.close();
+    await page.close().catch(() => {});
   },
   profilePageUploads: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
     await profilePage.visit('brewster/uploads');
     await use(profilePage);
-    await page.close();
+    await page.close().catch(() => {});
   },
 });
 

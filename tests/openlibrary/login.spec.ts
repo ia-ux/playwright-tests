@@ -7,6 +7,10 @@ test('OpenLibrary: Google sign-in loads and is clickable', async ({
   browserName,
   browser,
 }) => {
+  await page.route(/(analytics|fonts|googletag|doubleclick|adservice)/, route =>
+    route.abort(),
+  );
+
   await test.step('Navigate to OpenLibrary login page', async () => {
     await page.goto(openlibrary_login_url, { waitUntil: 'domcontentloaded' });
   });
@@ -58,5 +62,5 @@ test('OpenLibrary: Google sign-in loads and is clickable', async ({
     }
   });
 
-  await page.close();
+  await page.close().catch(() => {});
 });
