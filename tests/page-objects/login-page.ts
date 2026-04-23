@@ -56,7 +56,9 @@ export class LoginPage {
       .click();
 
     // Wait for network to settle to ensure login response is received
-    await this.page.waitForLoadState('networkidle').catch(() => null);
+    await this.page
+      .waitForLoadState('networkidle', { timeout: 15000 })
+      .catch(() => {});
 
     // Detect login error by looking for the error message paragraph
     const errorParagraph = this.page.locator('main paragraph, main p').filter({
@@ -109,10 +111,30 @@ export class LoginPage {
     });
   }
 
-  async gotoAccountSettings() {
+  async gotoAccountSettings(user?: UserType) {
     await this.page.goto(accountSettings.url, {
       waitUntil: 'domcontentloaded',
     });
-    await this.page.locator('main').waitFor({ state: 'attached' });
+    await this.page
+      .locator('main')
+      .waitFor({ state: 'attached', timeout: 30000 });
+
+    // If session expired, the page redirects to login — re-authenticate
+    if (this.page.url().includes('/login') && user && user !== 'no-login') {
+      const banner = this.page.locator('#banner-body-container');
+      if (await banner.isVisible().catch(() => false)) {
+        await this.page.locator('main form').scrollIntoViewIfNeeded();
+      }
+      await this.fillCredentials(user);
+      // Archive.org may redirect to / after login rather than back to settings
+      if (!this.page.url().includes('/account/settings')) {
+        await this.page.goto(accountSettings.url, {
+          waitUntil: 'domcontentloaded',
+        });
+        await this.page
+          .locator('main')
+          .waitFor({ state: 'attached', timeout: 30000 });
+      }
+    }
   }
 }

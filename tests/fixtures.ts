@@ -111,7 +111,10 @@ export const test = base.extend<PageFixtures>({
   },
   loginPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(
+      /(analytics|fonts|googletag|doubleclick|adservice)/,
+      route => route.abort(),
+    );
     await use(loginPage);
     await page.close().catch(() => {});
   },

@@ -5,7 +5,7 @@ test.describe('Account settings - Login as a patron', () => {
 
   test('Verify account settings page', async ({ loginPage }) => {
     await test.step('Navigate to account settings page', async () => {
-      await loginPage.gotoAccountSettings();
+      await loginPage.gotoAccountSettings('patron');
     });
 
     await test.step('Verify account settings heading, form text, and verify button', async () => {
@@ -23,7 +23,7 @@ test.describe('Account settings - Login as a admin', () => {
 
   test('Verify account settings page', async ({ loginPage }) => {
     await test.step('Navigate to account settings page', async () => {
-      await loginPage.gotoAccountSettings();
+      await loginPage.gotoAccountSettings('privs');
     });
 
     await test.step('Verify account settings heading, form text, and verify button', async () => {
