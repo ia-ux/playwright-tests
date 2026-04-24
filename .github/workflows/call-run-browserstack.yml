@@ -75,10 +75,18 @@ jobs:
           START_MS=$(( ($(date +%s) - 10800) * 1000 ))
           END_MS=$(( $(date +%s) * 1000 ))
 
-          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" "https://api-automation.browserstack.com/ext/v1/projects/$BROWSERSTACK_PROJECT_ID/builds?date_range=${START_MS},${END_MS}" > browserstack.json
+          fetch_build_status() {
+            curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" "https://api-automation.browserstack.com/ext/v1/projects/$BROWSERSTACK_PROJECT_ID/builds?date_range=${START_MS},${END_MS}" > browserstack.json
+            jq -r '.builds | last | .status' browserstack.json
+          }
 
-          cat browserstack.json
-          export AUTOMATE_STATUS=$(jq -r '.builds | last | .status' browserstack.json)
+          export AUTOMATE_STATUS=$(fetch_build_status)
+          while [ "$AUTOMATE_STATUS" = "running" ]; do
+            echo "Build is still running, retrying in 30 seconds..."
+            sleep 30
+            export AUTOMATE_STATUS=$(fetch_build_status)
+          done
+
           export AUTOMATE_URL=$(jq -r '.builds | last | .observability_url' browserstack.json)
           
           case ${AUTOMATE_STATUS} in
