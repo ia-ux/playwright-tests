@@ -13,9 +13,9 @@ export class DropdownSearchBar {
   public constructor(page: Page) {
     this.page = page;
 
-    const root = page.locator('dropdown-search-bar').first();
+    const root = page.locator('dropdown-search-bar:not([slot])').first();
     this.searchInput = root.getByRole('textbox', {
-      name: 'Search the Archive. Filters and Advanced Search available below.',
+      name: 'Search the Archive',
     });
     // formInputSearchPage is the same input, used post-navigation to verify query value
     this.formInputSearchPage = this.searchInput;

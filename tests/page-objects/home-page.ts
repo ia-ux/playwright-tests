@@ -25,7 +25,7 @@ export class HomePage {
   public constructor(page: Page) {
     this.page = page;
     this.waybackSearch = this.page.locator('ia-wayback-search');
-    this.searchInput = this.page.locator('dropdown-search-bar').first();
+    this.searchInput = this.page.locator('dropdown-search-bar:not([slot])');
     this.announcements = this.page.locator(
       '#announcements > hero-block-announcements',
     );
