@@ -13,17 +13,17 @@ export class DropdownSearchBar {
   public constructor(page: Page) {
     this.page = page;
 
-    this.searchInput = page.getByRole('textbox', {
+    const root = page.locator('dropdown-search-bar').first();
+    this.searchInput = root.getByRole('textbox', {
       name: 'Search the Archive. Filters and Advanced Search available below.',
     });
     // formInputSearchPage is the same input, used post-navigation to verify query value
     this.formInputSearchPage = this.searchInput;
-    this.categoryToggle = page
-      .locator('dropdown-search-bar')
-      .getByRole('button', { name: /Toggle options/ });
-    this.searchButton = page
-      .locator('dropdown-search-bar')
-      .getByRole('button', { name: 'Search', exact: true });
+    this.categoryToggle = root.getByRole('button', { name: /Toggle options/ });
+    this.searchButton = root.getByRole('button', {
+      name: 'Search',
+      exact: true,
+    });
   }
 
   async queryFor(query: string) {
