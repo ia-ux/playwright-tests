@@ -3,7 +3,7 @@ time {
   # npx browserstack-node-sdk playwright test # this might fail due to timeout
 
   # Workaround: for debugging purposes for now
-  npx browserstack-node-sdk playwright test --config=./playwright.config.ts --workers=8 --fully-parallel
+  npx browserstack-node-sdk playwright test --config=./playwright.config.ts --workers=5 --fully-parallel
 
   # echo "\nRun ./tests/av"
   # npx browserstack-node-sdk playwright test ./tests/av
