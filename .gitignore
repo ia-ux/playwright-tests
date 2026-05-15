@@ -26,5 +26,4 @@ ctrf
 
 bstack-json
 
-.playwright
-.playwright-cli
+.playwright*

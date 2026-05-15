@@ -25,28 +25,22 @@ export const identifier = {
     terms: '/about/terms',
     volunteer: '/about/volunteer-positions',
   },
-  av: {
-    url: '',
-    default: '/details/CSPAN_20160425_022500_2011_White_House_Correspondents_Dinner',
-  },
   accountSettings: {
     url: '/account/settings?settings=1',
     default: '',
+  },
+  av: {
+    url: '',
+    default: '/details/CSPAN_20160425_022500_2011_White_House_Correspondents_Dinner',
   },
   books: {
     url: '',
     default: '/details/theworksofplato01platiala',
     with_dot_sample: '/details/direction0002unse_no.9',
   },
-  legal: {
-    url: '/legal/',
-    affidavit: '/legal/affidavit',
-    faq: '/legal/faq'
-  },
-  lending: {
-    chromium: 'cornellstudiesin26unse',
-    firefox: 'cornellstudiesin26unse',
-    webkit: 'annualreport0000meth_x3r2',
+  collection: {
+    url: '',
+    default: 'oldtimeradio',
   },
   details: {
     url: '/details',
@@ -55,7 +49,7 @@ export const identifier = {
     three_d_viewer: 'smarthouseplus-v1.0',
     audio_image_carousel: '78_yogi-bear-introduces-loopy-de-loop-and-lets-have-a-song-yogi-bear_sascha-burland-do_gbia0534535',
     audio_single_image_1: '78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b',
-    audio_single_image_2: 'OTRR_Philip_Marlowe_Singles', 
+    audio_single_image_2: 'OTRR_Philip_Marlowe_Singles',
     archive_data: 'ARCHIVEIT-12737-DAILY-JOB1254458-SEED2061041-20200803-00000',
     software_emulation: 'msdos_Oregon_Trail_The_1990',
     image_carousel: 'img-0855_202106',
@@ -69,13 +63,22 @@ export const identifier = {
     music_theater_no_image_with_waveform: 'phish1994-11-25.002456.chicago.akg480.flac1644',
     music_theater_single_track_no_waveform: 'berceuse00benj',
   },
+  donate: {
+    url: '/donate?origin=iawww-TopNavDonateButton',
+  },
   home: {
     url: '/',
-    default:  '/',
+    default: '/',
   },
-  collection: {
-    url: '',
-    default: 'oldtimeradio',
+  legal: {
+    url: '/legal/',
+    affidavit: '/legal/affidavit',
+    faq: '/legal/faq',
+  },
+  lending: {
+    chromium: 'cornellstudiesin26unse',
+    firefox: 'cornellstudiesin26unse',
+    webkit: 'annualreport0000meth_x3r2',
   },
   login: {
     url: '/login',
@@ -99,7 +102,7 @@ export const identifier = {
     petabox: '/web/petabox',
     scanning: '/scanning',
     sflan: '/web/sflan',
-  }
+  },
 };
 
 export const testBeforeEachConfig = async (context: BrowserContext) => {
