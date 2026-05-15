@@ -2,7 +2,6 @@ TIMEFORMAT='It took %0R seconds.'
 time {
   # npx browserstack-node-sdk playwright test # this might fail due to timeout
 
-  # Workaround: for debugging purposes for now
   npx browserstack-node-sdk playwright test --config=./playwright.config.ts --workers=5 --fully-parallel
 
   # echo "\nRun ./tests/av"
