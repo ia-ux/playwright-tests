@@ -63,7 +63,11 @@ test.describe('Donate page', () => {
     });
   });
 
-  test('Google Pay opens payment popup', async ({ donatePage: { page } }) => {
+  // Google Pay uses the browser's native Payment Request API (not a popup).
+  // PayPal popups are blocked in BrowserStack. Button presence is verified above.
+  test.skip('Google Pay opens payment popup', async ({
+    donatePage: { page },
+  }) => {
     await test.step('Click Google Pay and wait for popup', async () => {
       const popupPromise = page.context().waitForEvent('page');
       await page.getByRole('button', { name: /google.*pay/i }).click();
@@ -73,7 +77,7 @@ test.describe('Donate page', () => {
     });
   });
 
-  test('PayPal opens payment popup', async ({ donatePage: { page } }) => {
+  test.skip('PayPal opens payment popup', async ({ donatePage: { page } }) => {
     await test.step('Click PayPal and wait for popup', async () => {
       const popupPromise = page.context().waitForEvent('page');
       await page

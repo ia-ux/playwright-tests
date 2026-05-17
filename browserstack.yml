@@ -87,4 +87,6 @@ testObservability: true
 
 browserstack.playwrightVersion: 1.58.1
 
+# interactiveDebugging: true
+# video: true
 idleTimeout: 3500
