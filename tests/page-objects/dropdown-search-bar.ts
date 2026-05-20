@@ -13,7 +13,7 @@ export class DropdownSearchBar {
   public constructor(page: Page) {
     this.page = page;
 
-    const root = page.locator('dropdown-search-bar:not([slot])').first();
+    const root = page.locator('ia-dropdown-search-bar:not([slot])').first();
     this.searchInput = root.getByRole('textbox', {
       name: 'Search the Archive',
     });

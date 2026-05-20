@@ -8,7 +8,6 @@ export class HomePage {
   readonly page: Page;
 
   readonly waybackSearch: Locator;
-  readonly searchInput: Locator;
   readonly announcements: Locator;
   readonly mediaTypeIcons: Locator;
   readonly mediaTypeHeroIconBars: Locator;
@@ -25,7 +24,6 @@ export class HomePage {
   public constructor(page: Page) {
     this.page = page;
     this.waybackSearch = this.page.locator('ia-wayback-search');
-    this.searchInput = this.page.locator('dropdown-search-bar:not([slot])');
     this.announcements = this.page.locator(
       '#announcements > hero-block-announcements',
     );

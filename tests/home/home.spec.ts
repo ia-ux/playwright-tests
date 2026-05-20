@@ -5,7 +5,7 @@ import { HomePageSearchOption, ResultsCategory } from '../models';
 test('Home page displays all of its elements', async ({ homePage }) => {
   await test.step('Verify WBM widget and search box are visible', async () => {
     await expect(homePage.waybackSearch).toBeVisible();
-    await expect(homePage.searchInput).toBeVisible();
+    await expect(homePage.dropdownSearchInput.searchInput).toBeVisible();
   });
 
   await test.step('Verify announcements and media type icons are visible', async () => {
