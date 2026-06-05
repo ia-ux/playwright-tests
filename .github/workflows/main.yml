@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: browserstack-tests
+  cancel-in-progress: false
+
 jobs:
   test:
     name: Run tests

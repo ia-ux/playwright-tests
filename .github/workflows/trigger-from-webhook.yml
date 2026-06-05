@@ -4,6 +4,10 @@ on:
   repository_dispatch:
     types: [trigger-from-webhook]
 
+concurrency:
+  group: browserstack-tests
+  cancel-in-progress: false
+
 jobs:
   test:
     name: Run tests
