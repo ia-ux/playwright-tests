@@ -9,7 +9,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  cancel-lower-priority:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel running main/scheduled workflows
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for workflow in main.yml scheduled-testrun.yml; do
+            gh run list --repo ${{ github.repository }} --workflow=$workflow --status=in_progress --json databaseId -q '.[].databaseId' | \
+            xargs -r -I{} gh run cancel {} --repo ${{ github.repository }}
+          done
+
   test:
+    needs: cancel-lower-priority
     name: Run tests
     uses: ./.github/workflows/call-run-browserstack.yml
     with:
