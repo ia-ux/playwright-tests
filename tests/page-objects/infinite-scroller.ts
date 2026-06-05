@@ -152,9 +152,8 @@ export class InfiniteScroller {
     order: SortOrder,
     displayItemCount: number,
   ): Promise<boolean> {
-    const tileStatsViews = await this.getTileStatsViewCountTitles(
-      displayItemCount,
-    );
+    const tileStatsViews =
+      await this.getTileStatsViewCountTitles(displayItemCount);
     const isAllViews = tileStatsViews.every(stat =>
       stat.includes(filter.toLowerCase()),
     );
@@ -170,9 +169,8 @@ export class InfiniteScroller {
     order: SortOrder,
     displayItemCount: number,
   ): Promise<boolean> {
-    const dateMetadataLabels = await this.getDateMetadataLabels(
-      displayItemCount,
-    );
+    const dateMetadataLabels =
+      await this.getDateMetadataLabels(displayItemCount);
     const dateSuffix = filter.split('Date ')[1];
     const checkFilterText =
       dateSuffix?.replace(/^./, str => str.toUpperCase()) ?? filter;

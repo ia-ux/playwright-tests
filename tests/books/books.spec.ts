@@ -210,12 +210,10 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         let initialBookWidth: number | undefined;
 
         await test.step('Capture initial book dimensions', async () => {
-          initialBookHeight = await bookPage.getBRPageBoundingBoxDimension(
-            'height',
-          );
-          initialBookWidth = await bookPage.getBRPageBoundingBoxDimension(
-            'width',
-          );
+          initialBookHeight =
+            await bookPage.getBRPageBoundingBoxDimension('height');
+          initialBookWidth =
+            await bookPage.getBRPageBoundingBoxDimension('width');
         });
 
         await test.step('Click zoom out', async () => {
@@ -223,12 +221,10 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         });
 
         await test.step('Verify book dimensions decreased', async () => {
-          const zoomedOutHeight = await bookPage.getBRPageBoundingBoxDimension(
-            'height',
-          );
-          const zoomedOutWidth = await bookPage.getBRPageBoundingBoxDimension(
-            'width',
-          );
+          const zoomedOutHeight =
+            await bookPage.getBRPageBoundingBoxDimension('height');
+          const zoomedOutWidth =
+            await bookPage.getBRPageBoundingBoxDimension('width');
           expect(zoomedOutHeight).toBeLessThan(Number(initialBookHeight));
           expect(zoomedOutWidth).toBeLessThan(Number(initialBookWidth));
         });
@@ -241,12 +237,10 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         let initialBookWidth: number | undefined;
 
         await test.step('Capture initial book dimensions', async () => {
-          initialBookHeight = await bookPage.getBRPageBoundingBoxDimension(
-            'height',
-          );
-          initialBookWidth = await bookPage.getBRPageBoundingBoxDimension(
-            'width',
-          );
+          initialBookHeight =
+            await bookPage.getBRPageBoundingBoxDimension('height');
+          initialBookWidth =
+            await bookPage.getBRPageBoundingBoxDimension('width');
         });
 
         await test.step('Click zoom in', async () => {
@@ -254,12 +248,10 @@ testBooks.forEach(({ bookIdentifier, isPublic }) => {
         });
 
         await test.step('Verify book dimensions increased', async () => {
-          const zoomedInHeight = await bookPage.getBRPageBoundingBoxDimension(
-            'height',
-          );
-          const zoomedInWidth = await bookPage.getBRPageBoundingBoxDimension(
-            'width',
-          );
+          const zoomedInHeight =
+            await bookPage.getBRPageBoundingBoxDimension('height');
+          const zoomedInWidth =
+            await bookPage.getBRPageBoundingBoxDimension('width');
           expect(zoomedInHeight).toBeGreaterThan(Number(initialBookHeight));
           expect(zoomedInWidth).toBeGreaterThan(Number(initialBookWidth));
         });

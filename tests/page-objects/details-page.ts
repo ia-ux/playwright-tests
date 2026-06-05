@@ -246,21 +246,19 @@ export class DetailsPage {
 
     // load next image
     await rightArrowControl.click();
-    await this.page.waitForFunction(
-      () =>
-        document
-          .querySelectorAll('#ia-carousel > div > div.item')[1]
-          ?.classList.contains('active'),
+    await this.page.waitForFunction(() =>
+      document
+        .querySelectorAll('#ia-carousel > div > div.item')[1]
+        ?.classList.contains('active'),
     );
     const nextItemClass = await carouselItems.nth(1).getAttribute('class');
 
     // load prev image
     await leftArrowControl.click();
-    await this.page.waitForFunction(
-      () =>
-        document
-          .querySelectorAll('#ia-carousel > div > div.item')[0]
-          ?.classList.contains('active'),
+    await this.page.waitForFunction(() =>
+      document
+        .querySelectorAll('#ia-carousel > div > div.item')[0]
+        ?.classList.contains('active'),
     );
     const prevItemClass = await carouselItems.first().getAttribute('class');
 
