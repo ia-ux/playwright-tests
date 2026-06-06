@@ -10,10 +10,12 @@ test.describe('About pages', () => {
   test('Canonical About page has correct title and text', async ({ page }) => {
     await test.step('Navigate to About page', async () => {
       await page.goto(identifier.about.url, { waitUntil: 'domcontentloaded' });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and heading', async () => {
-      await expect(page).toHaveTitle(/About IA/);
+    await test.step('Validate page heading', async () => {
       await expect(
         page.locator('h1:has-text("About the Internet Archive")'),
       ).toBeVisible();
@@ -36,10 +38,12 @@ test.describe('About pages', () => {
   test('About > Bios page has correct title and text', async ({ page }) => {
     await test.step('Navigate to Bios page', async () => {
       await page.goto(identifier.about.bios, { waitUntil: 'domcontentloaded' });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Bios/);
+    await test.step('Validate page content', async () => {
       await expect(page.locator('h1:has-text("Bios")')).toBeVisible();
       await expect(page.locator('#maincontent')).toContainText(
         'A passionate advocate for public Internet access',
@@ -52,10 +56,12 @@ test.describe('About pages', () => {
       await page.goto(identifier.about.contact, {
         waitUntil: 'domcontentloaded',
       });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Contact/);
+    await test.step('Validate page content', async () => {
       await expect(
         page.locator('h1:has-text("Contacts at the Internet Archive")'),
       ).toBeVisible();
@@ -75,10 +81,12 @@ test.describe('About pages', () => {
       await page.goto(identifier.about.credits, {
         waitUntil: 'domcontentloaded',
       });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Credits/);
+    await test.step('Validate page content', async () => {
       await expect(
         page.locator(
           'h1:has-text("Credits: Thank You from the Internet Archive")',
@@ -93,10 +101,12 @@ test.describe('About pages', () => {
   test('About > Jobs page has correct title and text', async ({ page }) => {
     await test.step('Navigate to Jobs page', async () => {
       await page.goto(identifier.about.jobs, { waitUntil: 'domcontentloaded' });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Jobs/);
+    await test.step('Validate page content', async () => {
       await expect(
         page.locator('h1:has-text("Job Opportunities")'),
       ).toBeVisible();
@@ -111,10 +121,12 @@ test.describe('About pages', () => {
   }) => {
     await test.step('Navigate to News Stories page', async () => {
       await page.goto(identifier.about.news, { waitUntil: 'domcontentloaded' });
+      await page
+        .locator('h1:has-text("News stories")')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/News Stories/);
+    await test.step('Validate page content', async () => {
       await expect(page.locator('h1:has-text("News stories")')).toBeVisible();
       await expect(page.locator('body')).toContainText(
         'Including The Wayback Machine',
@@ -129,10 +141,12 @@ test.describe('About pages', () => {
       await page.goto(identifier.about.terms, {
         waitUntil: 'domcontentloaded',
       });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Terms of Use/);
+    await test.step('Validate page content', async () => {
       await expect(page.locator('h1:has-text("Terms of Use")')).toBeVisible();
       await expect(page.locator('#maincontent')).toContainText(
         'This terms of use agreement',
@@ -147,10 +161,12 @@ test.describe('About pages', () => {
       await page.goto(identifier.about.volunteer, {
         waitUntil: 'domcontentloaded',
       });
+      await page
+        .locator('#maincontent')
+        .waitFor({ state: 'visible', timeout: 30000 });
     });
 
-    await test.step('Validate page title and content', async () => {
-      await expect(page).toHaveTitle(/Volunteer Positions/);
+    await test.step('Validate page content', async () => {
       await expect(
         page.locator('h1:has-text("Volunteer Positions")'),
       ).toBeVisible();

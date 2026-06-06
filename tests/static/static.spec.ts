@@ -8,16 +8,21 @@ test.beforeEach(async ({ context }) => {
 
 test('Bookserver page has correct title and text', async ({ page }) => {
   await test.step('Navigate to Bookserver page', async () => {
-    await page.goto(identifier.static.bookserver, { waitUntil: 'commit' });
+    await page.goto(identifier.static.bookserver, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page
+      .locator('#maincontent')
+      .waitFor({ state: 'visible', timeout: 30000 });
   });
 
   await test.step('Verify page title and content', async () => {
-    await expect(page).toHaveTitle(
-      /Internet Archive: A Future for Books -- BookServer/,
-    );
     await expect(
       page.locator('h1:has-text("A Future for Books -- BookServer")'),
     ).toBeVisible();
+    await expect(page).toHaveTitle(
+      /Internet Archive: A Future for Books -- BookServer/,
+    );
     await expect(page.locator('#maincontent')).toContainText(
       'The widespread success of digital reading',
     );
@@ -26,14 +31,19 @@ test('Bookserver page has correct title and text', async ({ page }) => {
 
 test('Scanning page has correct title and text', async ({ page }) => {
   await test.step('Navigate to Scanning page', async () => {
-    await page.goto(identifier.static.scanning, { waitUntil: 'commit' });
+    await page.goto(identifier.static.scanning, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page
+      .locator('#maincontent')
+      .waitFor({ state: 'visible', timeout: 30000 });
   });
 
   await test.step('Verify page title and content', async () => {
-    await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
     await expect(
       page.locator('h1:has-text("Digitize & Preserve")'),
     ).toBeVisible();
+    await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
     await expect(page.getByText('Our digitization services')).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Learn About What We Digitize' }),
@@ -43,14 +53,19 @@ test('Scanning page has correct title and text', async ({ page }) => {
 
 test('Web > Petabox page has correct title and text', async ({ page }) => {
   await test.step('Navigate to Petabox page', async () => {
-    await page.goto(identifier.static.petabox, { waitUntil: 'commit' });
+    await page.goto(identifier.static.petabox, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page
+      .locator('#maincontent')
+      .waitFor({ state: 'visible', timeout: 30000 });
   });
 
   await test.step('Verify page title and content', async () => {
-    await expect(page).toHaveTitle(/Internet Archive: Petabox/);
     await expect(
       page.locator('#content-container').locator('h1:has-text("Petabox")'),
     ).toBeVisible();
+    await expect(page).toHaveTitle(/Internet Archive: Petabox/);
     await expect(page.locator('#maincontent')).toContainText(
       'A few highlights from the Petabox',
     );
@@ -59,14 +74,17 @@ test('Web > Petabox page has correct title and text', async ({ page }) => {
 
 test('Web > SFlan page has correct title and text', async ({ page }) => {
   await test.step('Navigate to SFLan page', async () => {
-    await page.goto(identifier.static.sflan, { waitUntil: 'commit' });
+    await page.goto(identifier.static.sflan, { waitUntil: 'domcontentloaded' });
+    await page
+      .locator('#maincontent')
+      .waitFor({ state: 'visible', timeout: 30000 });
   });
 
   await test.step('Verify page title and content', async () => {
-    await expect(page).toHaveTitle(/Internet Archive: SFLan/);
     await expect(
       page.locator('h1:has-text("Community Wireless")'),
     ).toBeVisible();
+    await expect(page).toHaveTitle(/Internet Archive: SFLan/);
     await expect(page.locator('#maincontent')).toContainText(
       'Internet access in bulk, delivered',
     );
