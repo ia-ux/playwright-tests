@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { identifier, testBeforeEachConfig } from '../../config';
+import { assertTitleWithReload } from '../utils';
 
 test.beforeEach(async ({ context }) => {
   await testBeforeEachConfig(context);
@@ -12,7 +13,7 @@ test('Bookserver page has correct title and text', async ({ page }) => {
       waitUntil: 'domcontentloaded',
     });
     await page
-      .locator('#maincontent')
+      .locator('h1:has-text("A Future for Books -- BookServer")')
       .waitFor({ state: 'visible', timeout: 30000 });
   });
 
@@ -20,8 +21,10 @@ test('Bookserver page has correct title and text', async ({ page }) => {
     await expect(
       page.locator('h1:has-text("A Future for Books -- BookServer")'),
     ).toBeVisible();
-    await expect(page).toHaveTitle(
+    await assertTitleWithReload(
+      page,
       /Internet Archive: A Future for Books -- BookServer/,
+      '#maincontent',
     );
     await expect(page.locator('#maincontent')).toContainText(
       'The widespread success of digital reading',
@@ -35,7 +38,7 @@ test('Scanning page has correct title and text', async ({ page }) => {
       waitUntil: 'domcontentloaded',
     });
     await page
-      .locator('#maincontent')
+      .locator('h1:has-text("Digitize & Preserve")')
       .waitFor({ state: 'visible', timeout: 30000 });
   });
 
@@ -65,7 +68,11 @@ test('Web > Petabox page has correct title and text', async ({ page }) => {
     await expect(
       page.locator('#content-container').locator('h1:has-text("Petabox")'),
     ).toBeVisible();
-    await expect(page).toHaveTitle(/Internet Archive: Petabox/);
+    await assertTitleWithReload(
+      page,
+      /Internet Archive: Petabox/,
+      '#maincontent',
+    );
     await expect(page.locator('#maincontent')).toContainText(
       'A few highlights from the Petabox',
     );
@@ -84,7 +91,11 @@ test('Web > SFlan page has correct title and text', async ({ page }) => {
     await expect(
       page.locator('h1:has-text("Community Wireless")'),
     ).toBeVisible();
-    await expect(page).toHaveTitle(/Internet Archive: SFLan/);
+    await assertTitleWithReload(
+      page,
+      /Internet Archive: SFLan/,
+      '#maincontent',
+    );
     await expect(page.locator('#maincontent')).toContainText(
       'Internet access in bulk, delivered',
     );

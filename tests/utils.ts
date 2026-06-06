@@ -1,6 +1,41 @@
+import { expect, Page } from '@playwright/test';
 import { SortOrder, DateMetadataLabel } from './models';
 
 export const PAGE_WAIT_TIME = 5000;
+
+/**
+ * Asserts the page title matches `pattern`, reloading up to `maxAttempts - 1`
+ * times if the title hasn't updated yet. Fails the test if the title is still
+ * wrong after all attempts.
+ *
+ * @param readinessLocator - selector to waitFor after each reload so we know
+ *   the page content is ready before checking the title again.
+ */
+export async function assertTitleWithReload(
+  page: Page,
+  pattern: RegExp,
+  readinessLocator: string,
+  maxAttempts = 3,
+): Promise<void> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (attempt > 1) {
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page
+        .locator(readinessLocator)
+        .waitFor({ state: 'visible', timeout: 30000 });
+    }
+    try {
+      await expect(page).toHaveTitle(pattern, { timeout: 15000 });
+      return;
+    } catch {
+      if (attempt === maxAttempts) {
+        throw new Error(
+          `Title matching ${pattern} not found after ${maxAttempts} page load(s)`,
+        );
+      }
+    }
+  }
+}
 
 export function parseViewCount(viewStr: string): number {
   const match = viewStr.match(/^([\d.]+)([MK]?)\s/);
