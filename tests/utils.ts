@@ -3,6 +3,23 @@ import { SortOrder, DateMetadataLabel } from './models';
 
 export const PAGE_WAIT_TIME = 5000;
 
+export async function gotoWithRetry(
+  page: Page,
+  url: string,
+  options?: Parameters<Page['goto']>[1],
+  maxAttempts = 3,
+): Promise<void> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await page.goto(url, options);
+      return;
+    } catch (err) {
+      if (attempt === maxAttempts) throw err;
+      await page.waitForTimeout(3000);
+    }
+  }
+}
+
 /**
  * Asserts the page title matches `pattern`, reloading up to `maxAttempts - 1`
  * times if the title hasn't updated yet. Fails the test if the title is still

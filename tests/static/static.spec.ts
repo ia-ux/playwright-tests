@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { identifier, testBeforeEachConfig } from '../../config';
-import { assertTitleWithReload } from '../utils';
+import { assertTitleWithReload, gotoWithRetry } from '../utils';
 
 test.beforeEach(async ({ context }) => {
   await testBeforeEachConfig(context);
@@ -34,7 +34,7 @@ test('Bookserver page has correct title and text', async ({ page }) => {
 
 test('Scanning page has correct title and text', async ({ page }) => {
   await test.step('Navigate to Scanning page', async () => {
-    await page.goto(identifier.static.scanning, {
+    await gotoWithRetry(page, identifier.static.scanning, {
       waitUntil: 'domcontentloaded',
     });
     await page
@@ -46,7 +46,11 @@ test('Scanning page has correct title and text', async ({ page }) => {
     await expect(
       page.locator('h1:has-text("Digitize & Preserve")'),
     ).toBeVisible();
-    await expect(page).toHaveTitle(/Internet Archive Digitization Services/);
+    await assertTitleWithReload(
+      page,
+      /Internet Archive Digitization Services/,
+      'h1:has-text("Digitize & Preserve")',
+    );
     await expect(page.getByText('Our digitization services')).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Learn About What We Digitize' }),

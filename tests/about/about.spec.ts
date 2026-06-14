@@ -59,6 +59,7 @@ test.describe('About pages', () => {
       await page.goto(identifier.about.contact, {
         waitUntil: 'domcontentloaded',
       });
+      await page.reload({ waitUntil: 'domcontentloaded' });
       await page
         .locator('#maincontent')
         .waitFor({ state: 'visible', timeout: 30000 });
