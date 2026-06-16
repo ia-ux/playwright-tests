@@ -1,0 +1,18 @@
+services:
+  playwright:
+    build: .
+    env_file: .env
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+      - ./.auth:/app/.auth
+    environment:
+      - CI=true
+
+  browserstack:
+    build: .
+    env_file: .env
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./.auth:/app/.auth
+    command: bash run-browserstack-tests.sh
