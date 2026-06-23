@@ -6,11 +6,12 @@ import { LoginPage } from './tests/page-objects/login-page';
 async function globalSetup() {
   fs.mkdirSync('.auth', { recursive: true });
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ channel: 'chrome' });
 
   try {
+    console.log('Starting global setup for authentication...');
     // Login as patron
-    console.log('Setting up patron authentication...');
+    console.log(`Setting up patron authentication... BASE: ${config.baseURL}`);
     try {
       const context = await browser.newContext({ baseURL: config.baseURL });
       const page = await context.newPage();
@@ -27,7 +28,7 @@ async function globalSetup() {
     }
 
     // Login as admin
-    console.log('Setting up admin authentication...');
+    console.log(`Setting up admin authentication... BASE: ${config.baseURL}`);
     try {
       const adminContext = await browser.newContext({ baseURL: config.baseURL });
       const adminPage = await adminContext.newPage();

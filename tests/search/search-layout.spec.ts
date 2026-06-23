@@ -53,7 +53,7 @@ test(`Clicking on an item tile takes you to the item`, async ({
   test.slow();
   const { infiniteScroller, page } = searchPage;
   await test.step('Click first item result and check if it directs to details page', async () => {
-    expect(await infiniteScroller.firstItemTile.count()).toBe(1);
+    await expect(infiniteScroller.firstItemTile).toBeVisible();
     const urlPattern = await infiniteScroller.firstItemTileHrefPattern();
     await infiniteScroller.clickFirstItemTile();
     await expect(page).toHaveURL(urlPattern);

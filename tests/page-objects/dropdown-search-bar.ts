@@ -29,6 +29,7 @@ export class DropdownSearchBar {
   async queryFor(query: string) {
     await this.searchInput.fill(query);
     await this.searchButton.click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async selectSearchOption(option: HomePageSearchOption) {

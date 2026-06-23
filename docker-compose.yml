@@ -8,6 +8,7 @@ services:
       - ./.auth:/app/.auth
     environment:
       - CI=true
+    command: bash run-tests.sh
 
   browserstack:
     build: .

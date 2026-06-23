@@ -33,6 +33,10 @@ podman compose run --rm playwright
 # Run a specific category
 docker compose run --rm -e CATEGORY=about playwright
 podman compose run --rm -e CATEGORY=about playwright
+
+# Alternative: pass as CLI argument
+docker compose run --rm playwright npm run test -- --test=about
+podman compose run --rm playwright npm run test -- --test=about
 ```
 
 ### BrowserStack tests (remote browsers on BrowserStack)

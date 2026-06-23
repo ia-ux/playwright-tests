@@ -26,13 +26,14 @@ const buildCommand = (options) => {
 }
 
 const parseArguments = (args) => {
-  const validCategories = ['about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'login', 'music', 'profile', 'search'];
+  const validCategories = ['about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'legal', 'login', 'music', 'profile', 'search', 'static'];
   const validBrowserDevices = ['chromium', 'firefox', 'webkit'];
   const validPlatforms = ['mobile', 'desktop'];
 
   const { test: testCategory, browser, title, headed, trace, debug, ui, device, workers } = args;
 
-  let category = testCategory && validCategories.includes(testCategory) ? testCategory : 'all';
+  const rawCategory = testCategory || process.env.CATEGORY;
+  let category = rawCategory && validCategories.includes(rawCategory) ? rawCategory : 'all';
   let selectedBrowser = validBrowserDevices.includes(browser) ? browser : '';
   let platform = validPlatforms.includes(device) ? device : 'desktop';
   let workerCount = Number.isInteger(workers) && workers > 0 ? workers : 5;

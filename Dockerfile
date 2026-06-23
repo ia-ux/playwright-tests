@@ -10,4 +10,4 @@ COPY . .
 
 RUN chmod +x run-browserstack-tests.sh run-tests.sh
 
-CMD ["npm", "test"]
+CMD ["bash", "run-tests.sh"]

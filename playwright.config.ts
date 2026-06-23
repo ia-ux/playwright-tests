@@ -34,6 +34,7 @@ export default defineConfig({
   globalTimeout: 30 * 60 * 1000,  // set to 30mins
   testDir: './tests',
   reporter: [
+    ['list'],
     [
       'html',
       {
@@ -63,6 +64,7 @@ export default defineConfig({
       testIgnore: ['**/auth/*.setup.ts', '**/login/**'],
       use: {
         ...devices['Desktop Chrome'],
+        channel: 'chrome',
         ignoreHTTPSErrors: true,  // This is needed to avoid getting warnings like: The website is not safe
       },
     },
@@ -72,6 +74,7 @@ export default defineConfig({
       testMatch: '**/login/**',
       use: {
         ...devices['Desktop Chrome'],
+        channel: 'chrome',
         ignoreHTTPSErrors: true,
       },
     },

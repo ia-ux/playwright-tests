@@ -28,7 +28,7 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/call-run-browserstack.yml
     with:
-      message: 'triggered'
+      message: 'webhook-run'
     secrets:
       ARCHIVE_EMAIL: ${{ secrets.ARCHIVE_EMAIL }}
       ARCHIVE_PASSWORD: ${{ secrets.ARCHIVE_PASSWORD }}

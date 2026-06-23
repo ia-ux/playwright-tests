@@ -1,9 +1,8 @@
 name: Scheduled Test Run in Browserstack
 
 on:
-  # schedule:
-  #   - cron: '0 */3 * * *'
-  workflow_dispatch:
+  schedule:
+    - cron: '0 */3 * * *'    # Runs every 3 hours
 
 concurrency:
   group: browserstack-tests
