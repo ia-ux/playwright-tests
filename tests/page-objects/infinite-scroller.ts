@@ -237,7 +237,10 @@ export class InfiniteScroller {
 
       if (dateSpanLabel) {
         const [filter, date] = dateSpanLabel.split(': ');
-        dateLabels.push({ filter: filter?.trim() ?? '', date: date?.trim() ?? '' });
+        dateLabels.push({
+          filter: filter?.trim() ?? '',
+          date: date?.trim() ?? '',
+        });
       }
     }
     return dateLabels;

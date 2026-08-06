@@ -97,11 +97,13 @@ export function datesSorted(
 ): boolean {
   if (order === 'ascending') {
     return arr.every(
-      (x, i) => i === 0 || parseDateString(x.date) >= parseDateString(arr[i - 1].date),
+      (x, i) =>
+        i === 0 || parseDateString(x.date) >= parseDateString(arr[i - 1].date),
     );
   } else {
     return arr.every(
-      (x, i) => i === 0 || parseDateString(x.date) <= parseDateString(arr[i - 1].date),
+      (x, i) =>
+        i === 0 || parseDateString(x.date) <= parseDateString(arr[i - 1].date),
     );
   }
 }
