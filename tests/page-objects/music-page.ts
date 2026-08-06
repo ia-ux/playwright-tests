@@ -25,8 +25,9 @@ export class MusicPage {
     this.iaMusicTheater = new IAMusicTheater(page);
 
     this.channelSelectorRows = this.iaMusicTheater.channelSelector
-      .locator('#radio')
-      .getByRole('listitem');
+      .locator('ia-dropdown')
+      .locator('#dropdown-main')
+      .locator('[role="menuitem"]');
     this.trackList = this.iaMusicTheater.playAv.locator(
       'div.playlist > div.track-list',
     );

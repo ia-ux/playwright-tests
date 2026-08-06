@@ -50,10 +50,13 @@ export class IAMusicTheater {
   }
 
   async selectChannelSelector(channel: ChannelSelector) {
-    const channelSelectorRows = this.channelSelector
-      .locator('#radio')
-      .getByRole('listitem');
-    await channelSelectorRows.getByText(channel, { exact: true }).click();
+    const iaDropdown = this.channelSelector.locator('ia-dropdown');
+    await iaDropdown.locator('button.click-main').click();
+    await iaDropdown
+      .locator('#dropdown-main')
+      .locator('[role="menuitem"]')
+      .getByText(channel, { exact: true })
+      .click();
     await this.page.waitForLoadState('domcontentloaded');
   }
 

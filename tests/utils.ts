@@ -72,17 +72,36 @@ export function viewsSorted(order: SortOrder, arr: number[]): boolean {
   }
 }
 
+/**
+ * Parse a date string from archive.org list-view metadata.
+ * Year-only values (e.g. "0", "19", "666") must be handled explicitly because
+ * JavaScript's Date constructor misinterprets small integers:
+ *   new Date('19')  → Invalid Date
+ *   new Date('0')   → year 2000 (wrong)
+ * Using setFullYear avoids these issues.
+ */
+function parseDateString(dateStr: string): Date {
+  const trimmed = (dateStr ?? '').trim();
+  if (/^\d+$/.test(trimmed)) {
+    const d = new Date(0);
+    d.setFullYear(parseInt(trimmed, 10), 0, 1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  return new Date(trimmed);
+}
+
 export function datesSorted(
   order: SortOrder,
   arr: DateMetadataLabel[],
 ): boolean {
   if (order === 'ascending') {
     return arr.every(
-      (x, i) => i === 0 || new Date(x.date) >= new Date(arr[i - 1].date),
+      (x, i) => i === 0 || parseDateString(x.date) >= parseDateString(arr[i - 1].date),
     );
   } else {
     return arr.every(
-      (x, i) => i === 0 || new Date(x.date) <= new Date(arr[i - 1].date),
+      (x, i) => i === 0 || parseDateString(x.date) <= parseDateString(arr[i - 1].date),
     );
   }
 }

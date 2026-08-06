@@ -237,7 +237,7 @@ export class InfiniteScroller {
 
       if (dateSpanLabel) {
         const [filter, date] = dateSpanLabel.split(': ');
-        dateLabels.push({ filter, date });
+        dateLabels.push({ filter: filter?.trim() ?? '', date: date?.trim() ?? '' });
       }
     }
     return dateLabels;
@@ -278,7 +278,7 @@ export class InfiniteScroller {
       .innerText();
     if (dateSpanLabel) {
       const [filter, date] = dateSpanLabel.split(': ');
-      arrItem.push({ filter, date });
+      arrItem.push({ filter: filter?.trim() ?? '', date: date?.trim() ?? '' });
     }
   }
 

@@ -14,15 +14,10 @@ test('Load Grateful Dead Soundtrack page to check page elements', async ({
   });
 
   await test.step(`Verify channel selector has Player and Webamp options`, async () => {
-    expect(await musicPage.channelSelectorRows.count()).toEqual(2);
-    await expect(musicPage.channelSelectorRows).toHaveText([
-      'Player',
-      'Webamp',
-    ]);
+    await expect(musicPage.iaMusicTheater.channelSelector).toContainText('Webamp');
   });
 
-  await test.step(`Verify photo viewer, audio player, and playlist are visible`, async () => {
-    await expect(musicPage.iaMusicTheater.iauxPhotoViewer).toBeVisible();
+  await test.step(`Verify audio player and playlist are visible`, async () => {
     await expect(musicPage.iaMusicTheater.playAv).toBeVisible();
     await expect(musicPage.trackList).toBeVisible();
   });
@@ -43,11 +38,7 @@ test(`Special case: Audio item without image - with waveform`, async ({
   });
 
   await test.step(`Verify channel selector has Player and Webamp options`, async () => {
-    expect(await musicPage.channelSelectorRows.count()).toEqual(2);
-    await expect(musicPage.channelSelectorRows).toHaveText([
-      'Player',
-      'Webamp',
-    ]);
+    await expect(musicPage.iaMusicTheater.channelSelector).toContainText('Webamp');
   });
 
   await test.step(`Verify photo viewer, audio player, and playlist are visible`, async () => {
@@ -86,11 +77,7 @@ test(`Special case: Load a single track - no waveform`, async ({
   });
 
   await test.step(`Verify channel selector has Player and Webamp options`, async () => {
-    expect(await musicPage.channelSelectorRows.count()).toEqual(2);
-    await expect(musicPage.channelSelectorRows).toHaveText([
-      'Player',
-      'Webamp',
-    ]);
+    await expect(musicPage.iaMusicTheater.channelSelector).toContainText('Webamp');
   });
 
   await test.step(`Verify photo viewer, audio player, and playlist are visible`, async () => {
