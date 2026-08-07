@@ -194,16 +194,22 @@ export class DetailsPage {
   }
 
   async getRadioBorrowProgramState() {
+    const borrowButton = this.page.locator('div.topinblock.borrow-program-btn');
+    const radioBorrowButton = this.page.locator('#radio-borrow-button');
+    const borrowProgramText = this.page.locator(
+      'span:has-text("Borrow Program")',
+    );
+
+    // Give the borrow UI a chance to render before reading state; for
+    // patron users it never appears, so this resolves quickly via the catch.
+    await borrowButton
+      .waitFor({ state: 'visible', timeout: 15000 })
+      .catch(() => {});
+
     return {
-      borrowButtonVisible: await this.page
-        .locator('div.topinblock.borrow-program-btn')
-        .isVisible(),
-      radioBorrowButtonVisible: await this.page
-        .locator('#radio-borrow-button')
-        .isVisible(),
-      borrowProgramTextVisible: await this.page
-        .locator('span:has-text("Borrow Program")')
-        .isVisible(),
+      borrowButtonVisible: await borrowButton.isVisible(),
+      radioBorrowButtonVisible: await radioBorrowButton.isVisible(),
+      borrowProgramTextVisible: await borrowProgramText.isVisible(),
     };
   }
 

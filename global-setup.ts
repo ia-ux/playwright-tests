@@ -1,7 +1,49 @@
 import fs from 'fs';
+import { Browser } from '@playwright/test';
 import { chromium } from '@playwright/test';
 import { config } from './config';
 import { LoginPage } from './tests/page-objects/login-page';
+import { UserType } from './tests/models';
+
+const LOGIN_ATTEMPTS = 3;
+
+// archive.org's login redirect occasionally times out under no fault of the
+// test — retry a few times before giving up, since a single flaky attempt
+// otherwise poisons every downstream test that relies on this session.
+async function loginWithRetry(
+  browser: Browser,
+  user: UserType,
+  statePath: string,
+) {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= LOGIN_ATTEMPTS; attempt++) {
+    const context = await browser.newContext({ baseURL: config.baseURL });
+    try {
+      const page = await context.newPage();
+      const loginPage = new LoginPage(page);
+
+      await loginPage.loginAs(user);
+      await context.storageState({ path: statePath });
+      console.log(`✓ ${user} authentication successful (attempt ${attempt})`);
+      return;
+    } catch (error) {
+      lastError = error;
+      console.error(
+        `✗ ${user} authentication attempt ${attempt}/${LOGIN_ATTEMPTS} failed:`,
+        error instanceof Error ? error.message : error,
+      );
+    } finally {
+      await context.close();
+    }
+  }
+
+  throw new Error(
+    `${user} authentication failed after ${LOGIN_ATTEMPTS} attempts: ${
+      lastError instanceof Error ? lastError.message : lastError
+    }`,
+  );
+}
 
 async function globalSetup() {
   fs.mkdirSync('.auth', { recursive: true });
@@ -10,39 +52,11 @@ async function globalSetup() {
 
   try {
     console.log('Starting global setup for authentication...');
-    // Login as patron
     console.log(`Setting up patron authentication... BASE: ${config.baseURL}`);
-    try {
-      const context = await browser.newContext({ baseURL: config.baseURL });
-      const page = await context.newPage();
-      const loginPage = new LoginPage(page);
-      
-      await loginPage.loginAs('patron');
-      await context.storageState({ path: '.auth/patron.json' });
-      await context.close();
-      console.log('✓ Patron authentication successful');
-    } catch (error) {
-      console.error('✗ Patron authentication failed:', error instanceof Error ? error.message : error);
-      // Create empty state as fallback
-      fs.writeFileSync('.auth/patron.json', JSON.stringify({ cookies: [], origins: [] }));
-    }
+    await loginWithRetry(browser, 'patron', '.auth/patron.json');
 
-    // Login as admin
     console.log(`Setting up admin authentication... BASE: ${config.baseURL}`);
-    try {
-      const adminContext = await browser.newContext({ baseURL: config.baseURL });
-      const adminPage = await adminContext.newPage();
-      const adminLoginPage = new LoginPage(adminPage);
-      
-      await adminLoginPage.loginAs('privs');
-      await adminContext.storageState({ path: '.auth/admin.json' });
-      await adminContext.close();
-      console.log('✓ Admin authentication successful');
-    } catch (error) {
-      console.error('✗ Admin authentication failed:', error instanceof Error ? error.message : error);
-      // Create empty state as fallback
-      fs.writeFileSync('.auth/admin.json', JSON.stringify({ cookies: [], origins: [] }));
-    }
+    await loginWithRetry(browser, 'privs', '.auth/admin.json');
   } finally {
     await browser.close();
   }

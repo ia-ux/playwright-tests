@@ -115,12 +115,21 @@ export class LoginPage {
     await this.page.goto(accountSettings.url, {
       waitUntil: 'domcontentloaded',
     });
-    await this.page
-      .locator('main')
-      .waitFor({ state: 'attached', timeout: 30000 });
+
+    // The logout redirect can be client-side JS that fires after
+    // domcontentloaded, so checking page.url() immediately is racy. Instead,
+    // wait for whichever heading actually shows up.
+    const loggedOut = await Promise.race([
+      this.accountSettingsHeading
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => false),
+      this.loginHeading
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => true),
+    ]).catch(() => false);
 
     // If session expired, the page redirects to login — re-authenticate
-    if (this.page.url().includes('/login') && user && user !== 'no-login') {
+    if (loggedOut && user && user !== 'no-login') {
       const banner = this.page.locator('#banner-body-container');
       if (await banner.isVisible().catch(() => false)) {
         await this.page.locator('main form').scrollIntoViewIfNeeded();
