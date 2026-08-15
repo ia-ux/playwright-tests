@@ -4,7 +4,7 @@ import { test } from '../fixtures';
  * TODO: later we'll run these tests againsts production URL when auto-renew is moved to live.
  */
 const DEMO_APP_BASE_URL =
-  'https://internetarchive.github.io/iaux-book-actions/pr/pr-74/';
+  'https://internetarchive.github.io/iaux-book-actions/';
 
 // Helper function to construct demo app URL with timer
 const getDemoAppUrl = (timer: number) => `${DEMO_APP_BASE_URL}?timer=${timer}`;
