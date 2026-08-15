@@ -83,6 +83,15 @@ export const test = base.extend<PageFixtures>({
   lendingBarAutoRenew: async ({ page }, use) => {
     const lendingBarAutoRenew = new LendingBarAutoRenew(page);
     await page.route(/(analytics|fonts)/, route => route.abort());
+    // The demo app's own loan-renewal endpoint isn't reachable from this
+    // static demo page, so fake a successful renewal response directly.
+    await page.route(/\/services\/loans\/loan/, route =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, loan: { renewal: true } }),
+      }),
+    );
     await use(lendingBarAutoRenew);
     await page.close().catch(() => {});
   },

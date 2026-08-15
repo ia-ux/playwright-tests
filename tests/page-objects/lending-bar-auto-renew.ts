@@ -90,14 +90,14 @@ export class LendingBarAutoRenew {
      */
     this.clockConfig = {
       keepReading: {
-        5: { warnAfter: '01:10', wait: '00:07', expireAfter: '05:00' },
-        10: { warnAfter: '02:10', wait: '00:07', expireAfter: '10:00' },
-        60: { warnAfter: '51:10', wait: '00:07', expireAfter: '59:59' },
+        5: { warnAfter: '01:10', wait: '00:00', expireAfter: '05:00' },
+        10: { warnAfter: '02:10', wait: '00:00', expireAfter: '10:00' },
+        60: { warnAfter: '51:10', wait: '00:00', expireAfter: '59:59' },
       },
       pageFlip: {
-        5: { flipBefore: '00:50', wait: '00:10', expireAfter: '05:00' },
-        10: { flipBefore: '01:40', wait: '00:30', expireAfter: '10:00' },
-        60: { flipBefore: '45:10', wait: '05:10', expireAfter: '59:59' },
+        5: { flipBefore: '00:50', wait: '00:00', expireAfter: '05:00' },
+        10: { flipBefore: '01:40', wait: '00:00', expireAfter: '10:00' },
+        60: { flipBefore: '45:10', wait: '00:00', expireAfter: '59:59' },
       },
     };
   }
@@ -134,7 +134,9 @@ export class LendingBarAutoRenew {
     });
     if (await keepReadingButton.isVisible()) {
       await keepReadingButton.click();
-      await this.setClockTimerAndWaitForStart('00:07');
+      await this.setClockTimerAndWaitForStart(
+        this.clockConfig['keepReading'][minutes].wait,
+      );
     }
 
     await this.assertPopupHidden();
