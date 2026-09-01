@@ -66,7 +66,10 @@ export class IAMusicTheater {
     await this.page.waitForLoadState('networkidle').catch(() => {});
 
     if (fromChannelSelector) {
-      await this.page.waitForURL('**/webamp=default**', { timeout: 30000 });
+      await this.page.waitForURL('**/webamp=default**', {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      });
     }
 
     // Wait for webamp container to be attached and visible

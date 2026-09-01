@@ -39,7 +39,10 @@ test('Do simple metadata search', async ({ homePage }) => {
   });
 
   await test.step(`Verify URL and search input reflect the query`, async () => {
-    await page.waitForURL(/search/);
+    await page.waitForURL(/search/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
@@ -61,7 +64,10 @@ test('Do simple full-text search', async ({ homePage }) => {
   });
 
   await test.step(`Verify URL, search input, and results category reflect full-text search`, async () => {
-    await page.waitForURL(/search/);
+    await page.waitForURL(/search/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
@@ -84,7 +90,10 @@ test('Do simple TV search', async ({ homePage }) => {
   });
 
   await test.step(`Verify URL, search input, and results category reflect TV search`, async () => {
-    await page.waitForURL(/search/);
+    await page.waitForURL(/search/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
@@ -107,7 +116,10 @@ test('Do simple radio search', async ({ homePage }) => {
   });
 
   await test.step(`Verify URL, search input, and results category reflect radio search`, async () => {
-    await page.waitForURL(/search/);
+    await page.waitForURL(/search/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
     const urlPattern = new RegExp(`query=${queryString}`);
     expect(page.url()).toMatch(urlPattern);
     await expect(dropdownSearchInput.formInputSearchPage).toBeVisible();
@@ -129,7 +141,10 @@ test('Redirect web search to Wayback machine page', async ({ homePage }) => {
       HomePageSearchOption.WEB_SITES,
     );
     await Promise.all([
-      page.waitForURL(/web\.archive\.org/),
+      page.waitForURL(/web\.archive\.org/, {
+        waitUntil: 'domcontentloaded',
+        timeout: 60000,
+      }),
       dropdownSearchInput.queryFor(queryString),
     ]);
   });

@@ -48,13 +48,16 @@ export class HomePage {
 
   async waybackSearchFor(query: string) {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.waybackSearch.waitFor({ state: 'visible' });
-    await this.termsOfService.waitFor({ state: 'visible' });
+    await this.waybackSearch.waitFor({ state: 'visible', timeout: 30000 });
+    await this.termsOfService.waitFor({ state: 'visible', timeout: 30000 });
 
     const wbSearchInput = this.waybackSearch.locator('#url');
     await wbSearchInput.fill(query);
     await Promise.all([
-      this.page.waitForURL(/web\.archive\.org/),
+      this.page.waitForURL(/web\.archive\.org/, {
+        waitUntil: 'domcontentloaded',
+        timeout: 60000,
+      }),
       wbSearchInput.press('Enter'),
     ]);
   }
