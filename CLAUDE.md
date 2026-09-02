@@ -24,6 +24,10 @@ npx playwright test tests/search/search-layout.spec.ts
 
 **Important:** Source files are baked into the Docker image at build time, not volume-mounted. After editing any `.ts` file, run `podman compose build playwright` before running tests or your changes won't be picked up.
 
+**Browser channel:** host runs use real Google Chrome (`channel: 'chrome'`), matching what CI exercises on BrowserStack. Google publishes no Linux arm64 Chrome build, so the container defaults to Playwright's bundled Chromium via `PLAYWRIGHT_CHANNEL=chromium` (set in `docker-compose.yml`). On an x86_64 host you can set `PLAYWRIGHT_CHANNEL=chrome` to match CI exactly.
+
+**Parallelism:** 5 workers, set in `playwright.config.ts` and overridable with `PLAYWRIGHT_WORKERS`. Do not raise this casually — archive.org throttles the search backend under concurrent load, and at 6+ workers the `search/search-faceting` specs start timing out on facet rendering. Sustained hammering (two full suites back to back) can get the source IP refused outright.
+
 ## Project structure
 
 ```

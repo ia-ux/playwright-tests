@@ -40,7 +40,11 @@ test('OpenLibrary: Google sign-in loads and is clickable', async ({ page }) => {
       page.waitForEvent('popup', { timeout: 30000 }),
       googleButton.evaluate(button => (button as HTMLElement).click()),
     ]);
+    // A popup's URL is 'about:blank' (reported as '') until it navigates, so
+    // reading it straight off the popup event races the OAuth redirect.
+    await popup.waitForURL(/accounts\.google\.com/, { timeout: 30000 });
     expect(popup.url()).toContain('accounts.google.com');
+    await popup.close().catch(() => {});
   });
 
   await page.close().catch(() => {});

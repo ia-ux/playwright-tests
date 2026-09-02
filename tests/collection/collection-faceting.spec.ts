@@ -13,8 +13,10 @@ test(`Verify if facets appear on first load`, async ({ collectionPage }) => {
         'heading',
         { name: header },
       );
-      const facetText = (await facet.innerText()).replace(/\n/g, ' ');
+      // toBeVisible() first: innerText() is immediate and throws (or reads a
+      // stale empty string) if the heading has not rendered yet.
       await expect(facet).toBeVisible();
+      const facetText = (await facet.innerText()).replace(/\n/g, ' ');
       expect(facetText).toContain(header);
     }
   });

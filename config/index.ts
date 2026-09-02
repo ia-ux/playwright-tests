@@ -105,7 +105,27 @@ export const identifier = {
   },
 };
 
+/**
+ * Browser channel for local runs. Defaults to real Google Chrome, which is what
+ * CI exercises on BrowserStack. Set PLAYWRIGHT_CHANNEL=chromium to use
+ * Playwright's bundled Chromium instead — required inside the container on
+ * arm64 hosts, since Google ships no Linux arm64 Chrome build.
+ */
+export const browserChannel =
+  process.env.PLAYWRIGHT_CHANNEL === 'chromium'
+    ? undefined
+    : process.env.PLAYWRIGHT_CHANNEL || 'chrome';
+
+// Third-party scripts that add nothing to any assertion but do add network
+// requests — enough of them to trip BrowserStack's socket idle timeout.
+export const THIRD_PARTY_ROUTES =
+  /(analytics|fonts|googletag|doubleclick|adservice)/;
+
 export const testBeforeEachConfig = async (context: BrowserContext) => {
+  // Blocked at the context level so every spec calling this gets it, including
+  // the ones that build their own pages instead of using a fixture.
+  await context.route(THIRD_PARTY_ROUTES, route => route.abort());
+
   if(process.env.IS_REVIEW_APP === 'true') {
     await context.addCookies([{
       name: 'beta-access',

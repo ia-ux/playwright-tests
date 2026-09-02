@@ -1,37 +1,33 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Account settings - Login as a patron', () => {
-  test.use({ storageState: '.auth/patron.json' });
-
-  test('Verify account settings page', async ({ loginPage }) => {
+  test('Verify account settings page', async ({ patronLoginPage }) => {
     await test.step('Navigate to account settings page', async () => {
-      await loginPage.gotoAccountSettings('patron');
+      await patronLoginPage.gotoAccountSettings('patron');
     });
 
     await test.step('Verify account settings heading, form text, and verify button', async () => {
-      await expect(loginPage.accountSettingsHeading).toBeVisible();
-      await expect(loginPage.accountSettingsFormText).toHaveText(
+      await expect(patronLoginPage.accountSettingsHeading).toBeVisible();
+      await expect(patronLoginPage.accountSettingsFormText).toHaveText(
         'To access your account settings, as an extra security measure, you will need to verify your identity.',
       );
-      await expect(loginPage.verifyPasswordButton).toBeVisible();
+      await expect(patronLoginPage.verifyPasswordButton).toBeVisible();
     });
   });
 });
 
 test.describe('Account settings - Login as a admin', () => {
-  test.use({ storageState: '.auth/admin.json' });
-
-  test('Verify account settings page', async ({ loginPage }) => {
+  test('Verify account settings page', async ({ adminLoginPage }) => {
     await test.step('Navigate to account settings page', async () => {
-      await loginPage.gotoAccountSettings('privs');
+      await adminLoginPage.gotoAccountSettings('privs');
     });
 
     await test.step('Verify account settings heading, form text, and verify button', async () => {
-      await expect(loginPage.accountSettingsHeading).toBeVisible();
-      await expect(loginPage.accountSettingsFormText).toHaveText(
+      await expect(adminLoginPage.accountSettingsHeading).toBeVisible();
+      await expect(adminLoginPage.accountSettingsFormText).toHaveText(
         'To access your account settings, as an extra security measure, you will need to verify your identity.',
       );
-      await expect(loginPage.verifyPasswordButton).toBeVisible();
+      await expect(adminLoginPage.verifyPasswordButton).toBeVisible();
     });
   });
 });

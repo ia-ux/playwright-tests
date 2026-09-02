@@ -2,6 +2,11 @@ import { type Page, type Locator } from '@playwright/test';
 
 import { CollectionPageSearchOption, SearchPageSearchOption } from '../models';
 
+// Collection pages hydrate their search bar late, and later still when several
+// workers are loading archive.org at once. These waits are the first thing every
+// collection test does, so they need more headroom than the 60s actionTimeout.
+const SEARCH_INPUT_TIMEOUT = 90000;
+
 export class CollectionSearchInput {
   readonly page: Page;
 
@@ -36,7 +41,10 @@ export class CollectionSearchInput {
   async queryFor(query: string) {
     await this.formInputSearchPage.fill(query);
     await this.btnCollectionSearchInputGo.click();
-    await this.loadingButton.waitFor({ state: 'hidden' });
+    await this.loadingButton.waitFor({
+      state: 'hidden',
+      timeout: SEARCH_INPUT_TIMEOUT,
+    });
   }
 
   async clickClearSearchInput() {
@@ -44,8 +52,14 @@ export class CollectionSearchInput {
   }
 
   private async waitForSearchInputReady() {
-    await this.loadingButton.waitFor({ state: 'hidden' });
-    await this.btnCollectionSearchInputGo.waitFor({ state: 'visible' });
+    await this.loadingButton.waitFor({
+      state: 'hidden',
+      timeout: SEARCH_INPUT_TIMEOUT,
+    });
+    await this.btnCollectionSearchInputGo.waitFor({
+      state: 'visible',
+      timeout: SEARCH_INPUT_TIMEOUT,
+    });
   }
 
   private async selectCollectionPageOption(option: CollectionPageSearchOption) {

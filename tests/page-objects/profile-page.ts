@@ -42,7 +42,9 @@ export class ProfilePage {
     await this.page.goto(`/details/@${userid}?ab_config=EagerFacets:On`, {
       waitUntil: 'domcontentloaded',
     });
-    await this.page.waitForLoadState('load', { timeout: 60000 });
+    // 'load' waits on every image and media file the profile renders, which can
+    // stall for minutes; the tests only need the document parsed.
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async clickProfileTab(name: string) {

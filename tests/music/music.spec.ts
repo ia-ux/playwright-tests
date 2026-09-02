@@ -3,6 +3,9 @@ import { identifier } from '../../config';
 
 const BLACK_WAVEFORM = 'https://av.archive.org/img/black.jpg';
 
+// How far playback must advance before we pause and assert on the elapsed time.
+const PLAYBACK_SECONDS = 5;
+
 test('Load Grateful Dead Soundtrack page to check page elements', async ({
   musicPage,
 }) => {
@@ -117,15 +120,22 @@ test(`Play a Grateful Dead track`, async ({ musicPage }) => {
     expect(await musicPage.getElapsedTimeValue()).toBe('00:00');
   });
 
-  await test.step(`Wait 10 seconds then pause`, async () => {
-    await musicPage.page.waitForTimeout(10000);
+  await test.step(`Let playback reach ${PLAYBACK_SECONDS}s then pause`, async () => {
+    // Poll the player's own elapsed counter rather than sleeping a fixed
+    // interval. Playback time does not advance in lockstep with wall time —
+    // buffering makes it lag — so a fixed sleep paired with an exact-value
+    // assertion is inherently flaky (it read 00:08 after a 10s sleep).
+    await expect
+      .poll(() => musicPage.getElapsedSeconds(), { timeout: 60000 })
+      .toBeGreaterThanOrEqual(PLAYBACK_SECONDS);
     await musicPage.iaMusicTheater.musicPlayerPauseButton.click();
   });
 
-  await test.step(`Verify music is paused and elapsed time is around 10 seconds`, async () => {
-    const expectedTimes = ['00:09', '00:10', '00:11'];
-    expect(expectedTimes).toContain(await musicPage.getElapsedTimeValue());
+  await test.step(`Verify music is paused and elapsed time held`, async () => {
     await expect(musicPage.jwPlayerPaused).toBeVisible();
+    expect(await musicPage.getElapsedSeconds()).toBeGreaterThanOrEqual(
+      PLAYBACK_SECONDS,
+    );
   });
 });
 

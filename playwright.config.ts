@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { config } from './config';
+import { browserChannel, config } from './config';
 
 const formattedDateTime = () => {
   const d = new Date();
@@ -25,13 +25,20 @@ const reportName = () => `${process.env.CATEGORY}/${formattedDateTime()}`;
  */
 export default defineConfig({
   globalSetup: './global-setup.ts',
-  workers: 10,  // see scripts/executeTests.js instead
-  // Give failing tests 3 retry attempts
-  retries: 3,
+  workers: 5,  // overridden by run-tests.sh / scripts/executeTests.js
+  // Run tests within a file in parallel too, not just across files. Previously
+  // this was passed only as a CLI flag, so any invocation that forgot it
+  // silently lost most of the available parallelism.
+  fullyParallel: true,
+  // Two attempts total. Retries are the single largest source of wasted wall
+  // clock in this suite, so a genuinely broken test should fail fast and get
+  // fixed rather than be retried four times.
+  retries: 1,
   // Timeout for each test
   timeout: 10 * 60 * 1000,         // set to 10mins
-  // Maximum time the whole test suite can run
-  globalTimeout: 30 * 60 * 1000,  // set to 30mins
+  // Maximum time the whole test suite can run. Kept well clear of the actual
+  // runtime so a slow day fails on the offending test, not on the suite cap.
+  globalTimeout: 45 * 60 * 1000,  // set to 45mins
   testDir: './tests',
   reporter: [
     ['list'],
@@ -64,7 +71,7 @@ export default defineConfig({
       testIgnore: ['**/auth/*.setup.ts', '**/login/**'],
       use: {
         ...devices['Desktop Chrome'],
-        channel: 'chrome',
+        channel: browserChannel,
         ignoreHTTPSErrors: true,  // This is needed to avoid getting warnings like: The website is not safe
       },
     },
@@ -74,7 +81,7 @@ export default defineConfig({
       testMatch: '**/login/**',
       use: {
         ...devices['Desktop Chrome'],
-        channel: 'chrome',
+        channel: browserChannel,
         ignoreHTTPSErrors: true,
       },
     },

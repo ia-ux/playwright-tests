@@ -130,8 +130,20 @@ export class DetailsPage {
     return true;
   }
 
-  async musicTheaterDisplay() {
-    await this.iaMusicTheater.channelSelector.waitFor({ state: 'visible' });
+  /**
+   * Waits for the music theater to settle and hands back its locators so the
+   * caller can assert on them with auto-retrying matchers.
+   *
+   * This used to return `isVisible()` booleans, which sampled the see-more CTA
+   * exactly once — the instant the photo viewer finished loading — and gave the
+   * CTA no chance to appear a moment later. That read as a hard failure rather
+   * than a slow render, and it got noticeably more likely as worker count rose.
+   */
+  async settleMusicTheater() {
+    await this.iaMusicTheater.channelSelector.waitFor({
+      state: 'visible',
+      timeout: 60000,
+    });
     // Both single-image and multi-image items start with iaux-photo-viewer class="hide".
     // Multi-image items remove the hide class asynchronously once images load;
     // single-image items keep it permanently. Wait up to 10s for the transition.
@@ -146,8 +158,8 @@ export class DetailsPage {
         .waitFor({ state: 'visible', timeout: 30000 });
     }
     return {
-      musicTheaterVisible: await this.iaMusicTheater.musicTheater.isVisible(),
-      seeMoreCtaVisible: await this.iaMusicTheater.seeMoreCta.isVisible(),
+      musicTheater: this.iaMusicTheater.musicTheater,
+      seeMoreCta: this.iaMusicTheater.seeMoreCta,
     };
   }
 

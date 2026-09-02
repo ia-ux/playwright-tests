@@ -4,6 +4,9 @@ import { CollectionBrowser } from './collection-browser';
 import { DropdownSearchBar } from './dropdown-search-bar';
 import { TopNav } from './top-nav';
 
+const WAYBACK_SUBMIT_ATTEMPTS = 4;
+const WAYBACK_SUBMIT_TIMEOUT = 15000;
+
 export class HomePage {
   readonly page: Page;
 
@@ -52,13 +55,30 @@ export class HomePage {
     await this.termsOfService.waitFor({ state: 'visible', timeout: 30000 });
 
     const wbSearchInput = this.waybackSearch.locator('#url');
-    await wbSearchInput.fill(query);
-    await Promise.all([
-      this.page.waitForURL(/web\.archive\.org/, {
-        waitUntil: 'domcontentloaded',
-        timeout: 60000,
-      }),
-      wbSearchInput.press('Enter'),
-    ]);
+    await wbSearchInput.waitFor({ state: 'visible', timeout: 30000 });
+
+    // <ia-wayback-search> is a lit component whose submit handler is bound during
+    // hydration, which can land noticeably after the element becomes visible.
+    // Submitting before then is silently swallowed — no navigation, no error — so
+    // a single Enter that lands too early burns the full navigation timeout and
+    // fails the test. Retry the submit instead, with a short wait per attempt.
+    for (let attempt = 1; attempt <= WAYBACK_SUBMIT_ATTEMPTS; attempt++) {
+      await wbSearchInput.fill(query);
+      await wbSearchInput.press('Enter');
+      try {
+        await this.page.waitForURL(/web\.archive\.org/, {
+          waitUntil: 'domcontentloaded',
+          timeout: WAYBACK_SUBMIT_TIMEOUT,
+        });
+        return;
+      } catch (err) {
+        if (attempt === WAYBACK_SUBMIT_ATTEMPTS) {
+          throw new Error(
+            `Wayback search for "${query}" did not navigate to web.archive.org ` +
+              `after ${WAYBACK_SUBMIT_ATTEMPTS} submit attempts`,
+          );
+        }
+      }
+    }
   }
 }

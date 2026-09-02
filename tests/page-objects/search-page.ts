@@ -32,6 +32,31 @@ export class SearchPage {
     await this.page.goto('/search', { waitUntil: 'domcontentloaded' });
   }
 
+  /**
+   * Run a search and wait until results actually exist.
+   *
+   * The search page updates in place, so the 'domcontentloaded' inside
+   * `queryFor` resolves almost instantly and says nothing about whether the
+   * query has run. Callers that go straight on to facets were racing the search
+   * itself and burning their whole facet timeout waiting for groups that had
+   * not been built yet.
+   *
+   * Use this rather than `dropdownSearchInput.queryFor` whenever the test needs
+   * results on the page. Searches that deliberately return nothing, or that
+   * redirect off to the Wayback Machine, should keep using `queryFor` directly.
+   */
+  async searchFor(query: string) {
+    await this.dropdownSearchInput.queryFor(query);
+    await this.page.waitForURL(/[?&]query=/, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
+    await this.infiniteScroller.firstItemTile.waitFor({
+      state: 'visible',
+      timeout: 60000,
+    });
+  }
+
   async goBackToSearchPage() {
     await this.visit();
   }

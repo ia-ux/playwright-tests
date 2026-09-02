@@ -49,9 +49,9 @@ test(`Load theater: audio (image carousel / bookreader)`, async ({
   });
 
   await test.step('Verify music theater and see-more CTA are visible', async () => {
-    const result = await detailsPage.musicTheaterDisplay();
-    expect(result.musicTheaterVisible).toBeTruthy();
-    expect(result.seeMoreCtaVisible).toBeTruthy();
+    const { musicTheater, seeMoreCta } = await detailsPage.settleMusicTheater();
+    await expect(musicTheater).toBeVisible();
+    await expect(seeMoreCta).toBeVisible();
   });
 });
 
@@ -61,9 +61,9 @@ test(`Load theater: audio single image`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify music theater is visible and see-more CTA is hidden', async () => {
-    const result = await detailsPage.musicTheaterDisplay();
-    expect(result.musicTheaterVisible).toBeTruthy();
-    expect(result.seeMoreCtaVisible).toBeFalsy();
+    const { musicTheater, seeMoreCta } = await detailsPage.settleMusicTheater();
+    await expect(musicTheater).toBeVisible();
+    await expect(seeMoreCta).toBeHidden();
   });
 
   await test.step('Navigate to second audio item with single image', async () => {
@@ -71,9 +71,9 @@ test(`Load theater: audio single image`, async ({ detailsPage }) => {
   });
 
   await test.step('Verify music theater is visible and see-more CTA is hidden', async () => {
-    const result = await detailsPage.musicTheaterDisplay();
-    expect(result.musicTheaterVisible).toBeTruthy();
-    expect(result.seeMoreCtaVisible).toBeFalsy();
+    const { musicTheater, seeMoreCta } = await detailsPage.settleMusicTheater();
+    await expect(musicTheater).toBeVisible();
+    await expect(seeMoreCta).toBeHidden();
   });
 });
 

@@ -71,4 +71,16 @@ export class MusicPage {
   async getElapsedTimeValue() {
     return this.elapsedTimer.innerText();
   }
+
+  /**
+   * The player's elapsed time as a number of seconds, parsed from its "MM:SS"
+   * display. Returns 0 while the counter is still blank or unparseable so this
+   * can be polled safely from the moment playback starts.
+   */
+  async getElapsedSeconds(): Promise<number> {
+    const raw = (await this.elapsedTimer.innerText()).trim();
+    const match = raw.match(/^(\d+):(\d{2})$/);
+    if (!match) return 0;
+    return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+  }
 }

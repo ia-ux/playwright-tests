@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Browser } from '@playwright/test';
 import { chromium } from '@playwright/test';
-import { config } from './config';
+import { browserChannel, config } from './config';
 import { LoginPage } from './tests/page-objects/login-page';
 import { UserType } from './tests/models';
 
@@ -48,7 +48,7 @@ async function loginWithRetry(
 async function globalSetup() {
   fs.mkdirSync('.auth', { recursive: true });
 
-  const browser = await chromium.launch({ channel: 'chrome' });
+  const browser = await chromium.launch({ channel: browserChannel });
 
   try {
     console.log('Starting global setup for authentication...');

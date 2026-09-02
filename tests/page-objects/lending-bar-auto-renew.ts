@@ -42,13 +42,6 @@ interface ClockConfig {
  */
 
 /**
- * Configuration for a 1-hour loan duration.
- * - `loanTotalTime`: 3600 seconds (1 hour).
- * - `loanRenewAtLast`: 660 seconds (11 minutes).
- * - `pageChangedInLast`: 900 seconds (15 minutes).
- */
-
-/**
  * Class representing the Lending Bar Auto Renew feature.
  */
 export class LendingBarAutoRenew {
@@ -88,16 +81,19 @@ export class LendingBarAutoRenew {
      * Example usage:
      * const warnTime = this.clockConfig.keepReading[5].warnAfter; // Access the warn time for 5 minutes in keepReading
      */
+    // The demo app warns at 1/5 of the loan duration (60s into a 5-minute loan,
+    // 120s into a 10-minute one), so `warnAfter` sits just past that point and
+    // `flipBefore` just short of it. There is no 60-minute entry because the
+    // demo app caps `?timer=` at a 120-second loan — see the note on
+    // `loanDurations` in lending-bar-auto-renew.spec.ts.
     this.clockConfig = {
       keepReading: {
         5: { warnAfter: '01:10', wait: '00:00', expireAfter: '05:00' },
         10: { warnAfter: '02:10', wait: '00:00', expireAfter: '10:00' },
-        60: { warnAfter: '51:10', wait: '00:00', expireAfter: '59:59' },
       },
       pageFlip: {
         5: { flipBefore: '00:50', wait: '00:00', expireAfter: '05:00' },
         10: { flipBefore: '01:40', wait: '00:00', expireAfter: '10:00' },
-        60: { flipBefore: '45:10', wait: '00:00', expireAfter: '59:59' },
       },
     };
   }

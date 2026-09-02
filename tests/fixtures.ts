@@ -10,7 +10,11 @@ import { DetailsPage } from './page-objects/details-page';
 import { LendingBarAutoRenew } from './page-objects/lending-bar-auto-renew';
 import { LoginPage } from './page-objects/login-page';
 
-import { identifier, testBeforeEachConfig } from '../config';
+import {
+  identifier,
+  testBeforeEachConfig,
+  THIRD_PARTY_ROUTES,
+} from '../config';
 
 type PageFixtures = {
   adminDetailsPage: DetailsPage;
@@ -20,7 +24,9 @@ type PageFixtures = {
   donatePage: { page: Page };
   homePage: HomePage;
   lendingBarAutoRenew: LendingBarAutoRenew;
+  adminLoginPage: LoginPage;
   loginPage: LoginPage;
+  patronLoginPage: LoginPage;
   musicPage: MusicPage;
   patronDetailsPage: DetailsPage;
   profilePage: ProfilePage;
@@ -35,54 +41,45 @@ export const test = base.extend<PageFixtures>({
     });
     const page = await context.newPage();
     const detailsPage = new DetailsPage(page);
-    await page.route(
-      /(analytics|fonts|googletag|doubleclick|adservice)/,
-      route => route.abort(),
-    );
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(detailsPage);
     await context.close().catch(() => {});
   },
   bookPage: async ({ page }, use) => {
     const bookPage = new BookPage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(bookPage);
     await page.close().catch(() => {});
   },
   collectionPage: async ({ page }, use) => {
     const collectionPage = new CollectionPage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await collectionPage.visit('oldtimeradio');
     await use(collectionPage);
     await page.close().catch(() => {});
   },
   detailsPage: async ({ page }, use) => {
     const detailsPage = new DetailsPage(page);
-    await page.route(
-      /(analytics|fonts|googletag|doubleclick|adservice)/,
-      route => route.abort(),
-    );
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(detailsPage);
     await page.close().catch(() => {});
   },
   donatePage: async ({ page }, use) => {
-    await page.route(
-      /(analytics|fonts|googletag|doubleclick|adservice)/,
-      route => route.abort(),
-    );
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await page.goto(identifier.donate.url, { waitUntil: 'domcontentloaded' });
     await use({ page });
     await page.close().catch(() => {});
   },
   homePage: async ({ page }, use) => {
     const homePage = new HomePage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await use(homePage);
     await page.close().catch(() => {});
   },
   lendingBarAutoRenew: async ({ page }, use) => {
     const lendingBarAutoRenew = new LendingBarAutoRenew(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     // The demo app's own loan-renewal endpoint isn't reachable from this
     // static demo page, so fake a successful renewal response directly.
     await page.route(/\/services\/loans\/loan/, route =>
@@ -95,18 +92,40 @@ export const test = base.extend<PageFixtures>({
     await use(lendingBarAutoRenew);
     await page.close().catch(() => {});
   },
+  // Authenticated login pages build their own context from `browser`, matching
+  // adminDetailsPage/patronDetailsPage above. Setting storageState with
+  // `test.use()` in the spec instead would give each describe block its own
+  // worker hash, forcing Playwright to tear down and relaunch a worker between
+  // them — which added minutes of idle time to the end of every suite run.
+  adminLoginPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: '.auth/admin.json',
+    });
+    const page = await context.newPage();
+    const loginPage = new LoginPage(page);
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
+    await use(loginPage);
+    await context.close().catch(() => {});
+  },
   loginPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
-    await page.route(
-      /(analytics|fonts|googletag|doubleclick|adservice)/,
-      route => route.abort(),
-    );
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(loginPage);
     await page.close().catch(() => {});
   },
+  patronLoginPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: '.auth/patron.json',
+    });
+    const page = await context.newPage();
+    const loginPage = new LoginPage(page);
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
+    await use(loginPage);
+    await context.close().catch(() => {});
+  },
   musicPage: async ({ page }, use) => {
     const musicPage = new MusicPage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(musicPage);
     await page.close().catch(() => {});
   },
@@ -116,30 +135,27 @@ export const test = base.extend<PageFixtures>({
     });
     const page = await context.newPage();
     const detailsPage = new DetailsPage(page);
-    await page.route(
-      /(analytics|fonts|googletag|doubleclick|adservice)/,
-      route => route.abort(),
-    );
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await use(detailsPage);
     await context.close().catch(() => {});
   },
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await profilePage.visit('brewster');
     await use(profilePage);
     await page.close().catch(() => {});
   },
   profilePageUploads: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await profilePage.visit('brewster/uploads');
     await use(profilePage);
     await page.close().catch(() => {});
   },
   searchPage: async ({ page }, use) => {
     const searchPage = new SearchPage(page);
-    await page.route(/(analytics|fonts)/, route => route.abort());
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await searchPage.visit();
     await use(searchPage);
     await page.close().catch(() => {});

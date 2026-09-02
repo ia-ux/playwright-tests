@@ -1,6 +1,10 @@
 import { type Page, type Locator } from '@playwright/test';
 import { FacetGroup, FacetType } from '../models';
 
+// Facet groups render after the collection's search results resolve, which can
+// run long when several workers are hitting archive.org at once.
+const FACET_TIMEOUT = 90000;
+
 export class CollectionFacets {
   readonly page: Page;
   readonly facets: Locator;
@@ -25,12 +29,18 @@ export class CollectionFacets {
   }
 
   async clickClearAllFilters() {
-    await this.btnClearAllFilters.waitFor({ state: 'visible' });
+    await this.btnClearAllFilters.waitFor({
+      state: 'visible',
+      timeout: FACET_TIMEOUT,
+    });
     await this.btnClearAllFilters.click();
   }
 
   async waitForDatePicker() {
-    await this.yearPublishedFacetGroup.waitFor({ state: 'visible' });
+    await this.yearPublishedFacetGroup.waitFor({
+      state: 'visible',
+      timeout: FACET_TIMEOUT,
+    });
   }
 
   async toggleFacetSelection(
@@ -73,7 +83,7 @@ export class CollectionFacets {
     const btnApplyFilters = this.moreFacetsContent.locator(
       '#more-facets > div.footer > button.btn.btn-submit',
     );
-    await btnApplyFilters.waitFor({ state: 'visible' });
+    await btnApplyFilters.waitFor({ state: 'visible', timeout: FACET_TIMEOUT });
     for (const facetLabel of selectedFacetLabels) {
       const facetRow = this.moreFacetsContent
         .locator('#more-facets')
@@ -103,7 +113,7 @@ export class CollectionFacets {
       `facet-group-header-label-${group}`,
     );
     if (group === FacetGroup.DATE) {
-      await facetGroup.waitFor({ state: 'visible' });
+      await facetGroup.waitFor({ state: 'visible', timeout: FACET_TIMEOUT });
       return facetGroup;
     } else {
       const facetGroupContent = facetGroup.getByTestId(
@@ -112,8 +122,14 @@ export class CollectionFacets {
       const facetOnGroupContent = facetGroupContent
         .locator('facets-template')
         .getByTestId(`facets-on-${group}`);
-      await facetGroupContent.waitFor({ state: 'visible' });
-      await facetOnGroupContent.waitFor({ state: 'visible' });
+      await facetGroupContent.waitFor({
+        state: 'visible',
+        timeout: FACET_TIMEOUT,
+      });
+      await facetOnGroupContent.waitFor({
+        state: 'visible',
+        timeout: FACET_TIMEOUT,
+      });
       return facetGroupContent;
     }
   }

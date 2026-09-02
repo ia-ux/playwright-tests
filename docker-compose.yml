@@ -8,11 +8,16 @@ services:
       - ./.auth:/app/.auth
     environment:
       - CI=true
+      # Google ships no Linux arm64 Chrome, so the container uses bundled
+      # Chromium. Override to 'chrome' on an x86_64 host to match CI exactly.
+      - PLAYWRIGHT_CHANNEL=${PLAYWRIGHT_CHANNEL:-chromium}
     command: bash run-tests.sh
 
   browserstack:
     build: .
     env_file: .env
+    environment:
+      - PLAYWRIGHT_CHANNEL=${PLAYWRIGHT_CHANNEL:-chromium}
     volumes:
       - ./playwright-report:/app/playwright-report
       - ./.auth:/app/.auth
