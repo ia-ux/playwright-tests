@@ -1,7 +1,23 @@
-import { expect, Page } from '@playwright/test';
+import { expect, Page, TestInfo } from '@playwright/test';
 import { SortOrder, DateMetadataLabel } from './models';
 
 export const PAGE_WAIT_TIME = 5000;
+
+/**
+ * True when this test is driving a remote BrowserStack browser rather than a
+ * local one. The BrowserStack SDK rewrites the Playwright config to connect
+ * over a websocket at its grid, so `connectOptions.wsEndpoint` is set there
+ * and absent on every local or container run. Checking for the BrowserStack
+ * credentials instead would not work — `.env.sample` puts them in the local
+ * environment too.
+ *
+ * Use it to gate the handful of tests that need behaviour the grid does not
+ * allow, rather than skipping them everywhere.
+ */
+export function isRemoteBrowserStackRun(testInfo: TestInfo): boolean {
+  const endpoint = testInfo.project.use.connectOptions?.wsEndpoint ?? '';
+  return /browserstack/i.test(endpoint);
+}
 
 export async function gotoWithRetry(
   page: Page,

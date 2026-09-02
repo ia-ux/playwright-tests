@@ -251,16 +251,6 @@ test(`Load theater: video`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp`, async ({ detailsPage }) => {
-  test.fixme(
-    true,
-    'Webamp does not load in headless mode — run with --headed to verify',
-  );
-  test.info().annotations.push({
-    type: 'Test',
-    description:
-      'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
-  });
-
   await test.step('Navigate to webamp item page', async () => {
     await detailsPage.gotoPage(identifier.details.webamp);
   });
@@ -281,16 +271,6 @@ test(`Load theater: webamp`, async ({ detailsPage }) => {
 });
 
 test(`Load theater: webamp with skin`, async ({ detailsPage }) => {
-  test.fixme(
-    true,
-    'Webamp does not load in headless mode — run with --headed to verify',
-  );
-  test.info().annotations.push({
-    type: 'Test',
-    description:
-      'This test fails in headless mode due to webamp not loading the webamp view for some reason.',
-  });
-
   await test.step('Navigate to webamp skin page and activate skin', async () => {
     await detailsPage.gotoPage(identifier.details.webamp_with_skin);
     await detailsPage.activateWebAmpSkin();

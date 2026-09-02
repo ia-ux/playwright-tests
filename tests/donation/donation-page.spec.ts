@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures';
+import { isRemoteBrowserStackRun } from '../utils';
 
 test.describe('Donate page', () => {
   test('Donate page displays main elements', async ({
@@ -63,8 +64,10 @@ test.describe('Donate page', () => {
     });
   });
 
-  // Google Pay uses the browser's native Payment Request API (not a popup).
-  // PayPal popups are blocked in BrowserStack. Button presence is verified above.
+  // Google Pay uses the browser's native Payment Request API, which renders as
+  // browser chrome rather than a page — there is no popup for Playwright to
+  // catch, so this can't be driven from a test. Button presence is verified
+  // above, in 'Payment method buttons are displayed'.
   test.skip('Google Pay opens payment popup', async ({
     donatePage: { page },
   }) => {
@@ -77,7 +80,14 @@ test.describe('Donate page', () => {
     });
   });
 
-  test.skip('PayPal opens payment popup', async ({ donatePage: { page } }) => {
+  test('PayPal opens payment popup', async ({ donatePage: { page } }) => {
+    // The BrowserStack grid blocks the PayPal popup, so this runs locally and
+    // in the container only.
+    test.skip(
+      isRemoteBrowserStackRun(test.info()),
+      'BrowserStack blocks the PayPal payment popup',
+    );
+
     await test.step('Click PayPal and wait for popup', async () => {
       const popupPromise = page.context().waitForEvent('page');
       await page
@@ -85,7 +95,13 @@ test.describe('Donate page', () => {
         .getByRole('button', { name: 'PayPal' })
         .click();
       const popup = await popupPromise;
-      await popup.waitForLoadState('domcontentloaded');
+
+      // The popup opens on about:blank and only then navigates to PayPal, so
+      // waiting on a load state proves nothing — wait for the checkout URL.
+      await popup.waitForURL(/paypal\.com\/checkoutnow/, {
+        waitUntil: 'domcontentloaded',
+        timeout: 60000,
+      });
       await popup.close();
     });
   });

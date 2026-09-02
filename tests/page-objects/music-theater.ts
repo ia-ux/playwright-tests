@@ -50,13 +50,33 @@ export class IAMusicTheater {
   }
 
   async selectChannelSelector(channel: ChannelSelector) {
+    // The component has two layouts: desktop widths render the channels as a
+    // plain <ul> of links, and below ~600px the same component collapses into
+    // an <ia-dropdown> menu. Wait for whichever one this viewport rendered
+    // before branching, so hydration timing can't decide it for us.
     const iaDropdown = this.channelSelector.locator('ia-dropdown');
-    await iaDropdown.locator('button.click-main').click();
-    await iaDropdown
-      .locator('#dropdown-main')
-      .locator('[role="menuitem"]')
-      .getByText(channel, { exact: true })
-      .click();
+    // Not `exact` — the link's accessible name picks up the channel icon
+    // alongside the label, so an exact match never lands.
+    const channelLink = this.channelSelector.getByRole('link', {
+      name: channel,
+    });
+
+    await channelLink
+      .or(iaDropdown)
+      .first()
+      .waitFor({ state: 'visible', timeout: 30000 });
+
+    if ((await iaDropdown.count()) > 0) {
+      await iaDropdown.locator('button.click-main').click();
+      await iaDropdown
+        .locator('#dropdown-main')
+        .locator('[role="menuitem"]')
+        .getByText(channel, { exact: true })
+        .click();
+    } else {
+      await channelLink.click();
+    }
+
     await this.page.waitForLoadState('domcontentloaded');
   }
 
@@ -68,22 +88,25 @@ export class IAMusicTheater {
       .catch(() => {});
 
     if (fromChannelSelector) {
-      await this.page.waitForURL('**/webamp=default**', {
+      // `webamp=default` arrives as a query param, so a path glob never
+      // matches it — match the raw URL instead.
+      await this.page.waitForURL(/webamp=default/, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
     }
 
     // Wait for webamp container to be attached and visible
-    await this.theatreIa.waitFor({ state: 'visible', timeout: 10000 });
+    await this.theatreIa.waitFor({ state: 'visible', timeout: 30000 });
 
-    // Wait for webamp iframes/elements to be ready
-    await this.jsWebamp.waitFor({ state: 'visible', timeout: 10000 });
+    // Webamp bootstraps its own bundle after the channel switch, so the player
+    // windows can take a good while longer to appear than the container does.
+    await this.jsWebamp.waitFor({ state: 'visible', timeout: 30000 });
 
     // Check playlist and equalizer windows
-    await this.mainWindow.waitFor({ state: 'visible', timeout: 10000 });
-    await this.playlistWindow.waitFor({ state: 'visible', timeout: 10000 });
-    await this.equalizerWindow.waitFor({ state: 'visible', timeout: 10000 });
+    await this.mainWindow.waitFor({ state: 'visible', timeout: 30000 });
+    await this.playlistWindow.waitFor({ state: 'visible', timeout: 30000 });
+    await this.equalizerWindow.waitFor({ state: 'visible', timeout: 30000 });
 
     return {
       theatreIaVisible: true,
