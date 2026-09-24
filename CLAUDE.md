@@ -134,6 +134,8 @@ const context = await browser.newContext({ storageState: '.auth/admin.json' });
 
 Credentials come from `.env` via `config/index.ts`. Copy `.env.sample` to `.env` to set up locally.
 
+Admin credentials (`ARCHIVE_EMAIL`/`ARCHIVE_PASSWORD`) are optional. If either is empty, global setup skips the admin login and the `adminDetailsPage`/`adminLoginPage` fixtures skip their tests. New admin-only tests must go through one of those fixtures, or call `test.skip(!hasPrivUserCredentials, ...)` themselves, so they skip too instead of failing on a missing `.auth/admin.json`.
+
 ## Adding new tests
 
 1. Create a spec file under `tests/<category>/`
