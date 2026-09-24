@@ -5,12 +5,13 @@ import { browserChannel, config } from './config';
 const formattedDateTime = () => {
   const d = new Date();
   const month = `${String(d.getMonth() + 1).padStart(2, '0')}`;
-  const day = `${String(d.getDate() + 1).padStart(2, '0')}`;
+  const day = `${String(d.getDate()).padStart(2, '0')}`;
   const hour = `${String(d.getHours()).padStart(2, '0')}`;
   const min = `${String(d.getMinutes()).padStart(2, '0')}`;
+  const sec = `${String(d.getSeconds()).padStart(2, '0')}`;
 
   const date = `${d.getFullYear()}-${month}-${day}`;
-  const time = `${hour}.${min}.${d.getSeconds()}`;
+  const time = `${hour}.${min}.${sec}`;
 
   return `${date}T${time}`;
 };
