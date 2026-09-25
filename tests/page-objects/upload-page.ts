@@ -173,6 +173,8 @@ export class UploadPage {
   readonly missingFieldsMessage: Locator;
   readonly backButton: Locator;
   readonly uploadCompleteMessage: Locator;
+  readonly itemReadyMessage: Locator;
+  readonly itemCreationFailedMessage: Locator;
   readonly goToYourPageButton: Locator;
 
   public constructor(page: Page) {
@@ -234,9 +236,17 @@ export class UploadPage {
       'Please complete the required fields highlighted in red.',
     );
     this.backButton = page.getByRole('button', { name: 'Back' });
+    // Shown when the files are uploaded but the item's status can't be
+    // checked, which is always the case when uploads are intercepted.
     this.uploadCompleteMessage = page.getByText('Upload complete', {
       exact: true,
     });
+    // After a real upload the page polls the item's catalog tasks, then shows
+    // one of these.
+    this.itemReadyMessage = page.getByText('Your item is ready!');
+    this.itemCreationFailedMessage = page.getByText(
+      'There was an error in creating your item.',
+    );
     this.goToYourPageButton = page.getByRole('button', {
       name: 'Go to your page',
     });

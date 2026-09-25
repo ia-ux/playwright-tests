@@ -138,12 +138,14 @@ Admin credentials (`ARCHIVE_EMAIL`/`ARCHIVE_PASSWORD`) are optional. If either i
 
 ## Uploader tests
 
-`tests/upload/` drives the real uploader at `/upload`, submit included, but must never create an item on archive.org. Use the `uploadPage` (guest) or `patronUploadPage` fixture, which routes the page's traffic through `interceptUploads()` in `tests/page-objects/upload-page.ts`:
+`tests/upload/` drives the real uploader at `/upload`, submit included. Apart from the one opt-in real-upload test below, these tests must never create an item on archive.org. Use the `uploadPage` (guest) or `patronUploadPage` fixture, which routes the page's traffic through `interceptUploads()` in `tests/page-objects/upload-page.ts`:
 - S3 PUTs are captured into `uploadPage.uploads` and answered with a fake 200. Assert on those captured requests (item identifier, file name, decoded `x-archive-meta` fields), not on a real item.
 - Only the read-only `identifierAvailable` call reaches `upload_api.php`. Every other request that could change something is aborted.
 - The `/upload` page embeds the logged-in patron's S3 keys. The fixture serves it with dummy keys, and refuses to serve it at all if the keys can't be replaced. Never log or dump that page's raw HTML.
 
 Don't navigate to `/upload` from any other fixture or page, and don't add routes that let S3 requests through.
+
+The exception is `upload-real.spec.ts`, which uses the `realUploadPage` fixture and really uploads. It skips unless `RUN_REAL_UPLOAD=true`, runs with retries off, and always marks the item as a test item (`test_collection`, removed by archive.org after 30 days). Each run creates one item named `ia-e2e-uploader-test-<timestamp>`. Because this fixture serves the page with the patron's real S3 keys, don't enable it on BrowserStack, whose `networkLogs: true` would record them.
 
 ## Adding new tests
 

@@ -49,12 +49,15 @@ Edit `.env` with the following variables:
 | `IS_REVIEW_APP`           | Set `true` for review/staging apps         | `false`              |
 | `BETA_ACCESS_TOKEN`       | Required when `IS_REVIEW_APP=true`         | —                    |
 | `CATEGORY`                | Default test category to run               | `all`                |
+| `RUN_REAL_UPLOAD`         | Run the real-upload test (creates an item²)| `false`              |
 | `BROWSERSTACK_USERNAME`   | BrowserStack username (CI only)            | —                    |
 | `BROWSERSTACK_ACCESS_KEY` | BrowserStack access key (CI only)          | —                    |
 | `SLACK_WEBHOOK_URL`       | Slack webhook for notifications (CI only)  | —                    |
 ````
 
 ¹ If `ARCHIVE_EMAIL` or `ARCHIVE_PASSWORD` is empty, global setup skips the admin login and the few admin-only tests are skipped. Everything else runs normally.
+
+² `tests/upload/upload-real.spec.ts` uploads for real, as the patron. Each run creates one test item (`ia-e2e-uploader-test-<timestamp>`, in `test_collection`), which archive.org removes after 30 days. Leave this off in CI.
 
 ---
 

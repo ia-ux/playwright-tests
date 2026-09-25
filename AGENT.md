@@ -93,6 +93,7 @@ Tests needing a logged-in user use these fixtures from `fixtures.ts`:
 - `patronDetailsPage` — patron session (`storageState: '.auth/patron.json'`)
 - `adminDetailsPage` — admin/privs session (`storageState: '.auth/admin.json'`)
 - `patronUploadPage` — patron session on `/upload`, with uploads intercepted so nothing is created (see "Uploader tests" in `CLAUDE.md`)
+- `realUploadPage` — patron session on `/upload` with real uploads; skips unless `RUN_REAL_UPLOAD=true`
 
 Session files are written by `global-setup.ts` before tests start. If `ARCHIVE_EMAIL`/`ARCHIVE_PASSWORD` are unset, no admin session is written and tests using the admin fixtures are skipped.
 
