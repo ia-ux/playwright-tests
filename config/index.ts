@@ -110,6 +110,11 @@ export const identifier = {
     scanning: '/scanning',
     sflan: '/web/sflan',
   },
+  upload: {
+    url: '/upload',
+    // An identifier that is already taken, for the Page URL availability check.
+    existing_identifier: 'goody',
+  },
 };
 
 /**

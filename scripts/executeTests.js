@@ -26,7 +26,7 @@ const buildCommand = (options) => {
 }
 
 const parseArguments = (args) => {
-  const validCategories = ['about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'legal', 'login', 'music', 'profile', 'search', 'static'];
+  const validCategories = ['about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'legal', 'login', 'music', 'profile', 'search', 'static', 'upload'];
   const validBrowserDevices = ['chromium', 'firefox', 'webkit'];
   const validPlatforms = ['mobile', 'desktop'];
 

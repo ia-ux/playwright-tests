@@ -72,7 +72,7 @@ npm test
 npm test -- --test=<category>
 ```
 
-Available categories: `about`, `av`, `books`, `collection`, `details`, `home`, `legal`, `login`, `music`, `profile`, `search`, `static`
+Available categories: `about`, `av`, `books`, `collection`, `details`, `home`, `legal`, `login`, `music`, `profile`, `search`, `static`, `upload`
 
 ### Filter by test title
 
@@ -147,7 +147,8 @@ playwright-tests/
 │   ├── openlibrary/           # OpenLibrary login tests
 │   ├── profile/               # Profile page tests
 │   ├── search/                # Search page tests (layout, facets, results)
-│   └── static/                # Static resource page tests
+│   ├── static/                # Static resource page tests
+│   └── upload/                # Uploader tests (uploads are intercepted, never sent)
 ├── _to-fix/                   # Tests temporarily disabled pending fixes
 ├── .github/workflows/         # CI/CD workflows (GitHub Actions)
 ├── playwright.config.ts       # Playwright configuration

@@ -14,4 +14,5 @@ time {
    # npm run test -- --test=profile
    # npm run test -- --test=search
    # npm run test -- --test=static
+   # npm run test -- --test=upload
 }

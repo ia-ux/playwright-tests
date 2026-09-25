@@ -136,6 +136,15 @@ Credentials come from `.env` via `config/index.ts`. Copy `.env.sample` to `.env`
 
 Admin credentials (`ARCHIVE_EMAIL`/`ARCHIVE_PASSWORD`) are optional. If either is empty, global setup skips the admin login and the `adminDetailsPage`/`adminLoginPage` fixtures skip their tests. New admin-only tests must go through one of those fixtures, or call `test.skip(!hasPrivUserCredentials, ...)` themselves, so they skip too instead of failing on a missing `.auth/admin.json`.
 
+## Uploader tests
+
+`tests/upload/` drives the real uploader at `/upload`, submit included, but must never create an item on archive.org. Use the `uploadPage` (guest) or `patronUploadPage` fixture, which routes the page's traffic through `interceptUploads()` in `tests/page-objects/upload-page.ts`:
+- S3 PUTs are captured into `uploadPage.uploads` and answered with a fake 200. Assert on those captured requests (item identifier, file name, decoded `x-archive-meta` fields), not on a real item.
+- Only the read-only `identifierAvailable` call reaches `upload_api.php`. Every other request that could change something is aborted.
+- The `/upload` page embeds the logged-in patron's S3 keys. The fixture serves it with dummy keys, and refuses to serve it at all if the keys can't be replaced. Never log or dump that page's raw HTML.
+
+Don't navigate to `/upload` from any other fixture or page, and don't add routes that let S3 requests through.
+
 ## Adding new tests
 
 1. Create a spec file under `tests/<category>/`
