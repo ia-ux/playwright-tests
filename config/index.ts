@@ -14,6 +14,13 @@ export const config = {
   },
 }
 
+// The admin account is optional. Without it, global setup skips the admin
+// login and the admin fixtures skip their tests, so the rest of the suite can
+// still run with only patron credentials.
+export const hasPrivUserCredentials = Boolean(
+  config.privUser.email && config.privUser.password,
+);
+
 export const identifier = {
   about: {
     url: '/about',
