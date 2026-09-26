@@ -96,8 +96,13 @@ export class CollectionFacets {
   async fillUpYearFilters(startDate: string, endDate: string) {
     const facetGroupContent = await this.getFacetGroupContent(FacetGroup.DATE);
     if (facetGroupContent) {
+      // The histogram moved into @internetarchive/elements and its tag was
+      // renamed to ia-histogram-date-range (WEBDEV-9121). Match both so these
+      // tests pass either side of the collection-browser release that picks
+      // the new one up; the old half comes out afterwards (WEBDEV-9135).
+      const dateInputs = '#container > div.inner-container > #inputs';
       const datePickerContainer = facetGroupContent.locator(
-        'histogram-date-range #container > div.inner-container > #inputs',
+        `histogram-date-range ${dateInputs}, ia-histogram-date-range ${dateInputs}`,
       );
       const minYear = datePickerContainer.locator('input#date-min');
       const maxYear = datePickerContainer.locator('input#date-max');
