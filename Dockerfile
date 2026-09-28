@@ -17,6 +17,8 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
       echo "Skipping Google Chrome: no Linux arm64 build, using bundled Chromium"; \
     fi
 
+# .dockerignore keeps the host's node_modules, .env, .auth and test output out
+# of this copy.
 COPY . .
 
 RUN chmod +x run-browserstack-tests.sh run-tests.sh

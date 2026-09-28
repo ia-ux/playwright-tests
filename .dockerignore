@@ -1,0 +1,39 @@
+# Keep host-only files out of the build context, so the Dockerfile's `COPY . .`
+# can't overwrite the image's own `npm ci` install or bake in secrets.
+# Everything else (package*.json, playwright.config.ts, global-setup.ts,
+# config/, tests/, scripts/, run-*.sh, browserstack.yml, tsconfig.json) is
+# still copied.
+
+# Host dependencies, which can hold macOS binaries
+**/node_modules
+
+# Credentials and saved login sessions. docker-compose.yml passes .env in at
+# run time with env_file and mounts .auth as a volume.
+.env
+.env.*
+!.env.sample
+.auth
+playwright/.auth
+
+# Test output, also mounted as volumes
+test-results
+playwright-report
+playwright-summary
+
+# Local tooling state
+.git
+.claude
+.playwright*
+playwright/.cache
+
+# BrowserStack SDK and other generated files
+.obs*
+browserstackSetupConfig.json
+playwright-browserstack-sdk.config*
+performance-report.json
+log
+bstack-json
+ctrf
+*.log
+*.err
+**/.DS_Store
