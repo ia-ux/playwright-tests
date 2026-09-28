@@ -42,6 +42,9 @@ export default defineConfig({
   testDir: './tests',
   reporter: [
     ['list'],
+    // Structured output. The Slack notification reads this to report pass and
+    // fail counts and the first failing spec.
+    ['json', { outputFile: 'playwright-results.json' }],
     [
       'html',
       {

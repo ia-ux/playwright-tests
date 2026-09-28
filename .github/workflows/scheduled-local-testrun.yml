@@ -90,9 +90,40 @@ jobs:
           TEST_OUTCOME: ${{ steps.tests.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # GitHub runs this as `bash -e`, and a bare var=$(cmd) assignment
+          # takes the substitution's exit status, so a jq failure here would
+          # exit the step before curl and post nothing at all. Every
+          # substitution gets `|| true`, and the report is checked for
+          # parseability up front, so a bad report degrades to the plain
+          # message rather than to silence. jq's stderr is left visible so a
+          # shape change shows up in the run log.
+          summary=""
+          first_failure=""
+          duration=""
+          if [ -f playwright-results.json ] && jq -e . playwright-results.json >/dev/null 2>&1; then
+            summary=$(jq -r '
+              .stats
+              | [ (if .unexpected > 0 then "\(.unexpected) failed" else empty end)
+                , (if .flaky      > 0 then "\(.flaky) flaky"       else empty end)
+                , "\(.expected) passed"
+                , (if .skipped    > 0 then "\(.skipped) skipped"   else empty end)
+                ]
+              | join(", ")
+            ' playwright-results.json) || true
+            first_failure=$(jq -r '
+              [ .. | objects | select(has("ok") and has("title") and .ok == false) ]
+              | if length > 0 then "\n First failure: \(.[0].title)" else "" end
+            ' playwright-results.json) || true
+            duration=$(jq -r '
+              .stats.duration
+              | if type == "number" then floor | "\(. / 60000 | floor)m\((. % 60000) / 1000 | floor)s" else "" end
+            ' playwright-results.json) || true
+            [ -n "$summary" ] && [ -n "$duration" ] && summary="$summary ($duration)"
+          fi
+
           case "$TEST_OUTCOME" in
-            success) job_status="✅ All tests passed." ;;
-            failure) job_status="‼️ Tests failed, check the run." ;;
+            success) job_status="✅ ${summary:-All tests passed.}" ;;
+            failure) job_status="‼️ ${summary:-Tests failed, check the run.}${first_failure}" ;;
             *)       job_status="❓ Something went wrong, check the run." ;;
           esac
 
