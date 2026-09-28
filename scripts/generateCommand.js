@@ -27,7 +27,7 @@ const generateCommand = (args) => {
 };
 
 /**
- * Test category options: 'about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'login', 'music', 'profile', 'search'
+ * Test category options: 'about', 'av', 'books', 'collection', 'details', 'donation', 'home', 'login', 'music', 'profile', 'search', 'upload'
  * Browser options: 'chromium', 'firefox', 'webkit'
  * Device options: 'mobile', 'desktop'
  * Title: '<test case title description; see *.spec.ts files to get the titles>'

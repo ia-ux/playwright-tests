@@ -96,6 +96,32 @@ npx playwright test tests/search/search-layout.spec.ts
 | `--ui` | Open Playwright UI mode |
 | `--trace` | Record trace for the report |
 
+## Uploader tests and `RUN_REAL_UPLOAD`
+
+The `upload` category tests the uploader at archive.org/upload:
+
+```bash
+docker compose run --rm playwright npm run test -- --test=upload
+npm run test -- --test=upload
+```
+
+By default these tests create nothing. Uploads are intercepted and faked, and the tests check what would have been sent. The only exception is `tests/upload/upload-real.spec.ts`, which uploads for real. It is skipped unless `RUN_REAL_UPLOAD=true`.
+
+To run the real upload, set the flag on the command rather than in `.env`, so it can't carry over into a full-suite or BrowserStack run:
+
+```bash
+# Container
+docker compose run --rm -e RUN_REAL_UPLOAD=true playwright npx playwright test tests/upload/upload-real.spec.ts
+podman compose run --rm -e RUN_REAL_UPLOAD=true playwright npx playwright test tests/upload/upload-real.spec.ts
+
+# Local Playwright install
+RUN_REAL_UPLOAD=true npx playwright test tests/upload/upload-real.spec.ts
+```
+
+Each run uploads as the patron account (`PATRON_EMAIL`) and creates one item, `ia-e2e-uploader-test-<timestamp>`. The item is always a test item, in `test_collection`, which archive.org removes after 30 days. Retries are off for this test, so a failure can't create a second item. The item's URL is recorded as the test's `item` annotation in the HTML report (`npm run show:report`).
+
+Keep `RUN_REAL_UPLOAD` off in CI and on BrowserStack. Besides creating an item on every run, this test loads the upload page with the patron's real S3 keys, and BrowserStack's network logs (`networkLogs: true` in `browserstack.yml`) would record them.
+
 ## BrowserStack (without Docker)
 
 ```bash

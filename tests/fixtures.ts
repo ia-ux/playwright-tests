@@ -9,16 +9,20 @@ import { BookPage } from './page-objects/book-page';
 import { DetailsPage } from './page-objects/details-page';
 import { LendingBarAutoRenew } from './page-objects/lending-bar-auto-renew';
 import { LoginPage } from './page-objects/login-page';
+import { interceptUploads, UploadPage } from './page-objects/upload-page';
 
 import {
   hasPrivUserCredentials,
   identifier,
+  runRealUpload,
   testBeforeEachConfig,
   THIRD_PARTY_ROUTES,
 } from '../config';
 
 const NO_ADMIN_CREDENTIALS =
   'ARCHIVE_EMAIL/ARCHIVE_PASSWORD not set, so there is no admin session';
+const REAL_UPLOAD_DISABLED =
+  'creates a real item on archive.org; set RUN_REAL_UPLOAD=true to run it';
 
 type PageFixtures = {
   adminDetailsPage: DetailsPage;
@@ -33,9 +37,12 @@ type PageFixtures = {
   patronLoginPage: LoginPage;
   musicPage: MusicPage;
   patronDetailsPage: DetailsPage;
+  patronUploadPage: UploadPage;
   profilePage: ProfilePage;
   profilePageUploads: ProfilePage;
+  realUploadPage: UploadPage;
   searchPage: SearchPage;
+  uploadPage: UploadPage;
 };
 
 export const test = base.extend<PageFixtures>({
@@ -145,6 +152,20 @@ export const test = base.extend<PageFixtures>({
     await use(detailsPage);
     await context.close().catch(() => {});
   },
+  // Both upload fixtures route the uploader's traffic through
+  // interceptUploads(), so no test can create an item on archive.org.
+  patronUploadPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: '.auth/patron.json',
+    });
+    const page = await context.newPage();
+    const uploadPage = new UploadPage(page);
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
+    await interceptUploads(context, uploadPage.uploads);
+    await uploadPage.goto();
+    await use(uploadPage);
+    await context.close().catch(() => {});
+  },
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
     await page.route(THIRD_PARTY_ROUTES, route => route.abort());
@@ -159,11 +180,33 @@ export const test = base.extend<PageFixtures>({
     await use(profilePage);
     await page.close().catch(() => {});
   },
+  // The one upload fixture without interceptUploads(): its uploads are real
+  // and create items on archive.org, so it skips unless RUN_REAL_UPLOAD=true.
+  realUploadPage: async ({ browser }, use, testInfo) => {
+    testInfo.skip(!runRealUpload, REAL_UPLOAD_DISABLED);
+    const context = await browser.newContext({
+      storageState: '.auth/patron.json',
+    });
+    const page = await context.newPage();
+    const uploadPage = new UploadPage(page);
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
+    await uploadPage.goto();
+    await use(uploadPage);
+    await context.close().catch(() => {});
+  },
   searchPage: async ({ page }, use) => {
     const searchPage = new SearchPage(page);
     await page.route(THIRD_PARTY_ROUTES, route => route.abort());
     await searchPage.visit();
     await use(searchPage);
+    await page.close().catch(() => {});
+  },
+  uploadPage: async ({ page }, use) => {
+    const uploadPage = new UploadPage(page);
+    await page.route(THIRD_PARTY_ROUTES, route => route.abort());
+    await interceptUploads(page.context(), uploadPage.uploads);
+    await uploadPage.goto();
+    await use(uploadPage);
     await page.close().catch(() => {});
   },
 });

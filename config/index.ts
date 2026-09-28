@@ -21,6 +21,10 @@ export const hasPrivUserCredentials = Boolean(
   config.privUser.email && config.privUser.password,
 );
 
+// The real-upload test creates an actual item on archive.org, so it only runs
+// when this is set.
+export const runRealUpload = process.env.RUN_REAL_UPLOAD === 'true';
+
 export const identifier = {
   about: {
     url: '/about',
@@ -109,6 +113,11 @@ export const identifier = {
     petabox: '/web/petabox',
     scanning: '/scanning',
     sflan: '/web/sflan',
+  },
+  upload: {
+    url: '/upload',
+    // An identifier that is already taken, for the Page URL availability check.
+    existing_identifier: 'goody',
   },
 };
 

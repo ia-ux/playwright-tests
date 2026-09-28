@@ -9,6 +9,7 @@ export class DetailsPage {
 
   readonly iaTheater: Locator;
   readonly iaCarousel: Locator;
+  readonly itemTitle: Locator;
 
   readonly tvNewsArchive: Locator;
   readonly tvSearchTitle: Locator;
@@ -26,6 +27,9 @@ export class DetailsPage {
 
     this.iaTheater = this.page.locator('#theatre-ia');
     this.iaCarousel = this.iaTheater.locator('#ia-carousel');
+    // The visible title. The theater also has a screen-reader-only h1 with the
+    // same text.
+    this.itemTitle = this.page.locator('h1.item-title');
 
     this.tvNewsArchive = this.page.getByRole('link', {
       name: 'TV News Archive',
