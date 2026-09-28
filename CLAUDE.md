@@ -151,4 +151,17 @@ Tests run on BrowserStack via GitHub Actions (`.github/workflows/`). Three trigg
 - Repository dispatch webhook → `trigger-from-webhook.yml`
 - Scheduled → `scheduled-testrun.yml`
 
-All workflows share a `browserstack-tests` concurrency group to prevent overlapping runs.
+These three share a `browserstack-tests` concurrency group to prevent overlapping runs.
+
+## CI / Mac mini
+
+`scheduled-local-testrun.yml` runs the full suite hourly on a self-hosted runner on our Mac mini,
+in real Google Chrome, and posts pass/fail to the same Slack webhook. It uses its own
+`mac-mini-tests` concurrency group, since its requests come from our IP rather than
+BrowserStack's and so don't add to the load the BrowserStack runs are serialized to avoid.
+
+**Never add a `pull_request` trigger to `scheduled-local-testrun.yml`.** The repo is public, so
+that would let anyone run arbitrary code on the mini from a fork. Fork PRs belong on
+`ubuntu-latest` via `main.yml`.
+
+Runner setup, health checks, and troubleshooting: [docs/mac-mini-runner.md](docs/mac-mini-runner.md).
