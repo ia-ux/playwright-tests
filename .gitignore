@@ -27,3 +27,6 @@ ctrf
 bstack-json
 
 .playwright*
+
+# git worktrees (git worktree add .claude/worktrees/<branch>)
+.claude/worktrees/
