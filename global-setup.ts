@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Browser } from '@playwright/test';
 import { chromium } from '@playwright/test';
-import { browserChannel, config } from './config';
+import { browserChannel, config, hasPrivUserCredentials } from './config';
 import { LoginPage } from './tests/page-objects/login-page';
 import { UserType } from './tests/models';
 
@@ -55,8 +55,14 @@ async function globalSetup() {
     console.log(`Setting up patron authentication... BASE: ${config.baseURL}`);
     await loginWithRetry(browser, 'patron', '.auth/patron.json');
 
-    console.log(`Setting up admin authentication... BASE: ${config.baseURL}`);
-    await loginWithRetry(browser, 'privs', '.auth/admin.json');
+    if (hasPrivUserCredentials) {
+      console.log(`Setting up admin authentication... BASE: ${config.baseURL}`);
+      await loginWithRetry(browser, 'privs', '.auth/admin.json');
+    } else {
+      console.log(
+        'Skipping admin authentication: ARCHIVE_EMAIL/ARCHIVE_PASSWORD not set. Admin tests will be skipped.',
+      );
+    }
   } finally {
     await browser.close();
   }

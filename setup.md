@@ -42,8 +42,8 @@ Edit `.env` with the following variables:
 | Variable                  | Description                                | Default              |
 |---------------------------|--------------------------------------------|----------------------|
 | `BASE_URL`                | Target site URL                            | `https://archive.org`|
-| `ARCHIVE_EMAIL`           | Privileged account email                   | —                    |
-| `ARCHIVE_PASSWORD`        | Privileged account password                | —                    |
+| `ARCHIVE_EMAIL`           | Privileged account email (optional¹)       | —                    |
+| `ARCHIVE_PASSWORD`        | Privileged account password (optional¹)    | —                    |
 | `PATRON_EMAIL`            | Patron (regular user) email                | —                    |
 | `PATRON_PASSWORD`         | Patron account password                    | —                    |
 | `IS_REVIEW_APP`           | Set `true` for review/staging apps         | `false`              |
@@ -53,6 +53,9 @@ Edit `.env` with the following variables:
 | `BROWSERSTACK_ACCESS_KEY` | BrowserStack access key (CI only)          | —                    |
 | `SLACK_WEBHOOK_URL`       | Slack webhook for notifications (CI only)  | —                    |
 ````
+
+¹ If `ARCHIVE_EMAIL` or `ARCHIVE_PASSWORD` is empty, global setup skips the admin login and the few admin-only tests are skipped. Everything else runs normally.
+
 ---
 
 ## Running Tests

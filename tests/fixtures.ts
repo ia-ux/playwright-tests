@@ -11,10 +11,14 @@ import { LendingBarAutoRenew } from './page-objects/lending-bar-auto-renew';
 import { LoginPage } from './page-objects/login-page';
 
 import {
+  hasPrivUserCredentials,
   identifier,
   testBeforeEachConfig,
   THIRD_PARTY_ROUTES,
 } from '../config';
+
+const NO_ADMIN_CREDENTIALS =
+  'ARCHIVE_EMAIL/ARCHIVE_PASSWORD not set, so there is no admin session';
 
 type PageFixtures = {
   adminDetailsPage: DetailsPage;
@@ -35,7 +39,8 @@ type PageFixtures = {
 };
 
 export const test = base.extend<PageFixtures>({
-  adminDetailsPage: async ({ browser }, use) => {
+  adminDetailsPage: async ({ browser }, use, testInfo) => {
+    testInfo.skip(!hasPrivUserCredentials, NO_ADMIN_CREDENTIALS);
     const context = await browser.newContext({
       storageState: '.auth/admin.json',
     });
@@ -97,7 +102,8 @@ export const test = base.extend<PageFixtures>({
   // `test.use()` in the spec instead would give each describe block its own
   // worker hash, forcing Playwright to tear down and relaunch a worker between
   // them — which added minutes of idle time to the end of every suite run.
-  adminLoginPage: async ({ browser }, use) => {
+  adminLoginPage: async ({ browser }, use, testInfo) => {
+    testInfo.skip(!hasPrivUserCredentials, NO_ADMIN_CREDENTIALS);
     const context = await browser.newContext({
       storageState: '.auth/admin.json',
     });
