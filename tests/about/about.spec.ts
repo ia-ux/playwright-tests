@@ -181,11 +181,11 @@ test.describe('About pages', () => {
 
     await test.step('Validate page title and content', async () => {
       await expect(
-        page.locator('h1:has-text("Volunteer Positions")'),
+        page.locator('h1:has-text("Volunteer Opportunities")'),
       ).toBeVisible();
       await assertTitleWithReload(page, /Volunteer Positions/, '#maincontent');
-      await expect(page.locator('#maincontent')).toContainText(
-        'We could always use a hand',
+      await expect(page.locator('main')).toContainText(
+        'We can always use a hand',
       );
     });
   });

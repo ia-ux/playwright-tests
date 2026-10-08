@@ -128,6 +128,7 @@ test.describe('Profile Page - Lists', () => {
     });
 
     await test.step(`Verify 7 facet group headers are visible`, async () => {
+      await profilePage.collectionFacets.expandFacets();
       for (const header of SearchFacetGroupHeaderNames) {
         const facet = profilePage.collectionFacets.facets.getByRole('heading', {
           name: header,

@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { expect, type Page, type Locator } from '@playwright/test';
 import { FacetGroup, FacetType } from '../models';
 
 // Facet groups render after the collection's search results resolve, which can
@@ -8,6 +8,7 @@ const FACET_TIMEOUT = 90000;
 export class CollectionFacets {
   readonly page: Page;
   readonly facets: Locator;
+  readonly facetsDropdown: Locator;
   readonly modalManager: Locator;
   readonly moreFacetsContent: Locator;
   readonly btnClearAllFilters: Locator;
@@ -17,6 +18,7 @@ export class CollectionFacets {
   constructor(page: Page) {
     this.page = page;
     this.facets = page.locator('collection-facets');
+    this.facetsDropdown = page.locator('details.desktop-facets-dropdown');
     this.modalManager = page.locator('modal-manager');
     this.moreFacetsContent = page.locator('more-facets-content');
     this.btnClearAllFilters = page.locator(
@@ -28,7 +30,26 @@ export class CollectionFacets {
     );
   }
 
+  /**
+   * On desktop the facets sit in a <details> that starts collapsed. Opens it
+   * if it's closed. Viewports without the dropdown have nothing to open.
+   */
+  async expandFacets() {
+    const dropdown = this.facetsDropdown.first();
+    const isDropdownVisible = await dropdown
+      .waitFor({ state: 'visible', timeout: FACET_TIMEOUT })
+      .then(() => true)
+      .catch(() => false);
+    if (!isDropdownVisible) return;
+    if (await dropdown.evaluate(el => (el as HTMLDetailsElement).open)) return;
+    await dropdown.locator('summary').first().click();
+    await expect(dropdown).toHaveAttribute('open', '', {
+      timeout: FACET_TIMEOUT,
+    });
+  }
+
   async clickClearAllFilters() {
+    await this.expandFacets();
     await this.btnClearAllFilters.waitFor({
       state: 'visible',
       timeout: FACET_TIMEOUT,
@@ -37,6 +58,7 @@ export class CollectionFacets {
   }
 
   async waitForDatePicker() {
+    await this.expandFacets();
     await this.yearPublishedFacetGroup.waitFor({
       state: 'visible',
       timeout: FACET_TIMEOUT,
@@ -109,6 +131,7 @@ export class CollectionFacets {
   }
 
   async getFacetGroupContent(group: FacetGroup): Promise<Locator | null> {
+    await this.expandFacets();
     const facetGroup = this.page.getByTestId(
       `facet-group-header-label-${group}`,
     );

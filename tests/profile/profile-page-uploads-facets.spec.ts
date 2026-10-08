@@ -5,6 +5,7 @@ test(`Profile Page - Uploads: facets appear`, async ({
   profilePageUploads,
 }) => {
   await test.step(`Check if date picker appears`, async () => {
+    await profilePageUploads.collectionFacets.expandFacets();
     await expect(
       profilePageUploads.collectionFacets.yearPublishedFacetGroup,
     ).toBeVisible({

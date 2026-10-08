@@ -8,6 +8,7 @@ import {
 
 test(`Verify if facets appear on first load`, async ({ collectionPage }) => {
   await test.step('Assert facet group headers count', async () => {
+    await collectionPage.collectionFacets.expandFacets();
     for (const header of CollectionFacetGroupHeaderNames) {
       const facet = collectionPage.collectionFacets.facets.getByRole(
         'heading',
@@ -53,6 +54,7 @@ test(`Select Year Published range via date picker`, async ({
 }) => {
   const { collectionFacets, infiniteScroller } = collectionPage;
   await test.step(`Enter 1954–1955 in start/end date fields and new results will be loaded`, async () => {
+    await collectionFacets.expandFacets();
     await expect(collectionFacets.yearPublishedFacetGroup).toBeVisible();
     await collectionFacets.fillUpYearFilters('1954', '1955');
     await expect(collectionFacets.resultsTotal).toBeVisible();

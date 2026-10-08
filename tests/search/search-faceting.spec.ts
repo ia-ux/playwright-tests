@@ -9,6 +9,7 @@ import {
 test('Facets appear', async ({ searchPage }) => {
   await test.step('Assert facet group headers count', async () => {
     await searchPage.searchFor('cats');
+    await searchPage.collectionFacets.expandFacets();
     for (const header of SearchFacetGroupHeaderNames) {
       const facet = searchPage.collectionFacets.facets.getByRole('heading', {
         name: header,
