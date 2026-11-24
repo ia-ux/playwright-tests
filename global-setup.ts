@@ -25,6 +25,7 @@ async function loginWithRetry(
 
       await loginPage.loginAs(user);
       await context.storageState({ path: statePath });
+      fs.chmodSync(statePath, 0o600);
       console.log(`✓ ${user} authentication successful (attempt ${attempt})`);
       return;
     } catch (error) {
@@ -46,7 +47,8 @@ async function loginWithRetry(
 }
 
 async function globalSetup() {
-  fs.mkdirSync('.auth', { recursive: true });
+  fs.mkdirSync('.auth', { recursive: true, mode: 0o700 });
+  fs.chmodSync('.auth', 0o700);
 
   const browser = await chromium.launch({ channel: browserChannel });
 
